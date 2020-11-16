@@ -1,0 +1,617 @@
+
+from __future__ import print_function
+
+from __config__ import probs
+from __config__ import limitations
+import probs_helper
+import ast
+import type_inference
+import utils
+import function_subs
+import collections
+
+
+################ Expressions ####################
+
+def generate_basic_exp(program, function, c_type):
+    generator_name = probs_helper.random_value(probs.basic_expression_prob)
+    generator = globals()[generator_name]
+    return generator(program, function, c_type)
+
+def generate_global_var(program, function, c_type):
+    if c_type.name not in program.global_vars.keys():
+        # Creates the global vars for that type
+        program.global_vars[c_type.name] = []
+    rand = probs_helper.random_value(probs.global_vars_prob)
+    max_value = len(program.global_vars[c_type.name])
+    if rand < max_value:
+        selected = probs_helper.random_value(probs_helper.compute_equal_prob(range(max_value)))
+        # An existing global variable is taken
+        return ast.global_variable(c_type, selected + 1)
+    # A new global variable must be created
+    literal = generate_literal(program, function, c_type, from_declaration=True)
+    program.global_vars[c_type.name].append((c_type, literal))
+    return ast.global_variable(c_type, len(program.global_vars[c_type.name]))
+
+def generate_local_var(program, function, c_type):
+    if c_type.name not in function.local_vars.keys():
+        # Creates the local vars for that type
+        function.local_vars[c_type.name] = []
+    rand = probs_helper.random_value(probs.local_vars_prob)
+    max_value = len(function.local_vars[c_type.name])
+    if rand < max_value:
+        selected = probs_helper.random_value(probs_helper.compute_equal_prob(range(max_value)))
+        # An existing local variable is taken
+        return ast.local_variable(c_type, selected + 1)
+    # A new local variable must be created
+    literal = generate_literal(program, function, c_type, from_declaration=True)
+    function.local_vars[c_type.name].append((c_type, literal))
+    return ast.local_variable(c_type, len(function.local_vars[c_type.name]))
+
+
+def generate_param_var(program, function, c_type):
+    param_var = function.get_param_by_type(c_type)
+    if param_var is None:
+        return generate_local_var(program, function, c_type)
+    return param_var
+
+
+def generate_lvalue(program, function, exp_type, exp_depth_prob):
+    exp_depth = probs_helper.random_value(exp_depth_prob or probs.exp_depth_prob)
+
+    if exp_depth == 0:
+        return generate_basic_lvalue(program, function, exp_type)
+
+    lower_exp_depth_prob = probs_helper.compute_equal_prob(range(0, exp_depth))
+
+    operators = ast.get_operators(exp_type, "lvalue")
+    if len(operators) == 0:
+        return generate_basic_lvalue(program, function, exp_type)
+
+    operator, _ = probs_helper.random_value(operators)
+    if operator == "[]":
+        return generate_expression_arity_2(program, function, exp_type, operator,
+                                           default_generator_1=generate_lvalue, generator_1_depth_prob=lower_exp_depth_prob,
+                                           default_generator_2=generate_expression, generator_2_depth_prob=None)
+    return generate_expression_arity_1(program, function, exp_type, operator,
+                                       default_generator_1=generate_lvalue, generator_1_depth_prob=lower_exp_depth_prob)
+
+
+def generate_basic_lvalue(program, function, c_type):
+    generator_name = probs_helper.random_value(probs.lvalue_prob)
+    generator = globals()[generator_name]
+    return generator(program, function, c_type)
+
+def generate_literal(program, function, literal_type, from_declaration=False):
+    try:
+        # If Array or Struct, only generate a literal occasionally
+        if from_declaration and isinstance(literal_type, (ast.Array, ast.Struct)):
+            selected_prob = "{}_literal_initialization_prob".format(
+                utils.camel_case_to_snake_case(literal_type.__class__.__name__),
+            )
+            prob = globals()["probs"].__dict__[selected_prob]
+            rand = probs_helper.random_value(prob)
+            if not rand:
+                return None
+
+        return literal_type.generate_literal(from_declaration=from_declaration)
+    except ValueError:
+        # NOTE: Pointers, Struct and Arrays only generate literals in declarations, so if is necessary a literal,
+        # generate a lvalue instead
+        return generate_lvalue(program, function, literal_type, None)
+
+
+def generate_expression(program, function, exp_type, exp_depth_prob):
+
+    # Check implicit promotion
+    if probs_helper.random_value(probs.implicit_promotion_bool):
+        try:
+            new_type_cls = probs_helper.random_value(probs.promotions_prob[exp_type.__class__])
+            # print("DEBUG IMPLICIT PROMOTION: {} -> {}".format(exp_type.__declaration__(), new_type_cls().__declaration__()))
+            exp_type = new_type_cls()
+        except KeyError:
+            pass
+
+
+    exp_depth = probs_helper.random_value(exp_depth_prob or probs.exp_depth_prob)
+
+    if exp_depth == 0:
+        return generate_basic_exp(program, function, exp_type)
+
+    lower_exp_depth_prob = probs_helper.compute_equal_prob(range(0, exp_depth))
+
+    # <FILTER RETURN TYPES>
+    #  If the type is not the selected for the return type of the functions, calculate a new arity probability without
+    # invocations
+
+    if limitations.allowed_return_types and not isinstance(exp_type, tuple(limitations.allowed_return_types)):
+        isCall = False
+    else:
+        isCall = probs_helper.random_value(probs.call_prob)
+    # <FILTER RETURN TYPES/>
+
+    if not isCall:
+        operators = ast.get_operators(exp_type, "normal")
+        if len(operators) == 0:
+            return generate_basic_exp(program, function, exp_type)
+
+        operator, arity = probs_helper.random_value(operators)
+        func_name = "generate_expression_arity_{}".format(arity)
+        kwargs = {
+            "default_generator_1": generate_expression, "generator_1_depth_prob": lower_exp_depth_prob,
+            "default_generator_2": generate_expression, "generator_2_depth_prob": lower_exp_depth_prob,
+            "default_generator_3": generate_expression, "generator_3_depth_prob": lower_exp_depth_prob,
+        }
+        return globals()[func_name](program, function, exp_type, operator, **kwargs)
+
+    else:
+        # <FILTER RETURN TYPES>
+        if limitations.allowed_return_types:
+            assert isinstance(exp_type, tuple(limitations.allowed_return_types)), \
+                "{} not in {}".format(repr(exp_type), repr(limitations.allowed_return_types))
+        # <FILTER RETURN TYPES/>
+        return generate_expression_invocation(program, function, exp_type)
+
+
+def generate_expression_arity_1(program, function, exp_type, operator,
+                                default_generator_1, generator_1_depth_prob,
+                                **kwargs):
+    # Infer types and select one
+    sub_exp_1_types = type_inference.infer_operands_type(program, function, 1, operator, exp_type)
+    sub_exp_1_type = probs_helper.random_value(probs_helper.compute_equal_prob(sub_exp_1_types))
+
+    if operator in ["++", "--"]:
+        return generate_expression_incdec(program, function, sub_exp_1_type, operator)
+
+    if operator == "&":
+        sub_exp_1 = generate_lvalue(program, function, sub_exp_1_type, None)
+        return ast.UnaryExpression(operator, sub_exp_1, exp_type, post_op=False)
+
+    if operator in [".", "->"]:
+        sub_exp_1 = default_generator_1(program, function, sub_exp_1_type, exp_depth_prob=generator_1_depth_prob)
+        if operator == ".":
+            # Type -> Struct
+            field = sub_exp_1_type.get_field_by_type(exp_type)
+            return ast.StructAccessExpression(operator, sub_exp_1, field, exp_type)
+
+        if operator == "->":
+            # Type -> Pointer(Struct)
+            field = sub_exp_1_type.type.get_field_by_type(exp_type)
+            return ast.StructAccessExpression(operator, sub_exp_1, field, exp_type)
+
+        raise AssertionError("Unknown operator")
+
+    if operator == '()':
+        sub_exp_1 = default_generator_1(program, function, sub_exp_1_type, exp_depth_prob=generator_1_depth_prob)
+        return ast.CastExpression(sub_exp_1, exp_type)
+
+    # Otherwise
+    sub_exp_1 = default_generator_1(program, function, sub_exp_1_type, generator_1_depth_prob)
+    return ast.UnaryExpression(operator, sub_exp_1, exp_type, post_op=False)
+
+
+def generate_expression_arity_2(program, function, exp_type, operator,
+                                default_generator_1, generator_1_depth_prob,
+                                default_generator_2, generator_2_depth_prob,
+                                **kwargs):
+    # Infer types and select one pair
+    types_pairs = type_inference.infer_operands_type(program, function, 2, operator, exp_type)
+    sub_exp_1_type, sub_exp_2_type = probs_helper.random_value(probs_helper.compute_equal_prob(types_pairs))
+
+    # Generate the expressions
+    sub_exp_1 = default_generator_1(program, function, sub_exp_1_type, exp_depth_prob=generator_1_depth_prob)
+    sub_exp_2 = default_generator_2(program, function, sub_exp_2_type, exp_depth_prob=generator_2_depth_prob)
+    if operator == "[]":
+        return ast.ArrayAccessExpression(sub_exp_1, sub_exp_2, exp_type)
+    return ast.BinaryExpression(sub_exp_1, operator, sub_exp_2, exp_type)
+
+
+def generate_expression_arity_3(program, function, exp_type, operator,
+                                default_generator_1, generator_1_depth_prob,
+                                default_generator_2, generator_2_depth_prob,
+                                default_generator_3, generator_3_depth_prob,
+                                **kwargs):
+    # Infer types and select one pair
+    types_pairs = type_inference.infer_operands_type(program, function, 3, operator, exp_type)
+    sub_exp_1_type, sub_exp_2_type, sub_exp_2_type = probs_helper.random_value(probs_helper.compute_equal_prob(types_pairs))
+
+    sub_exp_1 = default_generator_1(program, function, sub_exp_1_type, exp_depth_prob=generator_1_depth_prob)
+    sub_exp_2 = default_generator_2(program, function, sub_exp_2_type, exp_depth_prob=generator_2_depth_prob)
+    sub_exp_3 = default_generator_3(program, function, sub_exp_2_type, exp_depth_prob=generator_3_depth_prob)
+    return ast.TernaryExpression(sub_exp_1, sub_exp_2, sub_exp_3, operator, exp_type)
+
+
+def generate_expression_invocation(program, function, return_type):
+    # generates the function (if necessary)
+    invoked_func = generate_function(program, function, return_type)
+
+    # generates the arguments
+    params = []
+    for name, arg_type in invoked_func.param_types:
+        params.append(generate_expression(program, function, arg_type, None))
+
+    # Count invocation
+    program.invocation_as_expr[invoked_func.name] += 1
+
+    # generates the invocation
+    return ast.Invocation(invoked_func.name, params, return_type, False)
+
+
+def generate_expression_incdec(program, function, exp_type, operator):
+    assert operator in ["++", "--"]
+    sub_exp_1 = generate_lvalue(program, function, exp_type, None)
+    post_op = probs_helper.random_value(probs_helper.compute_equal_prob([True, False]))
+    return ast.UnaryExpression(operator, sub_exp_1, exp_type, post_op)
+
+
+
+################ Statements ####################
+
+
+def generate_stmt_proc(program, function):
+    generator = probs_helper.random_value(probs.procedure_stmt_prob)
+    return globals()[generator](program, function)
+
+
+def generate_stmt_func(program, function):
+    generator = probs_helper.random_value(probs.function_stmt_prob)
+    return globals()[generator](program, function)
+
+
+def generate_stmt_assignment(program, function):
+    operator = "="
+
+    # Get type
+    assignment_type_cls = probs_helper.random_value(probs.assignment_types_prob)
+    assignment_type = generate_type(program, function, new_type_cls=assignment_type_cls, old_type_obj=None)
+
+    # Generate left part
+    left_exp = generate_lvalue(program, function, assignment_type, None)
+
+    # Generate right part
+    right_types = type_inference.infer_operands_type(program, function, 1, operator, assignment_type)
+    right_type = probs_helper.random_value(probs_helper.compute_equal_prob(right_types))
+    right_exp = generate_expression(program, function, right_type, None)
+
+    # Compose all
+    return ast.Assignment(left_exp, operator, right_exp, assignment_type)
+
+
+def generate_stmt_augmented_assignment(program, function):
+
+    # Get type
+    augmented_assignment_type_cls = probs_helper.random_value(probs.augmented_assignment_types_prob)
+    augmented_assignment_type = generate_type(program, function, new_type_cls=augmented_assignment_type_cls, old_type_obj=None)
+
+    # Generate left part
+    left_exp = generate_lvalue(program, function, augmented_assignment_type, None)
+
+    # Get operator
+    operators = ast.get_operators(augmented_assignment_type, "assignment")
+    if not operators:
+        operator = "="
+    else:
+        operator, _ = probs_helper.random_value(operators)
+
+    # Generate right part
+    right_types = type_inference.infer_operands_type(program, function, 1, operator, augmented_assignment_type)
+
+    right_type = probs_helper.random_value(probs_helper.compute_equal_prob(right_types))
+    right_exp = generate_expression(program, function, right_type, None)
+
+    # Compose all
+    return ast.Assignment(left_exp, operator, right_exp, augmented_assignment_type)
+
+
+def generate_stmt_incdec(program, function):
+    stmt_type = generate_type(program, function, new_type_cls=None, old_type_obj=None)
+
+    # Check if operators are enabled in expressions
+    operators = [k[0] for k in ast.get_operators(stmt_type, "normal").keys()]
+    stmt_operators = []
+    if '++' in operators:
+        stmt_operators.append("++")
+    if '--' in operators:
+        stmt_operators.append("--")
+    if not stmt_operators:
+        return generate_stmt_assignment(program, function)
+
+    # Create the statement
+    operator = probs_helper.random_value(probs_helper.compute_equal_prob(stmt_operators))
+    return generate_expression_incdec(program, function, stmt_type, operator)
+
+
+def _return_types_distribution(program, white_list):
+    d = {klass: 1 for klass in white_list}
+    for f in program.functions:
+        try:
+            d[f.return_type.__class__] += 1
+        except KeyError:
+            continue
+    return d
+
+
+def generate_stmt_invocation(program, function, invoked_func=None):
+    if not invoked_func:
+        # generates return type
+        # <FILTER RETURN TYPES>
+        if limitations.allowed_return_types:
+            new_return_types_prob = probs_helper.compute_inverse_proportional_prob(
+               _return_types_distribution(program, limitations.allowed_return_types))
+            return_type_cls = probs_helper.random_value(new_return_types_prob)
+            return_type = generate_type(program, function, new_type_cls=return_type_cls, old_type_obj=None)
+        else:
+            func_or_proc = probs_helper.random_value(probs.stmt_invocation_prob)
+            if func_or_proc is ast.FuncProc.Proc:
+                return_type = ast.Void()
+            else:
+                # Recalculate probs in relation with the amount of functions
+                amounts = _return_types_distribution(program, probs.return_types_prob)
+                new_return_types_prob = probs_helper.compute_inverse_proportional_prob(amounts)
+                return_type_cls = probs_helper.random_value(new_return_types_prob)
+                return_type = generate_type(program, function, new_type_cls=return_type_cls, old_type_obj=None)
+        # <FILTER RETURN TYPES/>
+
+        # generates the function (if necessary)
+        invoked_func = generate_function(program, function, return_type)
+
+    # generates the params
+    params = []
+    for name, arg_type in invoked_func.param_types:
+        params.append(generate_expression(program, function, arg_type, None))
+
+    # Count invocation
+    program.invocation_as_stmt[invoked_func.name] += 1
+
+    # generates the invocation
+    return ast.Invocation(invoked_func.name, params, invoked_func.return_type, True)
+
+
+def generate_stmt_return(program, function, exp):
+    c_type = function.return_type
+    if exp is None:
+        if isinstance(c_type, ast.SignedInt) and probs_helper.random_value(probs.int_emulate_bool):
+            value = probs_helper.random_value({0: 0.5, 1: 0.5})
+            exp = ast.Literal("/* EMULATED BOOL LITERAL */ ({}) {}".format(c_type.name, value), c_type)
+        else: 
+            exp = generate_expression(program, function, c_type, probs.return_exp_depth_prob)
+    return ast.Return(exp, c_type)
+
+
+################ Types ################
+
+def generate_type(program, function, new_type_cls=None, old_type_obj=None):
+
+    new_type_cls = new_type_cls or probs_helper.random_value(probs.basic_types_prob)
+
+    # Try to call more specific generator
+    try:
+        cls_name = utils.camel_case_to_snake_case(new_type_cls.__name__)
+        func_name = "generate_type_{}".format(cls_name)
+        generator = globals()[func_name]       # XXX: Call this first to avoid waisting recursion calls in case of exception
+        if old_type_obj is None:
+            old_type_cls = probs_helper.random_value(probs.basic_types_prob)
+            old_type_obj = generate_type(program, function, new_type_cls=old_type_cls, old_type_obj=None)
+        return generator(program, function, old_type_obj)
+
+    # Use this as generic
+    except KeyError:
+        return new_type_cls()
+
+
+def generate_type_pointer(program, function, old_type):
+    return ast.Pointer(old_type)
+
+
+def generate_type_array(program, function, old_type):
+    size = probs_helper.random_value(probs.array_size)
+    return ast.Array(old_type, size=size, pointer_literal=False)
+
+
+def generate_type_struct(program, function, old_type):
+    # Do we take an existing struct with the type we want?
+    rand = probs_helper.random_value(probs.reuse_struct_field_prob)
+    structs = [s for s in program.structs if s.has_type(old_type)]
+    max_value = len(structs)
+    if rand < max_value:
+        selected = probs_helper.random_value(probs_helper.compute_equal_prob(range(max_value)))
+        # An existing struct is taken
+        return structs[selected]
+
+    # Do we add a field to an existing struct?
+    rand = probs_helper.random_value(probs.reuse_struct_prob)
+    max_value = len(program.structs)
+    if rand < max_value:
+
+        if isinstance(old_type, ast.Struct) or (isinstance(old_type, ast.Array) and isinstance(old_type.type, ast.Struct)):
+            # No escoger una aleatoria, sino coger la que este menos referenciada desde otras estructuras
+            # Ordenar las estructuras por el grado de referencias hasta llegar a ellas
+            # Ej:
+            #  struct0 -> struct1 -> array(struct2) -> struct3      # La struct3 tine una "profundidad referencial" de 3
+            #  strunc4                                              # La struct4 tiene una "profundidad referencial" de 0
+            #  struct5 -> struct6                                   # La struct6 tiene una "profundidad referencial" de 1
+            _, struct_t = min(
+                [max(len(path) for path in ast.reference_paths_to_struct(s, program.structs)), s]
+                for s in program.structs
+            )
+        else:
+            selected = probs_helper.random_value(probs_helper.compute_equal_prob(range(max_value)))
+            struct_t = program.structs[selected]
+
+        if not struct_t.check_circular_reference(old_type):
+            # An existing struct is taken
+            if not struct_t.has_type(old_type):
+                struct_t.add_field(ast.name_struct_field(old_type, len(struct_t.fields)), old_type)
+            return struct_t
+
+    # Or new one is created
+    struct_name = "struct" + str(len(program.structs))
+    struct_t = ast.Struct(struct_name, [ast.name_struct_field(old_type, 0), old_type])
+    program.structs.append(struct_t)
+    return struct_t
+
+
+################ Functions and Program ################
+
+def generate_function(program, function, return_type):
+
+    # <FILTER RETURN TYPES>
+    if limitations.allowed_return_types:
+        assert isinstance(return_type, tuple(limitations.allowed_return_types)),\
+            "{} not in {}".format(repr(return_type), repr(limitations.allowed_return_types))
+    # <FILTER RETURN TYPES/>
+
+    # Do we take an existing function?
+    if isinstance(return_type, ast.Void):
+        reuse = probs_helper.random_value(probs.reuse_proc_prob)
+    else:
+        reuse = probs_helper.random_value(probs.reuse_func_prob)
+    functions = program.get_functions_by_return_type(return_type)
+    # XXX: Avoid recursion by default
+    if reuse and len(functions):
+        selected = probs_helper.random_value(probs_helper.compute_equal_prob(range(len(functions))))
+        if functions[selected].name != function.name:
+            # An existing function is taken
+            return functions[selected]
+
+    # A new one is created
+    param_types = generate_function_param_types(program, function)
+    func_name = "func" + str(len(program.functions))
+    new_function = ast.Function(func_name, return_type, param_types)
+    program.functions.append(new_function)
+    # Generates the statements in the function
+    number_statements = probs_helper.random_value(probs.number_stmts_func_prob)
+    for i in range(number_statements):
+        new_function.stmts.append(generate_stmt_func(program, new_function))
+    if not isinstance(return_type, ast.Void):
+        new_function.stmts.append(generate_stmt_return(program, new_function, None))
+    return new_function
+
+
+def generate_function_param_types(program, function):
+    n_params = probs_helper.random_value(probs.param_number_prob)
+    param_types = []
+    for i in range(n_params):
+        param_type_cls = probs_helper.random_value(probs.param_types_prob)
+        param_type = generate_type(program, function, new_type_cls=param_type_cls, old_type_obj=None)
+
+        param_types.append(param_type)
+    return param_types
+
+
+def generate_program():
+    number_statements = probs_helper.random_value(probs.number_stmts_main_prob)
+    program = ast.Program()
+    program.main = main_function = ast.Function("main", ast.SignedInt(), [])
+    for i in range(number_statements):
+        print("." if i % 1000 else "\n", end="")
+        program.main.stmts.append(generate_stmt_func(program, main_function))
+    main_function.stmts.append(generate_stmt_return(program, main_function, exp=0))
+    return program
+
+
+def generate_program_with_distribution(distribution, total_amount, remove_outsiders=True):
+
+    removed = []
+
+    def remove_func(f):
+        removed.append(f.name)
+        program.functions.remove(f)
+
+    def remove_last(cmp):
+        for f in reversed(program.functions[:]):
+            if cmp(f):
+                remove_func(f)
+                return
+
+    def count_and_show():
+        info = []
+        for k, v in distribution.iteritems():
+            amount = sum(1 for f in program.functions if v["cmp"](f))
+            v["amount"] = amount
+            info.extend([k, ": ", str(v["total"] - amount), "; "])
+        print("".join(info) + "TOTAL = {}".format(len(program.functions)))
+
+    ###
+    # Generate a program with enought functions
+    ###
+
+    program = ast.Program()
+    program.main = main_function = ast.Function("main", ast.SignedInt(), [])
+    while True:
+        main_function.stmts.append(generate_stmt_func(program, main_function))
+        count_and_show()
+
+        if all(v["amount"] >= v["total"] for v in distribution.itervalues()):
+            break
+
+
+    ###
+    # Adjust functions amounts
+    ###
+
+    # Remove those not in a group
+    if remove_outsiders:
+        for f in program.functions[:]:
+            if not any(v["cmp"](f) for v in distribution.itervalues()):
+                remove_func(f)
+
+    # Adjust the amount of functions in each group
+    for k, v in distribution.iteritems():
+        delta = v["amount"] - v["total"]
+        print("Removing {} {}".format(delta, k))
+        for _ in range(delta):
+            remove_last(v["cmp"])
+    count_and_show()
+    before = program.functions[:]
+
+    # Substitute calls to removed functions
+    print("")
+    print("*" * 80)
+    print("* SUBSTITUTIONS")
+    print("*" * 80)
+    function_subs.visit(program, removed)
+
+    after = program.functions[:]
+    if len(after) != total_amount:
+        print("")
+        print("*" * 80)
+        print("* WARNING: NEW FUNCTIONS")
+        print("*" * 80)
+        for f in after:
+            if f not in before:
+                print(f)
+
+    ###
+    # Generate statement invocations to reach a ratio expr_invocation/stmt_invocation = 2
+    ###
+
+    # Disable invocations in the generations of parameter exptresions
+    new_probs = {False:1, True:0}
+    old_probs = dict(probs.call_prob)
+    probs.call_prob = new_probs
+
+    # Generate statement invocations
+    print("")
+    print("*" * 80)
+    print("* GENERATE INVOCATIONS")
+    print("*" * 80)
+    for f in program.functions:
+        amount = 2 * program.invocation_as_expr[f.name] - program.invocation_as_stmt[f.name]
+        print("{} needs '2 * {} - {} = {}' statement invocation".format(f.name, program.invocation_as_expr[f.name], program.invocation_as_stmt[f.name], amount))
+        if amount <= 0:
+            continue
+        for _ in range(amount):
+            invoc = generate_stmt_invocation(program, program.main, invoked_func=f)
+            main_function.stmts.append(invoc)
+
+    # Restore probability
+    probs.call_prob = dict(old_probs)
+
+    ###
+    # Add return statement
+    ###
+    main_function.stmts.append(generate_stmt_return(program, main_function, exp=0))
+
+    return program
+

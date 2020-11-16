@@ -1,0 +1,61 @@
+// -*- coding: utf-8; mode: c; -*-
+
+/*
+ * Based on: https://en.wikipedia.org/wiki/C_data_types
+ */
+
+#include <stdio.h>
+#include "stdtypes.h"
+
+{%
+    variables = [
+        ("bool",                    "b",        "true"),
+        # ("char",                    "c",        "'A'"),
+        ("unsigned char",           "uc",       "'B'"),
+        ("signed char",             "sc",       "'C'"),
+        # ("int",                     "i",        "1"),
+        ("unsigned int",            "ui",       "2"),
+        ("signed int",              "si",       "3"),
+        # ("short int",               "Si",       "4"),
+        ("unsigned short int",      "uSi",      "5"),
+        ("signed short int",        "sSi",      "6"),
+        # ("long int",                "Li",       "7"),
+        ("unsigned long int",       "uLi",      "8"),
+        ("signed long int",         "sLi",      "9"),
+        # ("long long int",           "LLi",      "7"),
+        ("unsigned long long int",  "uLLi",     "8"),
+        ("signed long long int",    "sLLi",     "9"),
+        ("float",                   "f",        "0.1f"),
+        ("double",                  "d",        "0.2"),
+        ("long double",             "Ld",       "0.3"),
+    ]
+%}\
+
+#define LOG(x) do { {% "\\" %}
+    printf("DEBUG: %s\n", (x)); {% "\\" %}
+} (while 0)
+
+int main(void)
+{
+    {% for type, name, value in variables: %}\
+    {% "{} {} = {};".format(type, name, value) %}
+    {% :end for %}\
+
+    /**************************************************************************/
+
+    {% for type1, name1, value1 in variables: %}\
+    
+
+    
+    /***
+    {%"* {}".format(type1)%}
+    ***/
+    
+    {% for type2, name2, value2 in variables: %}\
+    {% "{} = {};".format(name1, name2) %}
+    {% :end for %}\
+    \
+    {% :end for %}\
+    \
+    return 0;
+}

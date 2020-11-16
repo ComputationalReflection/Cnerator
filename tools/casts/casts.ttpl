@@ -1,0 +1,132 @@
+// -*- coding: utf-8; mode: c; -*-
+
+/*
+ * Based on: https://en.wikipedia.org/wiki/C_data_types
+ */
+
+#include <stdio.h>
+#include "stdtypes.h"
+
+
+typedef struct {
+    int x;
+    int y;
+} iPoint2D;
+
+typedef struct {
+    int x;
+    int y;
+    int z;
+} iPoint3D;
+
+typedef struct {
+    double x;
+    double y;
+} dPoint2D;
+
+typedef struct {
+    double x;
+    double y;
+    double z;
+} dPoint3D;
+
+{%
+    variables = [
+        ("bool",                    "b",        "true"),
+        ("char",                    "c",        "'A'"),
+        ("unsigned char",           "uc",       "'B'"),
+        ("signed char",             "sc",       "'C'"),
+        ("int",                     "i",        "1"),
+        ("unsigned int",            "ui",       "2"),
+        ("signed int",              "si",       "3"),
+        ("short int",               "Si",       "4"),
+        ("unsigned short int",      "uSi",      "5"),
+        ("signed short int",        "sSi",      "6"),
+        ("long int",                "Li",       "7"),
+        ("unsigned long int",       "uLi",      "8"),
+        ("signed long int",         "sLi",      "9"),
+        ("long long int",           "LLi",      "7"),
+        ("unsigned long long int",  "uLLi",     "8"),
+        ("signed long long int",    "sLLi",     "9"),
+        ("float",                   "f",        "0.1f"),
+        ("double",                  "d",        "0.2"),
+        ("long double",             "Ld",       "0.3"),
+
+        ("void *",                  "p_v",       "NULL"),
+
+        ("iPoint2D",                "iP2D",     "{0, 0}"),
+        ("iPoint3D",                "iP3D",     "{0, 0, 0}"),
+        ("dPoint2D",                "dP2D",     "{0.0, 0.0}"),
+        ("dPoint3D",                "dP3D",     "{0.0, 0.0, 0.0}"),
+
+        ("char []",                 "a_c",       "{'a', 'b', 'c'}"),
+        ("int []",                  "a_i",       "{1, 2, 3}"),
+        ("iPoint2D []",             "a_iP2D",    "{{1, 1}, {2, 2}, {3, 3}}"),
+    ]
+
+    REAL_TYPE_VARS = ["f", "d", "Ld"]
+    STRUCT_TYPE_VARS = ["iP2D", "iP3D", "dP2D", "dP3D"]
+    ARRAY_TYPE_VARS = ["a_c", "a_i", "a_iP2D"]
+
+%}\
+
+#define LOG(x) do { {% "\\" %}
+    printf("DEBUG: %s\n", (x)); {% "\\" %}
+} (while 0)
+
+int main(void)
+{
+    {% for type, name, value in variables: %}\
+    {% if type.endswith("[]"): %}\
+    {% "{} {}[] = {};".format(type[:-3], name, value) %}
+    {% :else: %}\
+    {% "{} {} = {};".format(type, name, value) %}
+    {% :end if %}\
+    {% :end for %}\
+
+    {% for type, name, _ in variables: %}\
+    {% if type.endswith("[]"): %}\
+    {% "{} (* p_{})[] = NULL;".format(type[:-3], name, value) %}
+    {% :else: %}\
+    {% "{} * p_{} = NULL;".format(type, name) %}
+    {% :end if %}\
+    {% :end for %}\
+
+    /**************************************************************************/
+
+    {% for type1, name1, value1 in variables: %}\
+    {%"/* {} */".format(type1)%}
+    \
+    {% for type2, name2, value2 in variables: %}\
+    {% "{} = ({}) {};".format(name1, type1, name2) %}
+    {% :end for %}\
+    \
+    {% for type2, name2, value2 in variables: %}\
+    {% "{} = ({}) p_{};".format(name1, type1, name2) %}
+    {% :end for %}
+    \
+    {% :end for %}\
+   \
+    /**************************************************************************/
+
+    {% for type1, name1, value1 in variables: %}\
+    {%
+        if type1.endswith("[]"):
+            final_type = "{} (*)[]".format(type1[:-3])
+        else:
+            final_type = "{} *".format(type1)
+    %}\
+    \
+    {% "/* {} */".format(final_type)%}
+    {% for type2, name2, value2 in variables: %}\
+    {% "p_{} = ({}) {};".format(name1, final_type, name2) %}
+    {% :end for %}\
+    \
+    {% for type2, name2, value2 in variables: %}\
+    {% "p_{} = ({}) p_{};".format(name1, final_type, name2) %}
+    {% :end for %}
+    \
+    {% :end for %}\
+    \
+    return 0;
+}

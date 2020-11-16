@@ -1,0 +1,15 @@
+{
+  "ignore": [
+    "^\\s+", 
+    "^fatal error:.*$", 
+    "^\\d+ errors generated\\.$"
+  ], 
+  "comment": {
+    "^([^:]+):([^:]+):[^:]+:.*$": {
+      "line": 2, 
+      "file": 1,
+      "note": -1
+    }
+  },
+  "comment_range": {}
+}
