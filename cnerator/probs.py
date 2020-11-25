@@ -7,9 +7,7 @@ The sum of the probabilities must be 1.0.
 For a fixed number, just set the probability of 1.0.
 """
 
-import probs_helper
-import ast
-from __config__ import limitations
+from cnerator import probs_helper, ast, limitations
 
 # <FILTER RETURN TYPES>
 if limitations.allowed_return_types:
@@ -57,16 +55,16 @@ else:
         ast.Double,
         ast.LongDouble,
     ])
-    assignment_types_prob = probs_helper.compute_equal_prob(set(basic_types_prob.keys() + [
+    assignment_types_prob = probs_helper.compute_equal_prob(set(basic_types_prob.keys()).union({
         ast.Pointer,
         ast.Struct,
-    ]))
+    }))
     augmented_assignment_types_prob = basic_types_prob
-    all_types_prob = probs_helper.compute_equal_prob(set(basic_types_prob.keys() + [
+    all_types_prob = probs_helper.compute_equal_prob(set(basic_types_prob.keys()).union({
         ast.Pointer,
         ast.Array,
         ast.Struct,
-    ]))
+    }))
 # <FILTER RETURN TYPES/>
 
 

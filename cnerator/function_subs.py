@@ -1,10 +1,8 @@
 # -*- coding: utf-8 -*-
 
 from singledispatch import singledispatch
-import ast
-import generators
-from __config__ import probs
-import probs_helper
+
+from cnerator import ast, generators, probs
 
 
 @singledispatch

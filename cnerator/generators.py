@@ -1,14 +1,7 @@
 
 from __future__ import print_function
 
-from __config__ import probs
-from __config__ import limitations
-import probs_helper
-import ast
-import type_inference
-import utils
-import function_subs
-import collections
+from cnerator import probs, limitations, probs_helper, ast, type_inference, utils, function_subs
 
 
 ################ Expressions ####################
@@ -430,10 +423,8 @@ def generate_type_struct(program, function, old_type):
             #  struct0 -> struct1 -> array(struct2) -> struct3      # La struct3 tine una "profundidad referencial" de 3
             #  strunc4                                              # La struct4 tiene una "profundidad referencial" de 0
             #  struct5 -> struct6                                   # La struct6 tiene una "profundidad referencial" de 1
-            _, struct_t = min(
-                [max(len(path) for path in ast.reference_paths_to_struct(s, program.structs)), s]
-                for s in program.structs
-            )
+            struct_t = min(program.structs,
+                           key=lambda s: max(len(path) for path in ast.reference_paths_to_struct(s, program.structs)))
         else:
             selected = probs_helper.random_value(probs_helper.compute_equal_prob(range(max_value)))
             struct_t = program.structs[selected]
@@ -526,14 +517,14 @@ def generate_program_with_distribution(distribution, total_amount, remove_outsid
 
     def count_and_show():
         info = []
-        for k, v in distribution.iteritems():
+        for k, v in distribution.items():
             amount = sum(1 for f in program.functions if v["cmp"](f))
             v["amount"] = amount
             info.extend([k, ": ", str(v["total"] - amount), "; "])
         print("".join(info) + "TOTAL = {}".format(len(program.functions)))
 
     ###
-    # Generate a program with enought functions
+    # Generate a program with enough functions
     ###
 
     program = ast.Program()
@@ -542,7 +533,7 @@ def generate_program_with_distribution(distribution, total_amount, remove_outsid
         main_function.stmts.append(generate_stmt_func(program, main_function))
         count_and_show()
 
-        if all(v["amount"] >= v["total"] for v in distribution.itervalues()):
+        if all(v["amount"] >= v["total"] for v in distribution.values()):
             break
 
 
@@ -553,11 +544,11 @@ def generate_program_with_distribution(distribution, total_amount, remove_outsid
     # Remove those not in a group
     if remove_outsiders:
         for f in program.functions[:]:
-            if not any(v["cmp"](f) for v in distribution.itervalues()):
+            if not any(v["cmp"](f) for v in distribution.values()):
                 remove_func(f)
 
     # Adjust the amount of functions in each group
-    for k, v in distribution.iteritems():
+    for k, v in distribution.items():
         delta = v["amount"] - v["total"]
         print("Removing {} {}".format(delta, k))
         for _ in range(delta):
@@ -594,11 +585,11 @@ def generate_program_with_distribution(distribution, total_amount, remove_outsid
     # Generate statement invocations
     print("")
     print("*" * 80)
-    print("* GENERATE INVOCATIONS")
+    print("* GENERATING INVOCATIONS")
     print("*" * 80)
     for f in program.functions:
         amount = 2 * program.invocation_as_expr[f.name] - program.invocation_as_stmt[f.name]
-        print("{} needs '2 * {} - {} = {}' statement invocation".format(f.name, program.invocation_as_expr[f.name], program.invocation_as_stmt[f.name], amount))
+        print("{} needs '2 * {} - {} = {}' statement invocations.".format(f.name, program.invocation_as_expr[f.name], program.invocation_as_stmt[f.name], amount))
         if amount <= 0:
             continue
         for _ in range(amount):

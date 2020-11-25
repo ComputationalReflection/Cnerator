@@ -4,19 +4,21 @@
 
 from __future__ import print_function
 
+import argparse
+import io
+import os
+import sys
+
+import call_inspector
 import cnerator
+import fix_ptr_literal
 import return_instrumentator
 import structure_inspector
-import call_inspector
-import fix_ptr_literal
-
-import sys
-import argparse
-import os
-import io
 
 sys.setrecursionlimit(50000)
 
+
+DEFAULT_OUTPUT_DIR = "out"
 
 def parse_args():
     parser = argparse.ArgumentParser(description='Compose a compilable C program')
@@ -28,11 +30,11 @@ def parse_args():
                         help="Split the program in different C files (default: %(default)s)")
     args = parser.parse_args()
 
-    # Parse args
-    if args.working_dir is None or not os.path.isdir(args.working_dir):
-        print("Incorrect path: " + str(args.working_dir))
-        sys.exit(1)
-
+    #  Create output directory
+    if not args.working_dir:
+        args.working_dir = DEFAULT_OUTPUT_DIR
+    if not os.path.isdir(args.working_dir):
+        os.mkdir(args.working_dir)
     return args
 
 
@@ -62,7 +64,7 @@ def write_in_multiple_headers(program, args):
     ])
     file_path = os.path.join(args.working_dir, args.output + ".c")
     with io.open(file_path, mode="w", encoding="utf-8") as f:
-        f.write(unicode("".join(main_file)))
+        f.write("".join(main_file))
 
     # Write structs file
     if structs:
@@ -74,7 +76,7 @@ def write_in_multiple_headers(program, args):
         ]
         file_path = os.path.join(args.working_dir, "structs.h")
         with io.open(file_path, mode="w", encoding="utf-8") as f:
-            f.write(unicode("".join(structs_file)))
+            f.write("".join(structs_file))
 
     # Write prototypes file
     prototypes_file = [
@@ -85,7 +87,7 @@ def write_in_multiple_headers(program, args):
     ]
     file_path = os.path.join(args.working_dir, "prototypes.h")
     with io.open(file_path, mode="w", encoding="utf-8") as f:
-        f.write(unicode("".join(prototypes_file)))
+        f.write("".join(prototypes_file))
 
     # Write global_vars file
     global_vars_file = [
@@ -96,7 +98,7 @@ def write_in_multiple_headers(program, args):
     ]
     file_path = os.path.join(args.working_dir, "global_vars.h")
     with io.open(file_path, mode="w", encoding="utf-8") as f:
-        f.write(unicode("".join(global_vars_file)))
+        f.write("".join(global_vars_file))
 
     # Write functions file
     functions_file = [
@@ -107,7 +109,7 @@ def write_in_multiple_headers(program, args):
     ]
     file_path = os.path.join(args.working_dir, "functions.h")
     with io.open(file_path, mode="w", encoding="utf-8") as f:
-        f.write(unicode("".join(functions_file)))
+        f.write("".join(functions_file))
 
 
 def split_in_similar_parts(seq, amount):
@@ -156,7 +158,7 @@ def write_in_multiple_files(program, args):
     ])
     file_path = os.path.join(args.working_dir, args.output + ".c")
     with io.open(file_path, mode="w", encoding="utf-8") as f:
-        f.write(unicode("".join(main_file)))
+        f.write("".join(main_file))
 
     # Write structs file
     if structs:
@@ -168,7 +170,7 @@ def write_in_multiple_files(program, args):
         ]
         file_path = os.path.join(args.working_dir, "structs.h")
         with io.open(file_path, mode="w", encoding="utf-8") as f:
-            f.write(unicode("".join(structs_file)))
+            f.write("".join(structs_file))
 
     # Write prototypes file
     prototypes_file = [
@@ -179,7 +181,7 @@ def write_in_multiple_files(program, args):
     ]
     file_path = os.path.join(args.working_dir, "prototypes.h")
     with io.open(file_path, mode="w", encoding="utf-8") as f:
-        f.write(unicode("".join(prototypes_file)))
+        f.write("".join(prototypes_file))
 
     # Write global_vars file
     global_vars_file = [
@@ -190,11 +192,11 @@ def write_in_multiple_files(program, args):
     ]
     file_path = os.path.join(args.working_dir, "global_vars.h")
     with io.open(file_path, mode="w", encoding="utf-8") as f:
-        f.write(unicode("".join(global_vars_file)))
+        f.write("".join(global_vars_file))
 
     # Write functions file
     for i, part in enumerate(functions_parts):
-        print("Part {}: {} total functions".format(i+1, len(part)))
+        print("Part {}: {} total functions.".format(i+1, len(part)))
 
         functions = "".join(str(func) for func in part)
         functions = replace_code(functions)
@@ -221,7 +223,7 @@ def write_in_multiple_files(program, args):
 
         file_path = os.path.join(args.working_dir, "functions_{}.c".format(i+1))
         with io.open(file_path, mode="w", encoding="utf-8") as f:
-            f.write(unicode("".join(functions_file)))
+            f.write("".join(functions_file))
 
 
 def write_in_one_file(program, args):
@@ -230,7 +232,7 @@ def write_in_one_file(program, args):
     # Write code to main file
     file_path = os.path.join(args.working_dir, args.output + ".c")
     with io.open(file_path, mode="w", encoding="utf-8") as f:
-        f.write(unicode(code))
+        f.write(code)
 
 
 def replace_code(code):
@@ -289,18 +291,18 @@ def run(args):
     ###
     # 3k (SIZE - NORMAL)
     ###
-    program = cnerator.generators.generate_program_with_distribution({
-        "v_functions": {"total": 429, "cmp": lambda f: isinstance(f.return_type, cnerator.ast.Void)},
-        "b_functions": {"total": 215, "cmp": lambda f: isinstance(f.return_type, cnerator.ast.Bool)},
-        "sc_functions": {"total": 214, "cmp": lambda f: isinstance(f.return_type, cnerator.ast.SignedChar)},
-        "sSi_functions": {"total": 428, "cmp": lambda f: isinstance(f.return_type, cnerator.ast.SignedShortInt)},
-        "si_functions": {"total": 142, "cmp": lambda f: isinstance(f.return_type, cnerator.ast.SignedInt)},
-        "sLLi_functions": {"total": 428, "cmp": lambda f: isinstance(f.return_type, cnerator.ast.SignedLongLongInt)},
-        "f_functions": {"total": 429, "cmp": lambda f: isinstance(f.return_type, cnerator.ast.Float)},
-        "d_functions": {"total": 429, "cmp": lambda f: isinstance(f.return_type, cnerator.ast.Double)},
-        "p_functions": {"total": 143, "cmp": lambda f: isinstance(f.return_type, cnerator.ast.Pointer)},
-        "struct_functions": {"total": 143, "cmp": lambda f: isinstance(f.return_type, cnerator.ast.Struct)},
-    }, 3000, remove_outsiders=True)
+    # program = cnerator.generators.generate_program_with_distribution({
+    #     "v_functions": {"total": 429, "cmp": lambda f: isinstance(f.return_type, cnerator.ast.Void)},
+    #     "b_functions": {"total": 215, "cmp": lambda f: isinstance(f.return_type, cnerator.ast.Bool)},
+    #     "sc_functions": {"total": 214, "cmp": lambda f: isinstance(f.return_type, cnerator.ast.SignedChar)},
+    #     "sSi_functions": {"total": 428, "cmp": lambda f: isinstance(f.return_type, cnerator.ast.SignedShortInt)},
+    #     "si_functions": {"total": 142, "cmp": lambda f: isinstance(f.return_type, cnerator.ast.SignedInt)},
+    #     "sLLi_functions": {"total": 428, "cmp": lambda f: isinstance(f.return_type, cnerator.ast.SignedLongLongInt)},
+    #     "f_functions": {"total": 429, "cmp": lambda f: isinstance(f.return_type, cnerator.ast.Float)},
+    #     "d_functions": {"total": 429, "cmp": lambda f: isinstance(f.return_type, cnerator.ast.Double)},
+    #     "p_functions": {"total": 143, "cmp": lambda f: isinstance(f.return_type, cnerator.ast.Pointer)},
+    #     "struct_functions": {"total": 143, "cmp": lambda f: isinstance(f.return_type, cnerator.ast.Struct)},
+    # }, 3000, remove_outsiders=True)
 
     ###
     # 0.15k (SIZE - SNOWMAN)
@@ -318,6 +320,21 @@ def run(args):
     #     "struct_functions": {"total": 7, "cmp": lambda f: isinstance(f.return_type, cnerator.ast.Struct)},
     # }, 150, remove_outsiders=True)
 
+    ###
+    # 10 (SIZE - NORMAL)
+    ###
+    program = cnerator.generators.generate_program_with_distribution({
+        "v_functions": {"total": 1, "cmp": lambda f: isinstance(f.return_type, cnerator.ast.Void)},
+        "b_functions": {"total": 1, "cmp": lambda f: isinstance(f.return_type, cnerator.ast.Bool)},
+        "sc_functions": {"total": 1, "cmp": lambda f: isinstance(f.return_type, cnerator.ast.SignedChar)},
+        "sSi_functions": {"total": 1, "cmp": lambda f: isinstance(f.return_type, cnerator.ast.SignedShortInt)},
+        "si_functions": {"total": 1, "cmp": lambda f: isinstance(f.return_type, cnerator.ast.SignedInt)},
+        "sLLi_functions": {"total": 1, "cmp": lambda f: isinstance(f.return_type, cnerator.ast.SignedLongLongInt)},
+        "f_functions": {"total": 1, "cmp": lambda f: isinstance(f.return_type, cnerator.ast.Float)},
+        "d_functions": {"total": 1, "cmp": lambda f: isinstance(f.return_type, cnerator.ast.Double)},
+        "p_functions": {"total": 1, "cmp": lambda f: isinstance(f.return_type, cnerator.ast.Pointer)},
+        "struct_functions": {"total": 1, "cmp": lambda f: isinstance(f.return_type, cnerator.ast.Struct)},
+    }, 10, remove_outsiders=True)
 
 
     # [DEBUG]
@@ -373,14 +390,14 @@ def run(args):
 
     # [/DEBUG]
 
-    print("")
+    print()
     print("*" * 80)
     print("* RETURN INSTRUMENTATOR")
     print("*" * 80)
     return_instrumentator.visit(program)
-    print("")
+    print()
     print("*" * 80)
-    print("* FIX PTR LIETRALS")
+    print("* FIX PTR LITERALS")
     print("*" * 80)
     fix_ptr_literal.visit(program)
 

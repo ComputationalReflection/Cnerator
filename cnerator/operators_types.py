@@ -4,23 +4,9 @@
 #    C:\Users\VirtualUser\Documents\phd\tools\cnerator\tools\gen_operators_types_code.py
 
 
-from ast import Array
-from ast import Bool
-from ast import Double
-from ast import Float
-from ast import LongDouble
-from ast import Pointer
-from ast import SignedChar
-from ast import SignedInt
-from ast import SignedLongInt
-from ast import SignedLongLongInt
-from ast import SignedShortInt
-from ast import Struct
-from ast import UnsignedChar
-from ast import UnsignedInt
-from ast import UnsignedLongInt
-from ast import UnsignedLongLongInt
-from ast import UnsignedShortInt
+from cnerator.ast import Array, Bool, Double, Float, LongDouble, Pointer, SignedChar, SignedInt, SignedLongInt
+from cnerator.ast import SignedLongLongInt, SignedShortInt, Struct, UnsignedChar, UnsignedInt, UnsignedLongInt
+from cnerator.ast import UnsignedLongLongInt, UnsignedShortInt
 
 ###
 # By operand types

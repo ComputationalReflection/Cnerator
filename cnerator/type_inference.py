@@ -1,10 +1,7 @@
 
-from __config__ import probs
-from __config__ import operators_types
-import probs_helper
-import generators
-import ast
 from functools import partial
+
+from cnerator import probs, operators_types, probs_helper, generators, ast
 
 
 def infer_return_type(program, function, operator, *args_t):
@@ -21,25 +18,25 @@ def infer_return_type(program, function, operator, *args_t):
     if operator == "[]":
         assert arity == 2
         assert args_t[0].__class__ == ast.Array
-        assert args_t[1].__class__ in [t for t in probs.basic_types_prob.iterkeys() if "Int" in t.__name__]
+        assert args_t[1].__class__ in [t for t in probs.basic_types_prob.keys() if "Int" in t.__name__]
         return [args_t[0].type]
 
     if operator == ".":
         assert arity == 1
         assert args_t[0].__class__ == ast.Struct
-        assert isinstance(args_t[1], basestring)
+        assert isinstance(args_t[1], str)
         return [args_t[0].get_field(args_t[1])]
 
     if operator == "->":
         assert arity == 1
         assert args_t[0].__class__ == ast.Pointer
         assert args_t[0].type.__class__ == ast.Struct
-        assert isinstance(args_t[1], basestring)
+        assert isinstance(args_t[1], str)
         return [args_t[0].type.get_type_by_field(args_t[1])]
 
     if operator == "?:":
         assert arity == 3
-        assert args_t[0].__class__ in [t for t in probs.basic_types_prob.iterkeys() if "Int" in t.__name__]
+        assert args_t[0].__class__ in [t for t in probs.basic_types_prob.keys() if "Int" in t.__name__]
         assert args_t[1].__class__ == args_t[2].__class__
         return [args_t[1]]
 
@@ -105,7 +102,7 @@ def infer_operands_type(program, function, arity, operator, ret_t):
     if operator == "[]":
         assert arity == 2
         array_obj = _generate_type(ast.Array, ret_t)
-        return [(array_obj, t()) for t in probs.basic_types_prob.iterkeys() if "Int" in t.__name__]
+        return [(array_obj, t()) for t in probs.basic_types_prob.keys() if "Int" in t.__name__]
 
     if operator == ".":
         assert arity == 1

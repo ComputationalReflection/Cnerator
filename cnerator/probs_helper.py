@@ -9,7 +9,7 @@ def random_value(probabilities):
         raise Exception("Probability must sum 1")
     rand = random.random()
     summation = 0
-    for key, value in probabilities.iteritems():
+    for key, value in probabilities.items():
         if summation <= rand < summation + value:
             return key
         summation += value
@@ -26,7 +26,7 @@ def compute_equal_prob(keys, base=1.0):
 def compute_proportional_prob(population, base=1.0):
     probabilities = {}
     total = float(sum(population.values()))
-    for individual, amount in population.iteritems():
+    for individual, amount in population.items():
         probabilities[individual] = base * (amount / total)
     assert abs(1.0 - sum(probabilities.values())) <= FLOAT_PRECISION
     return probabilities
@@ -35,10 +35,10 @@ def compute_proportional_prob(population, base=1.0):
 def compute_inverse_proportional_prob(population, base=1.0):
     probabilities = {}
     total = 0
-    for individual, amount in population.iteritems():
+    for individual, amount in population.items():
         probabilities[individual] = 1.0 / amount
         total += probabilities[individual]
-    for individual, prob in probabilities.iteritems():
+    for individual, prob in probabilities.items():
         probabilities[individual] = base * (prob / total)
     assert abs(1.0 - sum(probabilities.values())) <= FLOAT_PRECISION
     return probabilities
@@ -47,7 +47,7 @@ def compute_inverse_proportional_prob(population, base=1.0):
 def fill_the_gap(probabilities, total=1.0):
     accum = 0
     target = None
-    for key, value in probabilities.iteritems():
+    for key, value in probabilities.items():
         if value is not None:
             accum += value
         else:

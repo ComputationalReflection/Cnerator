@@ -1,13 +1,13 @@
 
 from __future__ import print_function
 
-import random
-import string
-import re
 import collections
+import random
+import re
+import string
 
-import utils
-import graph
+from cnerator import graph
+from cnerator import utils
 
 
 ########### Utils ##############
@@ -230,7 +230,7 @@ class Function(ASTNode):
         result = self.__declaration__() + " {" + NEW_LINE
         # local variables
         local_vars = []
-        for values in self.local_vars.itervalues():
+        for values in self.local_vars.values():
             for i in range(0, len(values)):
                 c_type, value = values[i]
                 declaration = ["    ", c_type.__declaration__(local_variable(c_type, i + 1))]
@@ -310,7 +310,7 @@ class Program(ASTNode):
     #     result += NEW_LINE + NEW_LINE
     #
     #     # defines
-    #     defines = ["#define {} {}".format(k, v or "") for k, v in self.defines.iteritems()]
+    #     defines = ["#define {} {}".format(k, v or "") for k, v in self.defines.items()]
     #     result += NEW_LINE.join(defines)
     #     result += NEW_LINE + NEW_LINE
     #
@@ -327,7 +327,7 @@ class Program(ASTNode):
     #
     #     # global variables
     #     global_vars = []
-    #     for values in self.global_vars.itervalues():
+    #     for values in self.global_vars.values():
     #         for i in range(0, len(values)):
     #             c_type, value = values[i]
     #             declaration = "%s = %s;%s" % (c_type.__declaration__(global_variable(c_type, i + 1)), value, NEW_LINE)
@@ -349,7 +349,7 @@ class Program(ASTNode):
         includes = NEW_LINE.join(includes)
 
         # defines
-        defines = ["#define {} {}".format(k, v or "") for k, v in self.defines.iteritems()]
+        defines = ["#define {} {}".format(k, v or "") for k, v in self.defines.items()]
         defines = NEW_LINE.join(defines)
 
         # structs
@@ -362,7 +362,7 @@ class Program(ASTNode):
 
         # global variables
         global_vars = []
-        for values in self.global_vars.itervalues():
+        for values in self.global_vars.values():
             for i in range(0, len(values)):
                 c_type, value = values[i]
                 declaration = [c_type.__declaration__(global_variable(c_type, i + 1))]
@@ -414,7 +414,7 @@ class Program(ASTNode):
         while len(dependencies):
             # Yield all structures without dependencies
             yielded = []
-            for struct_name, dependendencies_name in dependencies.iteritems():
+            for struct_name, dependendencies_name in dependencies.items():
                 if not dependendencies_name:
                     yield index[struct_name]
                     yielded.append(struct_name)
@@ -424,7 +424,7 @@ class Program(ASTNode):
                 del dependencies[struct_name]
 
             # Delete references to yielded structures
-            for struct_name, dependendencies_name in dependencies.iteritems():
+            for struct_name, dependendencies_name in dependencies.items():
                 for struct_name in yielded:
                     try:
                         dependendencies_name.remove(struct_name)
@@ -458,6 +458,11 @@ class Type(object):
 
     def __str__(self):
         raise NotImplementedError("Not Implemented")
+
+    def __hash__(self):
+        """The default hash is just the hash of name of the class.
+        This implementation is not valid for composite types."""
+        return self.__class__.__name__.__hash__()
 
     def __declaration__(self, var_name=None, **kwargs):
         if var_name:
@@ -589,6 +594,9 @@ class Struct(Type):
         for f, t in fields:
             self.add_field(f, t)
 
+    def __hash__(self):
+        return self._name.__hash__()
+
     def add_field(self, field, _type):
         # Check not circular reference
         assert not self.check_circular_reference(_type)
@@ -683,6 +691,8 @@ class Pointer(Type):
             return generate_string_literal(random.randint(1, 32), from_declaration, self)
         return Literal("NULL", self)
 
+    def __hash__(self):
+        return self.name.__hash__()
 
 class Array(Pointer):
 
@@ -721,10 +731,15 @@ class Array(Pointer):
             ", ".join(self.type.generate_literal(from_declaration=from_declaration) for _ in range(size))
         ), self)
 
+    def __hash__(self):
+        return self.name.__hash__()
+
 
 class Void(Type, Singleton):
     name = "void"
 
+    def __hash__(self):
+        return self.name.__hash__()
 
 ########### Enumerations #########
 
@@ -732,8 +747,6 @@ class FuncProc(object):
     Func, Proc = 1, 2
 
 ########## Helper functions ##############
-
-from __config__ import operators
 
 def get_operators(c_type, _type):
     operator_type = "{}_{}_operators".format(
