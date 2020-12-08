@@ -3,11 +3,12 @@
 
 
 from singledispatch import singledispatch
-import cnerator
-import sys
 
+import cnerator
+from params.parameters import get_app_args
 
 # First of all change Return.__str__
+
 return_label_counter = 0
 def return_str_replacement(self):
     global return_label_counter
@@ -38,7 +39,8 @@ def _(function):
     # Rename procedures
     if function.return_type == cnerator.ast.Void():
         function.name = function.name.replace("func", "proc")
-        print("REPLACE: " + function.name)
+        if get_app_args().verbose:
+            print("REPLACE: " + function.name)
 
     for s in function.stmts:
         visit(s)
@@ -53,7 +55,8 @@ def _(invocation):
     # Rename procedures
     if invocation.return_type == cnerator.ast.Void():
         invocation.func_name = invocation.func_name.replace("func", "proc")
-        print("REPLACE: " + invocation.func_name)
+        if get_app_args().verbose:
+            print("REPLACE: " + invocation.func_name)
 
 
 @visit.register(cnerator.ast.Assignment)

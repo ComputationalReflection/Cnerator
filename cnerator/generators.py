@@ -2,9 +2,9 @@
 from __future__ import print_function
 
 from cnerator import probs, limitations, probs_helper, ast, type_inference, utils, function_subs
-
-
 ################ Expressions ####################
+from cnerator.utils import print_if_verbose
+
 
 def generate_basic_exp(program, function, c_type):
     generator_name = probs_helper.random_value(probs.basic_expression_prob)
@@ -501,7 +501,7 @@ def generate_program():
     return program
 
 
-def generate_program_with_distribution(distribution, total_amount, remove_outsiders=True):
+def generate_program_with_distribution(distribution, args, total_amount, remove_outsiders=True):
 
     removed = []
 
@@ -521,7 +521,8 @@ def generate_program_with_distribution(distribution, total_amount, remove_outsid
             amount = sum(1 for f in program.functions if v["cmp"](f))
             v["amount"] = amount
             info.extend([k, ": ", str(v["total"] - amount), "; "])
-        print("".join(info) + "TOTAL = {}".format(len(program.functions)))
+        if args.verbose:
+            print("".join(info) + "TOTAL = {}".format(len(program.functions)))
 
     ###
     # Generate a program with enough functions
@@ -550,21 +551,23 @@ def generate_program_with_distribution(distribution, total_amount, remove_outsid
     # Adjust the amount of functions in each group
     for k, v in distribution.items():
         delta = v["amount"] - v["total"]
-        print("Removing {} {}".format(delta, k))
+        if args.verbose:
+            print("Removing {} {}".format(delta, k))
         for _ in range(delta):
             remove_last(v["cmp"])
     count_and_show()
     before = program.functions[:]
 
     # Substitute calls to removed functions
-    print("")
-    print("*" * 80)
-    print("* SUBSTITUTIONS")
-    print("*" * 80)
+    if args.verbose:
+        print("")
+        print("*" * 80)
+        print("* SUBSTITUTIONS")
+        print("*" * 80)
     function_subs.visit(program, removed)
 
     after = program.functions[:]
-    if len(after) != total_amount:
+    if len(after) != total_amount and args.verbose:
         print("")
         print("*" * 80)
         print("* WARNING: NEW FUNCTIONS")
@@ -577,19 +580,20 @@ def generate_program_with_distribution(distribution, total_amount, remove_outsid
     # Generate statement invocations to reach a ratio expr_invocation/stmt_invocation = 2
     ###
 
-    # Disable invocations in the generations of parameter exptresions
+    # Disable invocations in the generations of parameter expressions
     new_probs = {False:1, True:0}
     old_probs = dict(probs.call_prob)
     probs.call_prob = new_probs
 
     # Generate statement invocations
-    print("")
-    print("*" * 80)
-    print("* GENERATING INVOCATIONS")
-    print("*" * 80)
+    if args.verbose:
+        print("")
+        print("*" * 80)
+        print("* GENERATING INVOCATIONS")
+        print("*" * 80)
     for f in program.functions:
         amount = 2 * program.invocation_as_expr[f.name] - program.invocation_as_stmt[f.name]
-        print("{} needs '2 * {} - {} = {}' statement invocations.".format(f.name, program.invocation_as_expr[f.name], program.invocation_as_stmt[f.name], amount))
+        print_if_verbose("{} needs '2 * {} - {} = {}' statement invocations.".format(f.name, program.invocation_as_expr[f.name], program.invocation_as_stmt[f.name], amount))
         if amount <= 0:
             continue
         for _ in range(amount):

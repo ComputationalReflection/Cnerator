@@ -5,10 +5,9 @@ from __future__ import division
 from __future__ import print_function
 from __future__ import unicode_literals
 
+import os.path
 import re
 from collections import defaultdict
-import os.path
-
 
 translation = {
     "b":    "Bool",
@@ -104,8 +103,8 @@ with open("operators_types/operators_types.c", "r") as f:
             print("{} = {} {}".format(result_t, operator, op1_t))
             try:
                 by_operands[1][operator][op1_t].add(result_t)
-            except AttributeError as e:
-                assert e.message == "'dict' object has no attribute 'add'"
+            except AttributeError as error:
+                assert str(error) == "'dict' object has no attribute 'add'"
                 by_operands[1][operator][op1_t] = set()
                 by_operands[1][operator][op1_t].add(result_t)
             by_return[1][operator][result_t].add(op1_t)
@@ -131,8 +130,8 @@ with open("casts/casts.c", "r") as f:
             print("{} = (cast) {}".format(result_t, op1_t))
             try:
                 by_operands[1][operator][op1_t].add(result_t)
-            except AttributeError as e:
-                assert e.message == "'dict' object has no attribute 'add'"
+            except AttributeError as error:
+                assert str(error) == "'dict' object has no attribute 'add'"
                 by_operands[1][operator][op1_t] = set()
                 by_operands[1][operator][op1_t].add(result_t)
             by_return[1][operator][result_t].add(op1_t)

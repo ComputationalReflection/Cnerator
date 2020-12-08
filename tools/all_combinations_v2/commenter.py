@@ -1,28 +1,38 @@
 #! /usr/bin/env python
 # -*- coding: utf-8 -*-
 
-from __future__ import unicode_literals
-from __future__ import print_function
-from __future__ import division
 from __future__ import absolute_import
-
+from __future__ import division
+from __future__ import print_function
+from __future__ import unicode_literals
 
 import argparse
-import shlex
-import json
-import re
 import collections
-import shutil
-import os
-import io
-import linecache
 import copy
+import io
+import json
+import linecache
+import os
+import re
+import shlex
+import shutil
+import sys
 
 DEFAULT_ENCODING = 'utf-8'
 
 
 def main():
     exit(run(parse_args()))
+
+
+def print_to_std_error(*args):
+    print(*args, file=sys.stderr)
+
+
+def print_if_verbose(*args):
+    """Prints a message if the verbose option has been passed to the application"""
+    if __ARGS.verbose:
+        print(*args)
 
 
 def parse_args():
@@ -35,8 +45,10 @@ def parse_args():
     parser.add_argument("-c", "--line-comment", default="//", help="Set the line comment. The default is '%(default)s'")
     parser.add_argument("-e", "--input-encoding", default="utf8", help="Set the encoding of the input files. The default is '%(default)s'")
     parser.add_argument("-E", "--code-encoding", default="utf8", help="Set the encoding of the referenced code files. The default is '%(default)s'")
-    args = parser.parse_args()
-    return args
+    parser.add_argument("-v", "--verbose", action="store_true", help="Verbose messages (default: %(default)s)")
+    global __ARGS
+    __ARGS = parser.parse_args()
+    return __ARGS
 
 
 def run(args):
@@ -70,7 +82,7 @@ def search_patterns(args, patterns):
                     if t == "comment":
                         _, file, line, note = m
                         commented_lines[file][line].append(note)
-                        print("Commented {}:{}".format(file, line))
+                        print_if_verbose("Commented {}:{}".format(file, line))
                     continue
                 if args.batch:
                     continue
@@ -94,14 +106,14 @@ def expand_comments(patterns, commented_lines):
                         if new_line == line:
                             continue
                         new_commented_lines[file][str(new_line)] = []
-                        print("Commented (expansion) {}:{}".format(file, new_line))
+                        print_if_verbose("Commented (expansion) {}:{}".format(file, new_line))
     return new_commented_lines
 
 
 def comment_files(args, commented_lines):
     for file, lines in commented_lines.iteritems():
         if args.overwrite:
-            print("Overwritting original file")
+            print_if_verbose("Overwritting original file")
             old_file = file + ".original"
             new_file = file
             if os.path.isfile(file):
@@ -109,9 +121,9 @@ def comment_files(args, commented_lines):
                     os.remove(old_file)
                 shutil.move(file, old_file)
             else:
-                print("Warning: Unable to find '{}'. Trying to use '{}'".format(file, old_file))
+                print_if_verbose("Warning: Unable to find '{}'. Trying to use '{}'".format(file, old_file))
                 if not os.path.isfile(old_file):
-                    print("Error: Unable to find '{}'".format(old_file))
+                    print_to_std_error("Error: Unable to find '{}'".format(old_file))
                     return 1
         else:
             old_file = file
@@ -139,7 +151,7 @@ def ask_action(target_line, patterns, commented_lines):
         print("")
         print(target_line)
         try:
-            action_line = raw_input("(Action or 'help')> ")
+            action_line = input("(Action or 'help')> ")
         except KeyboardInterrupt:
             return
         if not action_line:
@@ -170,8 +182,8 @@ class InteractiveArgumentParser(argparse.ArgumentParser):
         pass
 
     def error(self, message):
-        print("Error: {}".format(message))
-        print(self.format_usage())
+        print_to_std_error("Error: {}".format(message))
+        print_to_std_error(self.format_usage())
         raise ParserErrorException()
 
 
@@ -181,14 +193,14 @@ def parse_action(action_line):
 
     # Ignore
     parser_ignore = subparsers.add_parser('ignore', help='Ignore this line')
-    parser_ignore.add_argument("-p", "--pattern", type=unicode, help="Ignore all lines with this pattern")
+    parser_ignore.add_argument("-p", "--pattern", type=str, help="Ignore all lines with this pattern")
     parser_ignore.add_argument("-h", "--help", action="store_true", help="Show help")
     parser_ignore.set_defaults(action_handler=handle_action_ignore)
     parser_ignore.set_defaults(help_msg=parser_ignore.format_help())
 
     # Comment
     parser_comment = subparsers.add_parser('comment', help='Comment the related source code line')
-    parser_comment.add_argument("pattern", type=unicode, help="Comment all lines with this pattern")
+    parser_comment.add_argument("pattern", type=str, help="Comment all lines with this pattern")
     parser_comment.add_argument("-f", "--file-group", type=int, default=1,
                                 help="Set the number of the group that contains the file in the pattern. The default is %(default)s")
     parser_comment.add_argument("-l", "--line-group", type=int, default=2,
@@ -220,10 +232,10 @@ def handle_action_ignore(args, patterns, help_msg, target_line, commented_lines)
         m = search_one_pattern(target_line, args.pattern)
         if m:
             patterns.ignore.append(args.pattern)
-            print("Ok")
+            print_if_verbose("Ok")
             return True
-        print("Error: This pattern don't match")
-        return False
+        print_to_std_error("Error: This pattern don't match")
+    return False
 
 
 def handle_action_comment(args, patterns, help_msg, target_line, commented_lines):
@@ -233,21 +245,21 @@ def handle_action_comment(args, patterns, help_msg, target_line, commented_lines
 
     try:
         m = search_one_pattern(target_line, args.pattern, args.file_group, args.line_group, args.note_group)
-    except ValueError as e:
-        print("Error: " + e.message)
+    except ValueError as error:
+        print_to_std_error("Error: " + str(error))
         return False
 
     if m:
         _, file, line, note = m
-        print("File: {}".format(file))
-        print("Line: {}".format(line))
+        print_if_verbose("File: {}".format(file))
+        print_if_verbose("Line: {}".format(line))
         if note:
-            print("Note: {}".format(note))
+            print_if_verbose("Note: {}".format(note))
         commented_lines[file][line] = note
         patterns.comment[args.pattern] = {"file": args.file_group, "line": args.line_group, "note": args.note_group}
-        print("Ok")
+        print_if_verbose("Ok")
         return True
-    print("Error: This pattern don't match")
+    print_to_std_error("Error: This pattern does not match")
     return False
 
 

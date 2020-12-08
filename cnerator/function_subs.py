@@ -3,6 +3,7 @@
 from singledispatch import singledispatch
 
 from cnerator import ast, generators, probs
+from params.parameters import get_app_args
 
 
 @singledispatch
@@ -42,14 +43,16 @@ def _(invocation, targets, **kwargs):
     if invocation.func_name in targets:
         # If invocation is a statement
         if isinstance(kwargs["parent"], ast.Function):
-            print("{}: Remove call {}".format(kwargs["function"].name, invocation.func_name))
+            if get_app_args().verbose:
+                print("{}: Remove call {}".format(kwargs["function"].name, invocation.func_name))
             return None
         # If invocation is an expression
         else:
             literal = generators.generate_literal(
                 kwargs["program"], kwargs["function"], invocation.return_type, from_declaration=False)
-            print("{} Subs call {} -> ({}) {}".format(
-                kwargs["function"].name, invocation.func_name, invocation.return_type.name, literal))
+            if get_app_args().verbose:
+                print("{} Subs call {} -> ({}) {}".format(
+                    kwargs["function"].name, invocation.func_name, invocation.return_type.name, literal))
             return literal
     else:
         kwargs["parent"] = invocation

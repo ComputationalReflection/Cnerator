@@ -2,9 +2,9 @@
 
 from __future__ import absolute_import
 
-from setuptools import setup, find_packages
 import os
 
+from setuptools import setup, find_packages
 
 
 def read(fname):
@@ -18,7 +18,7 @@ def readlines(fname):
 
 contacts = [
     ("Javier Escalada Gomez", "javier.escalada.gomez@gmail.com"),
-    ("Francisco Ortin Soler", "ortin@lsi.uniovi.es"),
+    ("Francisco Ortin Soler", "ortin@uniovi.es"),
 ]
 
 __authors__ =       [c[0] for c in contacts]

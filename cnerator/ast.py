@@ -6,8 +6,7 @@ import random
 import re
 import string
 
-from cnerator import graph
-from cnerator import utils
+from cnerator import graph, utils
 
 
 ########### Utils ##############
