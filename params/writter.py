@@ -23,7 +23,7 @@ def write_in_multiple_headers(program, args):
         "/*\n"
         " * TOTAL functions:   {} + 1\n".format(len(program.functions)),
         " * VOID functions:    {}\n".format(sum(1 for f in program.functions if f.return_type == cnerator.ast.Void())),
-        " * NO VOID functions: {} + 1\n".format(
+        " * NO-VOID functions: {} + 1\n".format(
             sum(1 for f in program.functions if f.return_type != cnerator.ast.Void())),
         " */\n"
         '#include "functions.h"\n',
@@ -100,7 +100,7 @@ def write_in_multiple_files(program, args):
         print("*" * 80)
         print("* WRITING IN FILES")
         print("*" * 80)
-        print("Global: {} total functions".format(len(program.functions)))
+        print("Global: {} total functions.".format(len(program.functions)))
 
     main = replace_code(main)
     global_vars = "\n".join("static " + line for line in global_vars.splitlines())
@@ -119,7 +119,7 @@ def write_in_multiple_files(program, args):
         "/*\n",
         " * TOTAL functions:   {} + 1\n".format(len(program.functions)),
         " * VOID functions:    {}\n".format(sum(1 for f in program.functions if f.return_type == cnerator.ast.Void())),
-        " * NO VOID functions: {} + 1\n".format(
+        " * NON-VOID functions: {} + 1\n".format(
             sum(1 for f in program.functions if f.return_type != cnerator.ast.Void())),
         " */\n",
         "\n", main, "\n",
@@ -184,7 +184,7 @@ def write_in_multiple_files(program, args):
             " * TOTAL functions:   {}\n".format(len(part)),
             " * VOID functions:    {}\n".format(
                 sum(1 for f in part if f.return_type == cnerator.ast.Void())),
-            " * NO VOID functions: {}\n".format(
+            " * NO-VOID functions: {}\n".format(
                 sum(1 for f in part if f.return_type != cnerator.ast.Void())),
             " */\n",
             "\n", functions, "\n",

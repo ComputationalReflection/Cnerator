@@ -1,6 +1,10 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
+"""Example visitor that replaces the name of functions returning void.
+Its name is changed from funcX to procX.
+All the invocations are also renamed."""
+
 
 from singledispatch import singledispatch
 

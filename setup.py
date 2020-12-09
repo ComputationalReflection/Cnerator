@@ -6,49 +6,46 @@ import os
 
 from setuptools import setup, find_packages
 
-
-def read(fname):
-    return open(os.path.join(os.path.dirname(__file__), fname)).read()
-
-
-
-def readlines(fname):
-    return open(os.path.join(os.path.dirname(__file__), fname)).readlines()
-
-
-contacts = [
+__contacts = [
     ("Javier Escalada Gomez", "javier.escalada.gomez@gmail.com"),
-    ("Francisco Ortin Soler", "ortin@uniovi.es"),
+    ("Francisco Ortin", "francisco.ortin@gmail.com"),
 ]
 
-__authors__ =       [c[0] for c in contacts]
-__author__ =        ", ".join(c[0] for c in contacts)
-__credits__ =       []
-__copyright__ =     "Copyright (C) 2016 " + __author__
-__license__ =       "BSD 3 Clause"
-__version__ =       "0.1.0"
-__maintainer__ =    contacts[0][0]
-__email__ =         contacts[0][1]
-__contact__ =       __email__
-__status__ =        "Alpha"
+__authors = [c[0] for c in __contacts]
+__author = ", ".join(c[0] for c in __contacts)
+__credits = []
+__copyright = "Copyright (C) 2016 " + __author
+__license = "BSD 3 Clause"
+__version = "0.1.0"
+__maintainer = __contacts[0][0]
+__email = __contacts[0][1]
+__contact =__email
+__status = "Alpha"
+__url = "https://github.com/Kerrigan29a/cnerator"
 
 
+def read_lines(file_name):
+    file = open(os.path.join(os.path.dirname(__file__), file_name))
+    lines = "".join(file.readlines())
+    file.close()
+    return lines
 
 
 setup(
     name='cnerator',
-    version=__version__,
-    description='C code generator',
-    long_description=read('README.md'),
-    author=__author__,
-    author_email=__email__,
-    maintainer=__maintainer__,
-    maintainer_email=__email__,
-    # url='',
-    # download_url='',
-    license=__license__,
+    version=__version,
+    description='C source code generator',
+    long_description=read_lines("README.md"),
+    long_description_content_type = "text/markdown",
+    author=__author,
+    author_email=__email,
+    maintainer=__maintainer,
+    maintainer_email=__email,
+    url=__url,
+    download_url=__url,
+    license=__license,
     keywords="c clang code generator",
-    install_requires=readlines("requirements.txt"),
+    install_requires=read_lines("requirements.txt"),
     # dependency_links=[],
     packages=find_packages(),
     platforms='any',
@@ -59,6 +56,7 @@ setup(
         'Programming Language :: C',
         'Topic :: Software Development :: Code Generators',
     ],
+    python_requires='>=3.7',
     # test_suite='',
     entry_points = {
         'console_scripts': ['cnerator=main:main'],

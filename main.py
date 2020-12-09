@@ -7,15 +7,15 @@ from __future__ import print_function
 import os
 import sys
 
-import call_inspector
 import cnerator
-import structure_inspector
+from debug import call_inspector, structure_inspector
 from params.parameters import parse_args, get_modules_to_import
 from params.writter import write_in_files
 
 
 def run(args):
-    sys.setrecursionlimit(args.recursion)  # sets the recursion limit
+    # Sets the recursion limit
+    sys.setrecursionlimit(args.recursion)
 
     # return_instrumentator.monkey_path()
     # program = cnerator.generators.generate_program()
@@ -95,7 +95,7 @@ def run(args):
     ###
     # 10 (SIZE - NORMAL)
     ###
-    program = cnerator.generators.generate_program_with_distribution({
+    program = cnerator.generators.generate_program_with_function_distribution({
         "v_functions": {"total": 1, "cmp": lambda f: isinstance(f.return_type, cnerator.ast.Void)},
         "b_functions": {"total": 1, "cmp": lambda f: isinstance(f.return_type, cnerator.ast.Bool)},
         "sc_functions": {"total": 1, "cmp": lambda f: isinstance(f.return_type, cnerator.ast.SignedChar)},
@@ -106,7 +106,7 @@ def run(args):
         "d_functions": {"total": 1, "cmp": lambda f: isinstance(f.return_type, cnerator.ast.Double)},
         "p_functions": {"total": 1, "cmp": lambda f: isinstance(f.return_type, cnerator.ast.Pointer)},
         "struct_functions": {"total": 1, "cmp": lambda f: isinstance(f.return_type, cnerator.ast.Struct)},
-    }, args, 10, remove_outsiders=True)
+    }, args, 10, remove_unwanted_functions=True)
 
     # [DEBUG]
 
@@ -171,12 +171,12 @@ def run(args):
     # Write code to files
     write_in_files(program, args)
 
-    # Write structure graph
-    structure_inspector.write_graph(program, os.path.join(args.working_dir, args.output + ".structure.dot"))
-
-    # Write call graph
-    call_inspector.write_graph(program, True, os.path.join(args.working_dir, args.output + ".call.dot"))
-    call_inspector.write_graph(program, False, os.path.join(args.working_dir, args.output + ".call_light.dot"))
+    if args.debug:
+        # Write structure graph
+        structure_inspector.write_graph(program, os.path.join(args.working_dir, args.output + ".structure.dot"))
+        # Write call graph
+        call_inspector.write_graph(program, True, os.path.join(args.working_dir, args.output + ".call.dot"))
+        call_inspector.write_graph(program, False, os.path.join(args.working_dir, args.output + ".call_light.dot"))
 
 
 def main():

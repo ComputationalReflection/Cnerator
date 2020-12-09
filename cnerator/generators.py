@@ -1,15 +1,19 @@
 
 from __future__ import print_function
 
+from typing import Dict
+
 from cnerator import probs, limitations, probs_helper, ast, type_inference, utils, function_subs
-################ Expressions ####################
 from cnerator.utils import print_if_verbose
 
+
+################ Expressions ####################
 
 def generate_basic_exp(program, function, c_type):
     generator_name = probs_helper.random_value(probs.basic_expression_prob)
     generator = globals()[generator_name]
     return generator(program, function, c_type)
+
 
 def generate_global_var(program, function, c_type):
     if c_type.name not in program.global_vars.keys():
@@ -25,6 +29,7 @@ def generate_global_var(program, function, c_type):
     literal = generate_literal(program, function, c_type, from_declaration=True)
     program.global_vars[c_type.name].append((c_type, literal))
     return ast.global_variable(c_type, len(program.global_vars[c_type.name]))
+
 
 def generate_local_var(program, function, c_type):
     if c_type.name not in function.local_vars.keys():
@@ -501,7 +506,7 @@ def generate_program():
     return program
 
 
-def generate_program_with_distribution(distribution, args, total_amount, remove_outsiders=True):
+def generate_program_with_function_distribution(distribution, args, total_amount, remove_unwanted_functions=True):
 
     removed = []
 
@@ -515,45 +520,43 @@ def generate_program_with_distribution(distribution, args, total_amount, remove_
                 remove_func(f)
                 return
 
-    def count_and_show():
-        info = []
-        for k, v in distribution.items():
-            amount = sum(1 for f in program.functions if v["cmp"](f))
-            v["amount"] = amount
-            info.extend([k, ": ", str(v["total"] - amount), "; "])
-        print_if_verbose("".join(info) + "TOTAL = {}".format(len(program.functions)))
+    def count_functions_generated_by_group() -> Dict[str, int]:
+        """Returns a dictionary with the number of functions created by each function group (in the distribution)"""
+        messages = ["> Functions yet to generate: "]
+        func_generated_per_group = dict()
+        for func_group_name, func_dict in distribution.items():
+            number_func_generated = sum(1 for function in program.functions if func_dict["cmp"](function))
+            func_generated_per_group[func_group_name] = number_func_generated
+            messages.extend([func_group_name, ": ", str(func_dict["total"] - number_func_generated), "; "])
+        messages.append("Total functions generated = {}.".format(len(program.functions)))
+        print_if_verbose("".join(messages))
+        return func_generated_per_group
 
-    ###
-    # Generate a program with enough functions
-    ###
-
+    # Generates a program with its main function
     program = ast.Program()
     program.main = main_function = ast.Function("main", ast.SignedInt(), [])
     while True:
+        # Creates stmts in the main body
         main_function.stmts.append(generate_stmt_func(program, main_function))
-        count_and_show()
+        func_number_by_group = count_functions_generated_by_group()
+        # Until all the wanted functions are generated
+        if all(func_number_by_group[func_group_name] >= func_dict["total"]
+               for func_group_name, func_dict in distribution.items()):
+            break  # All the wanted functions were created
 
-        if all(v["amount"] >= v["total"] for v in distribution.values()):
-            break
-
-
-    ###
-    # Adjust functions amounts
-    ###
-
-    # Remove those not in a group
-    if remove_outsiders:
+    # Removes the generated functions not included in any group in the distribution
+    if remove_unwanted_functions:
         for func in program.functions[:]:
-            if not any(v["cmp"](func) for v in distribution.values()):
+            if not any(func_dict["cmp"](func) for func_dict in distribution.values()):
                 remove_func(func)
 
-    # Adjust the amount of functions in each group
-    for k, v in distribution.items():
-        delta = v["amount"] - v["total"]
-        print_if_verbose("Removing {} {}".format(delta, k))
+    # Adjusts the amount of functions in each group
+    for func_group_name, func_dict in distribution.items():
+        delta = func_number_by_group[func_group_name] - func_dict["total"]
+        print_if_verbose("Removing {} {}".format(delta, func_group_name))
         for _ in range(delta):
-            remove_last(v["cmp"])
-    count_and_show()
+            remove_last(func_dict["cmp"])
+    count_functions_generated_by_group()
     before = program.functions[:]
 
     # Substitute calls to removed functions
@@ -578,7 +581,7 @@ def generate_program_with_distribution(distribution, args, total_amount, remove_
     ###
 
     # Disable invocations in the generations of parameter expressions
-    new_probs = {False:1, True:0}
+    new_probs = {False: 1, True: 0}
     old_probs = dict(probs.call_prob)
     probs.call_prob = new_probs
 
@@ -589,7 +592,9 @@ def generate_program_with_distribution(distribution, args, total_amount, remove_
     print_if_verbose("*" * 80)
     for func in program.functions:
         amount = 2 * program.invocation_as_expr[func.name] - program.invocation_as_stmt[func.name]
-        print_if_verbose("{} needs '2 * {} - {} = {}' statement invocations.".format(func.name, program.invocation_as_expr[func.name], program.invocation_as_stmt[func.name], amount))
+        print_if_verbose("{} needs '2 * {} - {} = {}' statement invocations."
+                         .format(func.name, program.invocation_as_expr[func.name],
+                                 program.invocation_as_stmt[func.name], amount))
         if amount <= 0:
             continue
         for _ in range(amount):

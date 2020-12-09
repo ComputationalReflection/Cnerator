@@ -25,6 +25,9 @@ def parse_args():
                              "(e.g., visitors.func_to_proc;visitors.return_instrumentation) (default: %(default)s)")
     parser.add_argument("-v", "--verbose", action="store_true",
                         help="Verbose messages (default: %(default)s)")
+    parser.add_argument("-d", "--debug", action="store_true",
+                        help="Generate debug info (call graph and struct structure) in .dot files "
+                             "(default: %(default)s)")
     global __ARGS
     __ARGS = parser.parse_args()
     return __ARGS

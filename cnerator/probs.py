@@ -4,7 +4,7 @@
 Probability may be defined manually, or using the helper functions in probs_helper.
 They are expressed as dictionaries: {value: probability of that value}.
 The sum of the probabilities must be 1.0.
-For a fixed number, just set the probability of 1.0.
+For a fixed value, just set its probability to 1.0.
 """
 
 from cnerator import probs_helper, ast, limitations
