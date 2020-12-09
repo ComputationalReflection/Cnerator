@@ -3,6 +3,7 @@
 from singledispatch import singledispatch
 
 from cnerator import ast, generators
+from cnerator.utils import print_if_verbose
 
 
 @singledispatch
@@ -12,6 +13,11 @@ def visit(node, program=None, function=None, **kwargs):
 
 @visit.register(ast.Program)
 def _(program, **kwargs):
+    print_if_verbose()
+    print_if_verbose("*" * 80)
+    print_if_verbose("* FIX PTR LITERALS")
+    print_if_verbose("*" * 80)
+
     for f in program.functions:
         visit(f, program, **kwargs)
     visit(program.main, program, **kwargs)
@@ -31,6 +37,11 @@ def _(invocation, program, function, **kwargs):
     return invocation
 
 
+@visit.register(ast.Label)
+def _(label, program, function, **kwargs):
+    return label
+
+
 @visit.register(ast.Assignment)
 @visit.register(ast.BinaryExpression)
 @visit.register(ast.ArrayAccessExpression)
@@ -46,17 +57,17 @@ def _(node, program, function, **kwargs):
 @visit.register(ast.CastExpression)
 def _(cast, program, function, **kwargs):
     if isinstance(cast.type, ast.Pointer) and isinstance(cast.exp, ast.Literal):
-        print("*" * 80)
-        print(function.name)
-        print(repr(cast.type), "<-", repr(cast.exp.type))
+        print_if_verbose("*" * 80)
+        print_if_verbose(function.name)
+        print_if_verbose(repr(cast.type), "<-", repr(cast.exp.type))
         try:
             global_var = program.global_vars[cast.exp.type]
         except KeyError:
-            print("NEW")
+            print_if_verbose("NEW")
             global_var = generators.generate_global_var(program, function, cast.exp.type)
         cast.exp = ast.UnaryExpression("/* PTR LITERAL */ & ", global_var, cast.exp.type, post_op=False)
-        print(cast)
-        print("*" * 80)
+        print_if_verbose(cast)
+        print_if_verbose("*" * 80)
     else:
         cast.children = [visit(cast.exp, program, function, **kwargs)]
     return cast
@@ -65,17 +76,17 @@ def _(cast, program, function, **kwargs):
 @visit.register(ast.Literal)
 def _(literal, program, function, **kwargs):
     if isinstance(literal.type, ast.Pointer):
-        print("*" * 80)
-        print(function.name)
-        print(repr(literal.type))
+        print_if_verbose("*" * 80)
+        print_if_verbose(function.name)
+        print_if_verbose(repr(literal.type))
         try:
             global_var = program.global_vars[literal.type.type]
         except KeyError:
-            print("NEW")
+            print_if_verbose("NEW")
             global_var = generators.generate_global_var(program, function, literal.type.type)
         new_literal = ast.UnaryExpression("/* PTR LITERAL */ & ", global_var, literal.type.type, post_op=False)
-        print(new_literal)
-        print("*" * 80)
+        print_if_verbose(new_literal)
+        print_if_verbose("*" * 80)
         return new_literal
     return literal
 
@@ -83,3 +94,4 @@ def _(literal, program, function, **kwargs):
 @visit.register(ast.Variable)
 def _(var, program, function, **kwargs):
     return var
+

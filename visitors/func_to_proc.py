@@ -5,21 +5,7 @@
 from singledispatch import singledispatch
 
 import cnerator
-from params.parameters import get_app_args
-
-# First of all change Return.__str__
-
-return_label_counter = 0
-def return_str_replacement(self):
-    global return_label_counter
-    return_label_counter += 1
-    if self.exp is not None:
-        return "__RETURN%d__: return %s" % (return_label_counter, self.exp)
-    return "__RETURN%d__: return" % (return_label_counter)
-
-
-def monkey_path():
-    cnerator.ast.Return.__str__ = return_str_replacement
+from cnerator.utils import print_if_verbose
 
 
 @singledispatch
@@ -29,6 +15,10 @@ def visit(node):
 
 @visit.register(cnerator.ast.Program)
 def _(program):
+    print_if_verbose("")
+    print_if_verbose("*" * 80)
+    print_if_verbose("* FUNC TO PROC INSTRUMENTATION")
+    print_if_verbose("*" * 80)
     for f in program.functions:
         visit(f)
     visit(program.main)
@@ -38,16 +28,8 @@ def _(program):
 def _(function):
     # Rename procedures
     if function.return_type == cnerator.ast.Void():
+        print_if_verbose("Replacing func with proc: " + function.name)
         function.name = function.name.replace("func", "proc")
-        if get_app_args().verbose:
-            print("REPLACE: " + function.name)
-
-    for s in function.stmts:
-        visit(s)
-
-    # If is a procedure add at the end a return statement
-    if function.return_type == cnerator.ast.Void():
-        function.stmts.append(cnerator.ast.Return())
 
 
 @visit.register(cnerator.ast.Invocation)
@@ -55,8 +37,7 @@ def _(invocation):
     # Rename procedures
     if invocation.return_type == cnerator.ast.Void():
         invocation.func_name = invocation.func_name.replace("func", "proc")
-        if get_app_args().verbose:
-            print("REPLACE: " + invocation.func_name)
+        print_if_verbose("Replacing: " + invocation.func_name)
 
 
 @visit.register(cnerator.ast.Assignment)

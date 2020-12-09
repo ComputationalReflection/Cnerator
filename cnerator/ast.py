@@ -6,7 +6,7 @@ import random
 import re
 import string
 
-from cnerator import graph, utils
+from cnerator import graph, utils, operators
 
 
 ########### Utils ##############
@@ -188,6 +188,13 @@ class Return(UnaryASTNode):
             return "return {}".format(self.exp)
         return "return"
 
+class Label(ASTNode):
+    def __init__(self, label):
+        self.label = label
+
+    def __str__(self):
+        return f"{self.label}:"
+
 
 ########### Basic expression types #########
 
@@ -223,6 +230,10 @@ class Function(ASTNode):
     @property
     def stmts(self):
         return self.children
+
+    @stmts.setter
+    def stmts(self, value):
+        self.children = value
 
     def __str__(self):
         # function declaration
@@ -752,7 +763,7 @@ def get_operators(c_type, _type):
         utils.camel_case_to_snake_case(c_type.__class__.__name__),
         _type
     )
-    return globals()["operators"].__dict__[operator_type]
+    return operators.__dict__[operator_type]
 
 
 def global_variable(c_type, number):

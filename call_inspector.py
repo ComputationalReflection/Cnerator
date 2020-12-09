@@ -4,10 +4,11 @@
 from __future__ import print_function
 from __future__ import unicode_literals
 
-from singledispatch import singledispatch
-from cnerator import ast
-
 import io
+
+from singledispatch import singledispatch
+
+from cnerator import ast
 
 global_visit_main = True
 
@@ -90,5 +91,6 @@ def _(node, nodes, edges, func_name, parent):
 
 @callinsp_visit.register(ast.Literal)
 @callinsp_visit.register(ast.Variable)
+@callinsp_visit.register(ast.Label)
 def _(node, nodes, edges, func_name, parent):
     pass

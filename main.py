@@ -9,15 +9,14 @@ import sys
 
 import call_inspector
 import cnerator
-import fix_ptr_literal
-import return_instrumentator
 import structure_inspector
-from params.parameters import parse_args, write_in_multiple_files, write_in_one_file
-
-sys.setrecursionlimit(50000)
+from params.parameters import parse_args, get_modules_to_import
+from params.writter import write_in_files
 
 
 def run(args):
+    sys.setrecursionlimit(args.recursion)  # sets the recursion limit
+
     # return_instrumentator.monkey_path()
     # program = cnerator.generators.generate_program()
 
@@ -160,31 +159,17 @@ def run(args):
 
     # [/DEBUG]
 
-    if args.verbose:
-        print()
-        print("*" * 80)
-        print("* RETURN INSTRUMENTATOR")
-        print("*" * 80)
-
-    return_instrumentator.visit(program)
-
-    if args.verbose:
-        print()
-        print("*" * 80)
-        print("* FIX PTR LITERALS")
-        print("*" * 80)
-
-    fix_ptr_literal.visit(program)
+    #  Load all the visitor modules and run them, in the same order
+    modules = get_modules_to_import(args.visitors)
+    for module in modules:
+        module.visit(program)
 
     # Create output directory
     if not os.path.isdir(args.working_dir):
         os.mkdir(args.working_dir)
 
-    # Write code to file
-    if args.parts == 1:
-        write_in_one_file(program, args)
-    else:
-        write_in_multiple_files(program, args)
+    # Write code to files
+    write_in_files(program, args)
 
     # Write structure graph
     structure_inspector.write_graph(program, os.path.join(args.working_dir, args.output + ".structure.dot"))

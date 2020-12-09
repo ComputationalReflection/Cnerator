@@ -100,7 +100,7 @@ def generate_expression(program, function, exp_type, exp_depth_prob):
     if probs_helper.random_value(probs.implicit_promotion_bool):
         try:
             new_type_cls = probs_helper.random_value(probs.promotions_prob[exp_type.__class__])
-            # print("DEBUG IMPLICIT PROMOTION: {} -> {}".format(exp_type.__declaration__(), new_type_cls().__declaration__()))
+            #  print_if_verbose("DEBUG IMPLICIT PROMOTION: {} -> {}".format(exp_type.__declaration__(), new_type_cls().__declaration__()))
             exp_type = new_type_cls()
         except KeyError:
             pass
@@ -495,7 +495,7 @@ def generate_program():
     program = ast.Program()
     program.main = main_function = ast.Function("main", ast.SignedInt(), [])
     for i in range(number_statements):
-        print("." if i % 1000 else "\n", end="")
+        print_if_verbose("." if i % 1000 else "\n", end="")
         program.main.stmts.append(generate_stmt_func(program, main_function))
     main_function.stmts.append(generate_stmt_return(program, main_function, exp=0))
     return program
@@ -521,8 +521,7 @@ def generate_program_with_distribution(distribution, args, total_amount, remove_
             amount = sum(1 for f in program.functions if v["cmp"](f))
             v["amount"] = amount
             info.extend([k, ": ", str(v["total"] - amount), "; "])
-        if args.verbose:
-            print("".join(info) + "TOTAL = {}".format(len(program.functions)))
+        print_if_verbose("".join(info) + "TOTAL = {}".format(len(program.functions)))
 
     ###
     # Generate a program with enough functions
@@ -544,37 +543,35 @@ def generate_program_with_distribution(distribution, args, total_amount, remove_
 
     # Remove those not in a group
     if remove_outsiders:
-        for f in program.functions[:]:
-            if not any(v["cmp"](f) for v in distribution.values()):
-                remove_func(f)
+        for func in program.functions[:]:
+            if not any(v["cmp"](func) for v in distribution.values()):
+                remove_func(func)
 
     # Adjust the amount of functions in each group
     for k, v in distribution.items():
         delta = v["amount"] - v["total"]
-        if args.verbose:
-            print("Removing {} {}".format(delta, k))
+        print_if_verbose("Removing {} {}".format(delta, k))
         for _ in range(delta):
             remove_last(v["cmp"])
     count_and_show()
     before = program.functions[:]
 
     # Substitute calls to removed functions
-    if args.verbose:
-        print("")
-        print("*" * 80)
-        print("* SUBSTITUTIONS")
-        print("*" * 80)
+    print_if_verbose("")
+    print_if_verbose("*" * 80)
+    print_if_verbose("* SUBSTITUTIONS")
+    print_if_verbose("*" * 80)
     function_subs.visit(program, removed)
 
     after = program.functions[:]
     if len(after) != total_amount and args.verbose:
-        print("")
-        print("*" * 80)
-        print("* WARNING: NEW FUNCTIONS")
-        print("*" * 80)
-        for f in after:
-            if f not in before:
-                print(f)
+        print_if_verbose("")
+        print_if_verbose("*" * 80)
+        print_if_verbose("* WARNING: NEW FUNCTIONS")
+        print_if_verbose("*" * 80)
+        for func in after:
+            if func not in before:
+                print_if_verbose(func)
 
     ###
     # Generate statement invocations to reach a ratio expr_invocation/stmt_invocation = 2
@@ -586,18 +583,17 @@ def generate_program_with_distribution(distribution, args, total_amount, remove_
     probs.call_prob = new_probs
 
     # Generate statement invocations
-    if args.verbose:
-        print("")
-        print("*" * 80)
-        print("* GENERATING INVOCATIONS")
-        print("*" * 80)
-    for f in program.functions:
-        amount = 2 * program.invocation_as_expr[f.name] - program.invocation_as_stmt[f.name]
-        print_if_verbose("{} needs '2 * {} - {} = {}' statement invocations.".format(f.name, program.invocation_as_expr[f.name], program.invocation_as_stmt[f.name], amount))
+    print_if_verbose("")
+    print_if_verbose("*" * 80)
+    print_if_verbose("* GENERATING INVOCATIONS")
+    print_if_verbose("*" * 80)
+    for func in program.functions:
+        amount = 2 * program.invocation_as_expr[func.name] - program.invocation_as_stmt[func.name]
+        print_if_verbose("{} needs '2 * {} - {} = {}' statement invocations.".format(func.name, program.invocation_as_expr[func.name], program.invocation_as_stmt[func.name], amount))
         if amount <= 0:
             continue
         for _ in range(amount):
-            invoc = generate_stmt_invocation(program, program.main, invoked_func=f)
+            invoc = generate_stmt_invocation(program, program.main, invoked_func=func)
             main_function.stmts.append(invoc)
 
     # Restore probability
