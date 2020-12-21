@@ -19,24 +19,29 @@ __license = "BSD 3 Clause"
 __version = "0.1.0"
 __maintainer = __contacts[0][0]
 __email = __contacts[0][1]
-__contact =__email
+__contact = __email
 __status = "Alpha"
 __url = "https://github.com/Kerrigan29a/cnerator"
 
 
 def read_lines(file_name):
     file = open(os.path.join(os.path.dirname(__file__), file_name))
-    lines = "".join(file.readlines())
+    lines = file.readlines()
     file.close()
     return lines
+
+
+def read_file(file_name):
+    lines = read_lines(file_name)
+    return "".join(lines)
 
 
 setup(
     name='cnerator',
     version=__version,
     description='C source code generator',
-    long_description=read_lines("README.md"),
-    long_description_content_type = "text/markdown",
+    long_description=read_file("README.md"),
+    long_description_content_type="text/markdown",
     author=__author,
     author_email=__email,
     maintainer=__maintainer,
@@ -44,9 +49,9 @@ setup(
     url=__url,
     download_url=__url,
     license=__license,
-    keywords="c clang code generator",
+    keywords="C language lang code generator",
     install_requires=read_lines("requirements.txt"),
-    # dependency_links=[],
+    #dependency_links=['singledispatch'],
     packages=find_packages(),
     platforms='any',
     classifiers=[
