@@ -3,7 +3,6 @@
 
 [![License](https://img.shields.io/github/license/ComputationalReflection/cnerator)](LICENSE)
 [![Latest stable release](https://img.shields.io/github/v/release/ComputationalReflection/cnerator?label=current-version)](https://github.com/ComputationalReflection/cnerator/releases)
-<img alt="Python version" src="https://img.shields.io/github/pipenv/locked/python-version/computationalreflection/cnerator">
 <img alt="Code size" src="https://img.shields.io/github/languages/code-size/computationalreflection/cnerator">
 <img alt="Repo size" src="https://img.shields.io/github/repo-size/computationalreflection/cnerator">
 
