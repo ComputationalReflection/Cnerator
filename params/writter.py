@@ -3,7 +3,6 @@ import os
 
 import cnerator
 
-
 def write_in_multiple_headers(program, args):
     includes, defines, structs, prototypes, global_vars, functions, main = program.stringify_parts()
 
@@ -29,7 +28,7 @@ def write_in_multiple_headers(program, args):
         '#include "functions.h"\n',
         "\n", main, "\n",
     ])
-    file_path = os.path.join(args.working_dir, args.output + ".c")
+    file_path = os.path.join(args.output_dir, args.output + ".c")
     with io.open(file_path, mode="w", encoding="utf-8") as f:
         f.write("".join(main_file))
 
@@ -41,7 +40,7 @@ def write_in_multiple_headers(program, args):
             structs,
             "\n\n\n\n#endif\n"
         ]
-        file_path = os.path.join(args.working_dir, "structs.h")
+        file_path = os.path.join(args.output_dir, "structs.h")
         with io.open(file_path, mode="w", encoding="utf-8") as f:
             f.write("".join(structs_file))
 
@@ -52,7 +51,7 @@ def write_in_multiple_headers(program, args):
         prototypes,
         "\n\n\n\n#endif\n"
     ]
-    file_path = os.path.join(args.working_dir, "prototypes.h")
+    file_path = os.path.join(args.output_dir, "prototypes.h")
     with io.open(file_path, mode="w", encoding="utf-8") as f:
         f.write("".join(prototypes_file))
 
@@ -63,7 +62,7 @@ def write_in_multiple_headers(program, args):
         global_vars,
         "\n\n\n\n#endif\n"
     ]
-    file_path = os.path.join(args.working_dir, "global_vars.h")
+    file_path = os.path.join(args.output_dir, "global_vars.h")
     with io.open(file_path, mode="w", encoding="utf-8") as f:
         f.write("".join(global_vars_file))
 
@@ -74,7 +73,7 @@ def write_in_multiple_headers(program, args):
         functions,
         "\n\n\n\n#endif\n"
     ]
-    file_path = os.path.join(args.working_dir, "functions.h")
+    file_path = os.path.join(args.output_dir, "functions.h")
     with io.open(file_path, mode="w", encoding="utf-8") as f:
         f.write("".join(functions_file))
 
@@ -124,7 +123,7 @@ def write_in_multiple_files(program, args):
         " */\n",
         "\n", main, "\n",
     ])
-    file_path = os.path.join(args.working_dir, args.output + ".c")
+    file_path = os.path.join(args.output_dir, args.output + ".c")
     with io.open(file_path, mode="w", encoding="utf-8") as f:
         f.write("".join(main_file))
 
@@ -136,7 +135,7 @@ def write_in_multiple_files(program, args):
             structs,
             "\n\n\n\n#endif\n"
         ]
-        file_path = os.path.join(args.working_dir, "structs.h")
+        file_path = os.path.join(args.output_dir, "structs.h")
         with io.open(file_path, mode="w", encoding="utf-8") as f:
             f.write("".join(structs_file))
 
@@ -147,7 +146,7 @@ def write_in_multiple_files(program, args):
         prototypes,
         "\n\n\n\n#endif\n"
     ]
-    file_path = os.path.join(args.working_dir, "prototypes.h")
+    file_path = os.path.join(args.output_dir, "prototypes.h")
     with io.open(file_path, mode="w", encoding="utf-8") as f:
         f.write("".join(prototypes_file))
 
@@ -158,7 +157,7 @@ def write_in_multiple_files(program, args):
         global_vars,
         "\n\n\n\n#endif\n"
     ]
-    file_path = os.path.join(args.working_dir, "global_vars.h")
+    file_path = os.path.join(args.output_dir, "global_vars.h")
     with io.open(file_path, mode="w", encoding="utf-8") as f:
         f.write("".join(global_vars_file))
 
@@ -190,7 +189,7 @@ def write_in_multiple_files(program, args):
             "\n", functions, "\n",
         ])
 
-        file_path = os.path.join(args.working_dir, "functions_{}.c".format(i + 1))
+        file_path = os.path.join(args.output_dir, "functions_{}.c".format(i + 1))
         with io.open(file_path, mode="w", encoding="utf-8") as f:
             f.write("".join(functions_file))
 
@@ -206,7 +205,7 @@ def write_in_one_file(program, args):
     code = replace_code(str(program))
 
     # Write code to main file
-    file_path = os.path.join(args.working_dir, args.output + ".c")
+    file_path = os.path.join(args.output_dir, args.output + ".c")
     with io.open(file_path, mode="w", encoding="utf-8") as f:
         f.write(code)
 

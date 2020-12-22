@@ -385,7 +385,7 @@ function_stmt_prob = {'generate_stmt_assignment': 0.6, 'generate_stmt_invocation
 procedure_stmt_prob = function_stmt_prob
 
 # number_stmts_main_prob = {50000: 1.0}                                           # AUMENTA EL ANCHO DEL ARBOL
-number_stmts_main_prob = {10000: 1.0}                                           # AUMENTA EL ANCHO DEL ARBOL
+number_stmts_main_prob = {10: 1.0}                                           # AUMENTA EL ANCHO DEL ARBOL
 #number_stmts_func_prob = {1: 0.3, 2: 0.3, 3: 0.3, 4: 0.1}
 #number_stmts_func_prob = {1: 0.3, 2: 0.3, 3: 0.2, 4: 0.2}
 number_stmts_func_prob = {1: 0.2, 2: 0.2, 3: 0.2, 4: 0.2, 5: 0.1, 6: 0.1}

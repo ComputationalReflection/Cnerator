@@ -211,7 +211,8 @@ def generate_expression_arity_3(program, function, exp_type, operator,
                                 **kwargs):
     # Infer types and select one pair
     types_pairs = type_inference.infer_operands_type(program, function, 3, operator, exp_type)
-    sub_exp_1_type, sub_exp_2_type, sub_exp_2_type = probs_helper.random_value(probs_helper.compute_equal_prob(types_pairs))
+    sub_exp_1_type, sub_exp_2_type, sub_exp_2_type = probs_helper.random_value(
+        probs_helper.compute_equal_prob(types_pairs))
 
     sub_exp_1 = default_generator_1(program, function, sub_exp_1_type, exp_depth_prob=generator_1_depth_prob)
     sub_exp_2 = default_generator_2(program, function, sub_exp_2_type, exp_depth_prob=generator_2_depth_prob)
@@ -506,7 +507,7 @@ def generate_program():
     return program
 
 
-def generate_program_with_function_distribution(distribution, args, total_amount, remove_unwanted_functions=True):
+def generate_program_with_function_distribution(distribution, args, remove_unwanted_functions=True):
 
     removed = []
 
@@ -522,21 +523,21 @@ def generate_program_with_function_distribution(distribution, args, total_amount
 
     def count_functions_generated_by_group() -> Dict[str, int]:
         """Returns a dictionary with the number of functions created by each function group (in the distribution)"""
-        messages = ["> Functions yet to generate: "]
+        messages = ["Functions yet to generate: "]
         func_generated_per_group = dict()
         for func_group_name, func_dict in distribution.items():
-            number_func_generated = sum(1 for function in program.functions if func_dict["cmp"](function))
+            number_func_generated = sum(1 for function in program.functions if func_dict["condition"](function))
             func_generated_per_group[func_group_name] = number_func_generated
             messages.extend([func_group_name, ": ", str(func_dict["total"] - number_func_generated), "; "])
         messages.append("Total functions generated = {}.".format(len(program.functions)))
         print_if_verbose("".join(messages))
         return func_generated_per_group
 
-    # Generates a program with its main function
+    # Generate a program with its main function
     program = ast.Program()
     program.main = main_function = ast.Function("main", ast.SignedInt(), [])
     while True:
-        # Creates stmts in the main body
+        # Create stmts in the main body
         main_function.stmts.append(generate_stmt_func(program, main_function))
         func_number_by_group = count_functions_generated_by_group()
         # Until all the wanted functions are generated
@@ -544,18 +545,18 @@ def generate_program_with_function_distribution(distribution, args, total_amount
                for func_group_name, func_dict in distribution.items()):
             break  # All the wanted functions were created
 
-    # Removes the generated functions not included in any group in the distribution
+    # Remove the generated functions not included in any group in the distribution
     if remove_unwanted_functions:
         for func in program.functions[:]:
-            if not any(func_dict["cmp"](func) for func_dict in distribution.values()):
+            if not any(func_dict["condition"](func) for func_dict in distribution.values()):
                 remove_func(func)
 
-    # Adjusts the amount of functions in each group
+    # Adjust the amount of functions in each group
     for func_group_name, func_dict in distribution.items():
         delta = func_number_by_group[func_group_name] - func_dict["total"]
         print_if_verbose("Removing {} {}".format(delta, func_group_name))
         for _ in range(delta):
-            remove_last(func_dict["cmp"])
+            remove_last(func_dict["condition"])
     count_functions_generated_by_group()
     before = program.functions[:]
 
@@ -566,8 +567,9 @@ def generate_program_with_function_distribution(distribution, args, total_amount
     print_if_verbose("*" * 80)
     function_subs.visit(program, removed)
 
+    total_number_of_funcs_to_generate = sum(dictionary["total"] for (key, dictionary) in distribution.items())
     after = program.functions[:]
-    if len(after) != total_amount and args.verbose:
+    if len(after) != total_number_of_funcs_to_generate and args.verbose:
         print_if_verbose("")
         print_if_verbose("*" * 80)
         print_if_verbose("* WARNING: NEW FUNCTIONS")

@@ -10,11 +10,11 @@ def camel_case_to_snake_case(name):
     return re.sub(r'([a-z0-9])([A-Z])', r'\1_\2', s1).lower()
 
 
-def print_to_std_error(*args):
-    print(*args, file=sys.stderr)
+def print_to_std_error(*args, sep=' ', end='\n'):
+    print(*args, sep=sep, end=end, file=sys.stderr)
 
 
-def print_if_verbose(*args):
+def print_if_verbose(*args, sep=' ', end='\n', file=None):
     """Prints a message if the verbose option has been passed to the application"""
     if get_app_args().verbose:
-        print(*args)
+        print(*args, sep=sep, end=end, file=file)

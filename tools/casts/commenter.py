@@ -15,7 +15,7 @@ import re
 import shlex
 import shutil
 
-from cnerator.utils import print_to_std_error, print_if_verbose
+from cnerator import print_to_std_error, print_if_verbose
 
 DEFAULT_ENCODING = 'utf-8'
 
