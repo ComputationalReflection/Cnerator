@@ -738,7 +738,7 @@ class Array(Pointer):
         if isinstance(self.type, (SignedChar, UnsignedChar)):
             return generate_string_literal(size, from_declaration, self)
         return Literal("{{ {} }}".format(
-            ", ".join(self.type.generate_literal(from_declaration=from_declaration) for _ in range(size))
+            ", ".join(str(self.type.generate_literal(from_declaration=from_declaration)) for _ in range(size))
         ), self)
 
     def __hash__(self):

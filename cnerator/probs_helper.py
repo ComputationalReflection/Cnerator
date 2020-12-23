@@ -26,7 +26,7 @@ def random_value(probabilities: Dict[object, float]):
     return probabilities[probabilities.keys()[-1]]
 
 
-def compute_equal_prob(keys: list, base: float = 1.0) -> Dict[object, float]:
+def compute_equal_prob(keys: set, base: float = 1.0) -> Dict[object, float]:
     """Given a list of elements (keys) returns a dictionary with the equal probabilities for all the elements"""
     probabilities = {}
     for key in keys:
@@ -45,7 +45,7 @@ def compute_proportional_prob(population: Dict[object, float], base: float = 1.0
     return probabilities
 
 
-def compute_inverse_proportional_prob(population, base=1.0):
+def compute_inverse_proportional_prob(population: Dict[object, float], base: float = 1.0) -> Dict[object, float]:
     """Given a dictionary of elements and their inverse proportional occurrence, returns a dictionary with its
     probability distribution. For example, {'a':1, 'b':2, c:'2'} returns {'a':0.5, 'b':0.25, 'c':0.25} """
     probabilities = {}

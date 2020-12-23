@@ -19,10 +19,10 @@ def generate_global_var(program, function, c_type):
     if c_type.name not in program.global_vars.keys():
         # Creates the global vars for that type
         program.global_vars[c_type.name] = []
-    rand = probs_helper.random_value(probs.global_vars_prob)
-    max_value = len(program.global_vars[c_type.name])
-    if rand < max_value:
-        selected = probs_helper.random_value(probs_helper.compute_equal_prob(range(max_value)))
+    create_new_global_var = probs_helper.random_value(probs.new_global_var_prob)
+    number_of_vars = len(program.global_vars[c_type.name])
+    if not create_new_global_var and number_of_vars > 0:
+        selected = probs_helper.random_value(probs_helper.compute_equal_prob(range(number_of_vars)))
         # An existing global variable is taken
         return ast.global_variable(c_type, selected + 1)
     # A new global variable must be created
@@ -35,10 +35,10 @@ def generate_local_var(program, function, c_type):
     if c_type.name not in function.local_vars.keys():
         # Creates the local vars for that type
         function.local_vars[c_type.name] = []
-    rand = probs_helper.random_value(probs.local_vars_prob)
-    max_value = len(function.local_vars[c_type.name])
-    if rand < max_value:
-        selected = probs_helper.random_value(probs_helper.compute_equal_prob(range(max_value)))
+    create_new_local_var = probs_helper.random_value(probs.new_local_var_prob)
+    number_of_vars = len(function.local_vars[c_type.name])
+    if create_new_local_var and number_of_vars > 0:
+        selected = probs_helper.random_value(probs_helper.compute_equal_prob(range(number_of_vars)))
         # An existing local variable is taken
         return ast.local_variable(c_type, selected + 1)
     # A new local variable must be created
@@ -76,9 +76,10 @@ def generate_lvalue(program, function, exp_type, exp_depth_prob):
 
 
 def generate_basic_lvalue(program, function, c_type):
-    generator_name = probs_helper.random_value(probs.lvalue_prob)
-    generator = globals()[generator_name]
+    is_global_generator = probs_helper.random_value(probs.global_or_local_as_basic_lvalue_prob)
+    generator = generate_global_var if is_global_generator else generate_local_var
     return generator(program, function, c_type)
+
 
 def generate_literal(program, function, literal_type, from_declaration=False):
     try:
@@ -91,10 +92,9 @@ def generate_literal(program, function, literal_type, from_declaration=False):
             rand = probs_helper.random_value(prob)
             if not rand:
                 return None
-
         return literal_type.generate_literal(from_declaration=from_declaration)
     except ValueError:
-        # NOTE: Pointers, Struct and Arrays only generate literals in declarations, so if is necessary a literal,
+        # NOTE: Pointers, Struct and Arrays only generate literals in declarations, so if a literal is necessary,
         # generate a lvalue instead
         return generate_lvalue(program, function, literal_type, None)
 
@@ -105,11 +105,9 @@ def generate_expression(program, function, exp_type, exp_depth_prob):
     if probs_helper.random_value(probs.implicit_promotion_bool):
         try:
             new_type_cls = probs_helper.random_value(probs.promotions_prob[exp_type.__class__])
-            #  print_if_verbose("DEBUG IMPLICIT PROMOTION: {} -> {}".format(exp_type.__declaration__(), new_type_cls().__declaration__()))
             exp_type = new_type_cls()
         except KeyError:
             pass
-
 
     exp_depth = probs_helper.random_value(exp_depth_prob or probs.exp_depth_prob)
 
@@ -135,7 +133,7 @@ def generate_expression(program, function, exp_type, exp_depth_prob):
         return globals()[func_name](program, function, exp_type, operator, **kwargs)
 
     else:
-        return generate_expression_invocation(program, function, exp_type)
+        return generate_expression_invocation(program, function, exp_type, lower_exp_depth_prob)
 
 
 def generate_expression_arity_1(program, function, exp_type, operator,
@@ -207,14 +205,14 @@ def generate_expression_arity_3(program, function, exp_type, operator,
     return ast.TernaryExpression(sub_exp_1, sub_exp_2, sub_exp_3, operator, exp_type)
 
 
-def generate_expression_invocation(program, function, return_type):
+def generate_expression_invocation(program, function, return_type, exp_depth_prob):
     # generates the function (if necessary)
     invoked_func = generate_function(program, function, return_type)
 
     # generates the arguments
     params = []
     for name, arg_type in invoked_func.param_types:
-        params.append(generate_expression(program, function, arg_type, None))
+        params.append(generate_expression(program, function, arg_type, exp_depth_prob))
 
     # Count invocation
     program.invocation_as_expr[invoked_func.name] += 1
@@ -240,8 +238,9 @@ def generate_stmt_proc(program, function):
 
 
 def generate_stmt_func(program, function):
-    generator = probs_helper.random_value(probs.function_stmt_prob)
-    return globals()[generator](program, function)
+    statement_name = probs_helper.random_value(probs.function_stmt_prob)
+    generator_name = "generate_stmt_" + statement_name
+    return globals()[generator_name](program, function)
 
 
 def generate_stmt_assignment(program, function):
@@ -388,30 +387,28 @@ def generate_type_array(program, function, old_type):
 
 def generate_type_struct(program, function, old_type):
     # Do we take an existing struct with the type we want?
-    rand = probs_helper.random_value(probs.reuse_struct_field_prob)
+    reuse_struct = probs_helper.random_value(probs.reuse_struct_prob)
     structs = [s for s in program.structs if s.has_type(old_type)]
-    max_value = len(structs)
-    if rand < max_value:
-        selected = probs_helper.random_value(probs_helper.compute_equal_prob(range(max_value)))
+    existing_structs = len(structs)
+    if reuse_struct and existing_structs > 0:
+        selected = probs_helper.random_value(probs_helper.compute_equal_prob(range(existing_structs)))
         # An existing struct is taken
         return structs[selected]
 
-    # Do we add a field to an existing struct?
-    rand = probs_helper.random_value(probs.reuse_struct_prob)
-    max_value = len(program.structs)
-    if rand < max_value:
-
+    # Do we add a new field to an existing struct to create the expected one?
+    reuse_struct = probs_helper.random_value(probs.enhance_existing_struct_prob)
+    existing_structs = len(program.structs)
+    if reuse_struct and existing_structs > 0:
         if isinstance(old_type, ast.Struct) or (isinstance(old_type, ast.Array) and isinstance(old_type.type, ast.Struct)):
-            # No escoger una aleatoria, sino coger la que este menos referenciada desde otras estructuras
-            # Ordenar las estructuras por el grado de referencias hasta llegar a ellas
-            # Ej:
-            #  struct0 -> struct1 -> array(struct2) -> struct3      # La struct3 tine una "profundidad referencial" de 3
-            #  strunc4                                              # La struct4 tiene una "profundidad referencial" de 0
-            #  struct5 -> struct6                                   # La struct6 tiene una "profundidad referencial" de 1
+            # Take the least referenced struct. They are ordered by the number of references and the min is selected.
+            # E.g.:
+            #  struct0 -> struct1 -> array(struct2) -> struct3      # La struct3 has a reference depth of 3
+            #  strunc4                                              # La struct4 has a reference depth of 0
+            #  struct5 -> struct6                                   # La struct6 has a reference depth of 1
             struct_t = min(program.structs,
                            key=lambda s: max(len(path) for path in ast.reference_paths_to_struct(s, program.structs)))
         else:
-            selected = probs_helper.random_value(probs_helper.compute_equal_prob(range(max_value)))
+            selected = probs_helper.random_value(probs_helper.compute_equal_prob(range(existing_structs)))
             struct_t = program.structs[selected]
 
         if not struct_t.check_circular_reference(old_type):
@@ -420,7 +417,7 @@ def generate_type_struct(program, function, old_type):
                 struct_t.add_field(ast.name_struct_field(old_type, len(struct_t.fields)), old_type)
             return struct_t
 
-    # Or new one is created
+    # A new struct is created with that particular field
     struct_name = "struct" + str(len(program.structs))
     struct_t = ast.Struct(struct_name, [ast.name_struct_field(old_type, 0), old_type])
     program.structs.append(struct_t)
@@ -430,14 +427,13 @@ def generate_type_struct(program, function, old_type):
 ################ Functions and Program ################
 
 def generate_function(program, function, return_type):
-
     # Do we take an existing function?
     if isinstance(return_type, ast.Void):
         reuse = probs_helper.random_value(probs.reuse_proc_prob)
     else:
         reuse = probs_helper.random_value(probs.reuse_func_prob)
     functions = program.get_functions_by_return_type(return_type)
-    # XXX: Avoid recursion by default
+    # avoid recursion by default
     if reuse and len(functions):
         selected = probs_helper.random_value(probs_helper.compute_equal_prob(range(len(functions))))
         if functions[selected].name != function.name:
