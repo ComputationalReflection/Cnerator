@@ -1,0 +1,42 @@
+{
+  "functions_returning_void": {
+    "total": 22,
+    "condition": "lambda f: isinstance(f.return_type, cnerator.ast.Void)"
+  },
+  "functions_returning_bool": {
+    "total": 11,
+    "condition": "lambda f: isinstance(f.return_type, cnerator.ast.Bool)"
+  },
+  "functions_returning_char": {
+    "total": 10,
+    "condition": "lambda f: isinstance(f.return_type, cnerator.ast.SignedChar)"
+  },
+  "functions_returning_short": {
+    "total": 21,
+    "condition": "lambda f: isinstance(f.return_type, cnerator.ast.SignedShortInt)"
+  },
+  "functions_returning_int": {
+    "total": 7,
+    "condition": "lambda f: isinstance(f.return_type, cnerator.ast.SignedInt)"
+  },
+  "functions_returning_long_long": {
+    "total": 21,
+    "condition": "lambda f: isinstance(f.return_type, cnerator.ast.SignedLongLongInt)"
+  },
+  "functions_returning_float": {
+    "total": 22,
+    "condition": "lambda f: isinstance(f.return_type, cnerator.ast.Float)"
+  },
+  "functions_returning_double": {
+    "total": 22,
+    "condition": "lambda f: isinstance(f.return_type, cnerator.ast.Double)"
+  },
+  "functions_returning_pointer": {
+    "total": 7,
+    "condition": "lambda f: isinstance(f.return_type, cnerator.ast.Pointer)"
+  },
+  "functions_returning_struct": {
+    "total": 7,
+    "condition": "lambda f: isinstance(f.return_type, cnerator.ast.Struct)"
+  }
+}

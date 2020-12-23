@@ -18,7 +18,7 @@ def infer_return_type(program, function, operator, *args_t):
     if operator == "[]":
         assert arity == 2
         assert args_t[0].__class__ == ast.Array
-        assert args_t[1].__class__ in [t for t in probs.basic_types_prob.keys() if "Int" in t.__name__]
+        assert args_t[1].__class__ in [t for t in probs.primitive_types_prob.keys() if "Int" in t.__name__]
         return [args_t[0].type]
 
     if operator == ".":
@@ -36,7 +36,7 @@ def infer_return_type(program, function, operator, *args_t):
 
     if operator == "?:":
         assert arity == 3
-        assert args_t[0].__class__ in [t for t in probs.basic_types_prob.keys() if "Int" in t.__name__]
+        assert args_t[0].__class__ in [t for t in probs.primitive_types_prob.keys() if "Int" in t.__name__]
         assert args_t[1].__class__ == args_t[2].__class__
         return [args_t[1]]
 
@@ -102,7 +102,7 @@ def infer_operands_type(program, function, arity, operator, ret_t):
     if operator == "[]":
         assert arity == 2
         array_obj = _generate_type(ast.Array, ret_t)
-        return [(array_obj, t()) for t in probs.basic_types_prob.keys() if "Int" in t.__name__]
+        return [(array_obj, t()) for t in probs.primitive_types_prob.keys() if "Int" in t.__name__]
 
     if operator == ".":
         assert arity == 1
@@ -147,7 +147,7 @@ def _infer_operands_type(program, function, arity, operator, ret_t):
     if ret_t.__class__ in [ast.Pointer, ast.Array]:
         type_obj = ret_t.type
     else:
-        type_cls = probs_helper.random_value(probs.basic_types_prob)
+        type_cls = probs_helper.random_value(probs.primitive_types_prob)
         type_obj = type_cls()
     if arity == 1:
         return [_generate_type(arg_t, type_obj) for arg_t in args_t]

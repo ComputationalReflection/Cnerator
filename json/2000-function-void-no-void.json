@@ -5,6 +5,6 @@
   },
   "functions_not_returning_void": {
     "total": 2000,
-    "condition": "lambda f: !isinstance(f.return_type, cnerator.ast.Void)"
+    "condition": "lambda f: not isinstance(f.return_type, cnerator.ast.Void)"
   }
 }

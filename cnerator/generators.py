@@ -3,7 +3,7 @@ from __future__ import print_function
 
 from typing import Dict
 
-from cnerator import probs, limitations, probs_helper, ast, type_inference, utils, function_subs
+from cnerator import probs, probs_helper, ast, type_inference, utils, function_subs
 from cnerator.utils import print_if_verbose
 
 
@@ -118,15 +118,7 @@ def generate_expression(program, function, exp_type, exp_depth_prob):
 
     lower_exp_depth_prob = probs_helper.compute_equal_prob(range(0, exp_depth))
 
-    # <FILTER RETURN TYPES>
-    #  If the type is not the selected for the return type of the functions, calculate a new arity probability without
-    # invocations
-
-    if limitations.allowed_return_types and not isinstance(exp_type, tuple(limitations.allowed_return_types)):
-        isCall = False
-    else:
-        isCall = probs_helper.random_value(probs.call_prob)
-    # <FILTER RETURN TYPES/>
+    isCall = probs_helper.random_value(probs.call_prob)
 
     if not isCall:
         operators = ast.get_operators(exp_type, "normal")
@@ -143,11 +135,6 @@ def generate_expression(program, function, exp_type, exp_depth_prob):
         return globals()[func_name](program, function, exp_type, operator, **kwargs)
 
     else:
-        # <FILTER RETURN TYPES>
-        if limitations.allowed_return_types:
-            assert isinstance(exp_type, tuple(limitations.allowed_return_types)), \
-                "{} not in {}".format(repr(exp_type), repr(limitations.allowed_return_types))
-        # <FILTER RETURN TYPES/>
         return generate_expression_invocation(program, function, exp_type)
 
 
@@ -333,23 +320,15 @@ def _return_types_distribution(program, white_list):
 def generate_stmt_invocation(program, function, invoked_func=None):
     if not invoked_func:
         # generates return type
-        # <FILTER RETURN TYPES>
-        if limitations.allowed_return_types:
-            new_return_types_prob = probs_helper.compute_inverse_proportional_prob(
-               _return_types_distribution(program, limitations.allowed_return_types))
+        func_or_proc = probs_helper.random_value(probs.stmt_invocation_prob)
+        if func_or_proc is ast.FuncProc.Proc:
+            return_type = ast.Void()
+        else:
+            # Recalculate probs in relation with the amount of functions
+            amounts = _return_types_distribution(program, probs.return_types_prob)
+            new_return_types_prob = probs_helper.compute_inverse_proportional_prob(amounts)
             return_type_cls = probs_helper.random_value(new_return_types_prob)
             return_type = generate_type(program, function, new_type_cls=return_type_cls, old_type_obj=None)
-        else:
-            func_or_proc = probs_helper.random_value(probs.stmt_invocation_prob)
-            if func_or_proc is ast.FuncProc.Proc:
-                return_type = ast.Void()
-            else:
-                # Recalculate probs in relation with the amount of functions
-                amounts = _return_types_distribution(program, probs.return_types_prob)
-                new_return_types_prob = probs_helper.compute_inverse_proportional_prob(amounts)
-                return_type_cls = probs_helper.random_value(new_return_types_prob)
-                return_type = generate_type(program, function, new_type_cls=return_type_cls, old_type_obj=None)
-        # <FILTER RETURN TYPES/>
 
         # generates the function (if necessary)
         invoked_func = generate_function(program, function, return_type)
@@ -381,19 +360,19 @@ def generate_stmt_return(program, function, exp):
 
 def generate_type(program, function, new_type_cls=None, old_type_obj=None):
 
-    new_type_cls = new_type_cls or probs_helper.random_value(probs.basic_types_prob)
+    new_type_cls = new_type_cls or probs_helper.random_value(probs.all_types_prob)
 
     # Try to call more specific generator
     try:
         cls_name = utils.camel_case_to_snake_case(new_type_cls.__name__)
         func_name = "generate_type_{}".format(cls_name)
-        generator = globals()[func_name]       # XXX: Call this first to avoid waisting recursion calls in case of exception
+        generator = globals()[func_name]
         if old_type_obj is None:
-            old_type_cls = probs_helper.random_value(probs.basic_types_prob)
+            old_type_cls = probs_helper.random_value(probs.all_types_prob)
             old_type_obj = generate_type(program, function, new_type_cls=old_type_cls, old_type_obj=None)
         return generator(program, function, old_type_obj)
 
-    # Use this as generic
+    # This is called when building a primitive type (Double, Float, Int...)
     except KeyError:
         return new_type_cls()
 
@@ -451,12 +430,6 @@ def generate_type_struct(program, function, old_type):
 ################ Functions and Program ################
 
 def generate_function(program, function, return_type):
-
-    # <FILTER RETURN TYPES>
-    if limitations.allowed_return_types:
-        assert isinstance(return_type, tuple(limitations.allowed_return_types)),\
-            "{} not in {}".format(repr(return_type), repr(limitations.allowed_return_types))
-    # <FILTER RETURN TYPES/>
 
     # Do we take an existing function?
     if isinstance(return_type, ast.Void):
