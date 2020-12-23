@@ -77,24 +77,24 @@ return_exp_depth_prob = probs_helper.compute_equal_prob(set(range(0, 3)))
 
 # ------------ Functions --------------
 
-doc[''] = " (default: )"
-call_prob = {True: 0.3, False: 0.7}
+doc['call_prob'] = "probability that a new expression is a function invocation (default: 20%)"
+call_prob = {True: 0.2, False: 0.8}
 
-doc[''] = " (default: )"
-basic_expression_prob = probs_helper.compute_equal_prob({'generate_literal', 'generate_local_var',
-                                                         'generate_global_var', 'generate_param_var'})
+doc['basic_expression_prob'] = "basic expressions (default: same probability among literal, local_var, " \
+                               "global_var, and param_var)"
+basic_expression_prob = probs_helper.compute_equal_prob({'literal', 'local_var', 'global_var', 'param_var'})
 
-doc[''] = " (default: )"
+doc['param_number_prob'] = "number of parameters (default: 10% for 1, 20% for [1,4] and 5% for [5,6])"
 param_number_prob = {0: 0.10, 1: 0.20, 2: 0.20, 3: 0.20, 4: 0.20, 5: 0.05, 6: 0.05}
 
-doc[''] = " (default: )"
+doc['param_types_prob'] = "types of the parameters (default: all types are equally likely)"
 param_types_prob = all_types_prob
 
 # stmt_invocation_prob = {ast.FuncProc.Func: 0.2, ast.FuncProc.Proc: 0.8}
-doc[''] = " (default: )"
+doc['stmt_invocation_prob'] = "invocation statements to functions or procedures (default: function=88%, procedure=12%)"
 stmt_invocation_prob = {ast.FuncProc.Func: 0.88, ast.FuncProc.Proc: 0.12}
 
-doc[''] = " (default: )"
+doc['return_types_prob'] = "function return types (default: all types are equally likely)"
 return_types_prob = all_types_prob
 
 doc['int_emulate_bool'] = "probability of using generating a bool return (0 or 1) when an int type is expected " \

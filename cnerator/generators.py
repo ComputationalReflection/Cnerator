@@ -10,7 +10,8 @@ from cnerator.utils import print_if_verbose
 ################ Expressions ####################
 
 def generate_basic_exp(program, function, c_type):
-    generator_name = probs_helper.random_value(probs.basic_expression_prob)
+    basic_expression_name = probs_helper.random_value(probs.basic_expression_prob)
+    generator_name = "generate_" + basic_expression_name
     generator = globals()[generator_name]
     return generator(program, function, c_type)
 
