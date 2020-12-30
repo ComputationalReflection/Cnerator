@@ -6,8 +6,6 @@ import random
 import re
 import string
 
-from cnerator import graph, utils, operators
-
 
 ########### Utils ##############
 
@@ -577,6 +575,7 @@ class LongDouble(NumericType):
 
 
 def structs_references_graph(structs):
+    from cnerator import graph
     references = collections.defaultdict(list)
     for s in structs:
         for f, t in s.fields:
@@ -759,6 +758,7 @@ class FuncProc(object):
 ########## Helper functions ##############
 
 def get_operators(c_type, _type):
+    from cnerator import utils, operators
     operator_type = "{}_{}_operators".format(
         utils.camel_case_to_snake_case(c_type.__class__.__name__),
         _type

@@ -1,7 +1,7 @@
 import argparse
 import json
 from typing import List, Dict
-import cnerator
+from params.epilog import build_epilog
 
 
 def get_app_args():
@@ -11,7 +11,8 @@ def get_app_args():
 
 
 def parse_args():
-    parser = argparse.ArgumentParser(description='Generates a compilable C program')
+    parser = argparse.ArgumentParser(description='Generates a compilable C program', epilog=build_epilog(),
+                                     formatter_class=argparse.RawDescriptionHelpFormatter)
     parser.add_argument("-O", "--output_dir", metavar="PATH", default="out",
                         help="Output directory (default: %(default)s)")
     parser.add_argument("-o", "--output", metavar="NAME", default="main",

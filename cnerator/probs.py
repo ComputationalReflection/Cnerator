@@ -10,6 +10,9 @@ The doc:Dict[str,str] documents all the probabilities meanings to be shown to th
 
 from cnerator import probs_helper, ast
 
+# Name of the global dictionary used to document the probabilities
+DOC_NAME = "doc"
+
 # the doc:Dict[str,str] documents all the probabilities meanings to be shown to the user.
 doc = dict()
 

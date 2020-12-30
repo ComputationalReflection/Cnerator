@@ -2,8 +2,8 @@
 # -*- coding: utf-8 -*-
 
 """
-Example execution of Cnerator passing no parameters.
-It creates a program using the 1-function-each-type-10-total.json file, running different visitors.
+Example execution of Cnerator to create a particular number of functions.
+It creates a program using the 1-function-each-type-10.json file, running different visitors.
 """
 
 import sys

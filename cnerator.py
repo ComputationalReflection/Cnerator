@@ -1,8 +1,6 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
-#TODO Mirar cómo hacer que parseargs pueda pedir help de una opción para poder hacer "python cnerator.py --help -p" y mostrar todas las probabilidades cogiendo el doc
-#TODO Coger los docs y mostrarlos como un string cuando se llame a --help -p
 #TODO Poder pasar python "cnerator.py -p 'call_prob = {True: 0.3, False: 0.7}'"
 #TODO Poder pasar python "cnerator.py -P json/probs/probs.json"
 
