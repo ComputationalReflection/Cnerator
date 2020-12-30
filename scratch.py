@@ -7,7 +7,7 @@ def f(param):
 
 f(3 for i in range(3))
 
-with open('json/1-function-each-type-10-total.json') as json_file:
+with open('json/functions/1-function-each-type.json') as json_file:
     data = json.load(json_file)
     print(data)
     for key, content in data.items():

@@ -92,7 +92,7 @@ def split_in_similar_parts(seq, amount):
 
 def write_in_multiple_files(program, args):
     includes, defines, structs, prototypes, global_vars, _, main = program.stringify_parts()
-    functions_parts = split_in_similar_parts(program.functions, args.parts)
+    functions_parts = split_in_similar_parts(program.functions, args.nfiles)
 
     if args.verbose:
         print("")
@@ -195,7 +195,7 @@ def write_in_multiple_files(program, args):
 
 
 def write_in_files(program, args):
-    if args.parts == 1:
+    if args.nfiles == 1:
         write_in_one_file(program, args)
     else:
         write_in_multiple_files(program, args)

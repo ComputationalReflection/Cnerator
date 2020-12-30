@@ -12,7 +12,7 @@ VERBOSE = True
 
 if __name__ == "__main__":
     sys.argv.append('-O../out')  # generate output files in ../out
-    sys.argv.append('-f../json/2000-function-void-no-void.json')
+    sys.argv.append('-f../json/functions/2000-function-void-no-void.json')
     sys.argv.append('-Vvisitors.func_to_proc;visitors.return_instrumentation;visitors.fix_ptr_literal')
     if VERBOSE:
         sys.argv.append("-v")

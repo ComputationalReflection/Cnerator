@@ -4,7 +4,7 @@ from typing import List, Tuple
 OPTION_PREFIX = " - "
 NEW_LINE_PREFIX = "   "
 MESSAGE_PRELUDE = "What follows is the available probabilites, which can be customized by the " \
-                  "user with the -b and -B options:\n"
+                  "user with the -p and -P options (see examples in json/probabilities directory):\n"
 MAX_LINE_WITH = 80
 
 
@@ -26,6 +26,7 @@ def _break_line(line: str, max_chars_per_line: int) -> List[str]:
     if len(lines) == 1:
         return lines
     return [lines[0]] + _break_line(lines[1], max_chars_per_line)
+
 
 def _break_line_in_two(line: str, max_chars_per_line: int) -> List[str]:
     """Breaks a line into the first line lower than max_char_per_line and the remaining string"""

@@ -1,7 +1,6 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
-#TODO Poder pasar python "cnerator.py -p 'call_prob = {True: 0.3, False: 0.7}'"
 #TODO Poder pasar python "cnerator.py -P json/probs/probs.json"
 
 
@@ -12,8 +11,9 @@ import sys
 
 from debug import call_inspector, structure_inspector
 from params import parameters
-from params.parameters import parse_args, get_modules_to_import
+from params.parameters import parse_args, get_modules_to_import, get_probs_to_override
 from params.writter import write_in_files
+from params import json_probs
 import cnerator
 
 
@@ -28,10 +28,16 @@ def run(args):
     else:  # otherwise, a random program is generated, considering the specified probabilities
         program = cnerator.generators.generate_program()
 
-    #  Load all the visitor modules and run them, in the same order as specified by the user
+    # Load all the visitor modules and run them, in the same order as specified by the user
     modules = get_modules_to_import(args.visitors)
     for module in modules:
         module.visit(program)
+
+    # Get the probabilites from the command line arguments and modify the default ones
+    cnerator.probs.set_probabilites(get_probs_to_override(args.probs))
+    print(args)
+    if args.probsfile:
+        probabilites = json_probs.parse_probabilites_specification_json_file(args.probsfile)
 
     # Create output directory
     if not os.path.isdir(args.output_dir):

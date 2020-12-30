@@ -8,7 +8,8 @@ For a fixed value, just set its probability to 1.0.
 The doc:Dict[str,str] documents all the probabilities meanings to be shown to the user.
 """
 
-from cnerator import probs_helper, ast
+from cnerator import probs_helper, ast, probs
+from typing import Dict
 
 # Name of the global dictionary used to document the probabilities
 DOC_NAME = "doc"
@@ -289,3 +290,17 @@ promotions_prob = {
         ast.LongDouble,
     }),
 }
+
+
+# ------------ Functions --------------
+
+def set_probabilites(probabilites: Dict[str, dict]) -> None:
+    """Modifies the global variables of this module, that is the default probabilities of Cnerator"""
+    if probabilites:
+        for (prob_name, prob_dict) in probabilites.items():
+            assert does_this_probability_exist(prob_name), f"The probability '{prob_name}' is not defined in probs module"
+            probs.__dict__[prob_name] = prob_dict
+
+
+def does_this_probability_exist(probability_name: str) -> bool:
+    return probability_name in probs.__dict__.keys()
