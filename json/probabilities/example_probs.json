@@ -41,7 +41,7 @@
    },
    "number_stmts_main_prob":{
       "__prob_distribution__":"normal_prob",
-      "__mean__":6,
-      "__stdev__":3
+      "__mean__": 10,
+      "__stdev__":  3
    }
 }

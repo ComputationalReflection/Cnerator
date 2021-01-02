@@ -8,6 +8,7 @@ All the probabilities (contents of the dictionary) must sum 0.0.
 
 import random
 from typing import Dict, List
+import numpy as np
 
 
 FLOAT_PRECISION = 1e-8
@@ -57,4 +58,13 @@ def compute_inverse_proportional_prob(population: Dict[object, float], base: flo
         probabilities[individual] = base * (prob / total)
     assert abs(1.0 - sum(probabilities.values())) <= FLOAT_PRECISION
     return probabilities
+
+
+def compute_normal_prob(mean: int, stdev: int, base: float = 1.0, number: int = 30) -> Dict[object, float]:
+    """Given the mean and standard deviation, returns a dictionary a normal distribution"""
+    float_values = np.random.normal(mean, stdev, size=number)
+    int_values = [int(float_value) for float_value in float_values]
+    frequencies = {int_value: int_values.count(int_value) for int_value in int_values}
+    return compute_proportional_prob(frequencies, base)
+
 

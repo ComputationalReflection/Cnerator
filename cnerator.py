@@ -1,9 +1,6 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
-#TODO Poder pasar python "cnerator.py -P json/probs/probs.json"
-
-
 from __future__ import print_function
 
 import os
@@ -21,6 +18,13 @@ def run(args):
     # Set the recursion limit
     sys.setrecursionlimit(args.recursion)
 
+    # Get the probabilites from the command line arguments and modify the default ones
+    cnerator.probs.set_probabilites(get_probs_to_override(args.probs))
+    if args.probsfile:
+        from cnerator import probs
+        probabilites = json_probs.parse_probabilites_specification_json_file(args.probsfile)
+        probs.set_probabilites(probabilites)
+
     # Process the json file to create functions, or generates a program using the probabilities defined
     if args.functions:  # if a json file was passed, it defines the functions to be generated
         dictionary = parameters.parse_function_specification_json_file(args.functions)
@@ -32,12 +36,6 @@ def run(args):
     modules = get_modules_to_import(args.visitors)
     for module in modules:
         module.visit(program)
-
-    # Get the probabilites from the command line arguments and modify the default ones
-    cnerator.probs.set_probabilites(get_probs_to_override(args.probs))
-    print(args)
-    if args.probsfile:
-        probabilites = json_probs.parse_probabilites_specification_json_file(args.probsfile)
 
     # Create output directory
     if not os.path.isdir(args.output_dir):

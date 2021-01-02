@@ -10,6 +10,7 @@ import sys
 VERBOSE = True
 
 if __name__ == "__main__":
+    sys.argv.append('-O../out')  # generate output files in ../out
     sys.argv.append('-P../json/probabilities/example_probs.json')
     if VERBOSE:
         sys.argv.append("-v")
