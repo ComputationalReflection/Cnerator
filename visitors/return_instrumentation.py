@@ -7,7 +7,6 @@ If the function returns void, a label and an explicit return function is added a
 
 
 from singledispatch import singledispatch
-
 import cnerator
 from cnerator.utils import print_if_verbose
 
