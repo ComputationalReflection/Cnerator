@@ -166,7 +166,7 @@ def write_in_multiple_files(program, args):
         if args.verbose:
             print("Part {}: {} total functions.".format(i + 1, len(part)))
 
-        functions = "".join(str(func) for func in part)
+        functions = "".join(func.to_str() for func in part)
         functions = replace_code(functions)
 
         functions_file = [
@@ -202,7 +202,7 @@ def write_in_files(program, args):
 
 
 def write_in_one_file(program, args):
-    code = replace_code(str(program))
+    code = replace_code(program.to_str(indent=0))
 
     # Write code to main file
     file_path = os.path.join(args.output_dir, args.output + ".c")

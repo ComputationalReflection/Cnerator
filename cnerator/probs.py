@@ -37,6 +37,8 @@ primitive_types = {
     ast.LongDouble,
 }
 
+all_types = set(primitive_types).union({ast.Pointer, ast.Struct, ast.Array})
+
 doc['primitive_types_prob'] = "probabilities among primitive types (default: equal probability for all the types)"
 primitive_types_prob = probs_helper.compute_equal_prob(primitive_types)
 
@@ -49,14 +51,14 @@ augmented_assignment_types_prob = probs_helper.compute_equal_prob(primitive_type
 
 doc['all_types_prob'] = "type probability when any type may occur in a syntax construction " \
                         "(default: equal probability for any type)"
-all_types_prob = probs_helper.compute_equal_prob(set(primitive_types).union({ ast.Pointer, ast.Array, ast.Struct}))
+all_types_prob = probs_helper.compute_equal_prob(all_types)
 
 doc['array_size'] = "size of the arrays to be created (default: 1-10)"
 array_size = probs_helper.compute_equal_prob(set(range(1, 10)))
 
 doc['reuse_struct_prob'] = "when a struct is needed, probability of using and existing one " \
                            "rather than creating a new one (default: 90%)"
-reuse_struct_prob = {True: 0.9, False: 0.1}
+reuse_struct_prob = {True: 0.99, False: 0.01}
 
 doc['enhance_existing_struct_prob'] = "when a struct is needed, probability of extending an existing one with " \
                                       "the demanded field rather than creating a new one (default: 70%)"
@@ -101,7 +103,7 @@ stmt_invocation_prob = {ast.FuncProc.Func: 0.88, ast.FuncProc.Proc: 0.12}
 doc['return_types_prob'] = "function return types (default: all types are equally likely)"
 return_types_prob = all_types_prob
 
-doc['int_emulate_bool'] = "probability of using generating a bool return (0 or 1) when an int type is expected " \
+doc['int_emulate_bool'] = "probability of generating a bool return (0 or 1) when an int type is expected " \
                           "(default: 20%)"
 int_emulate_bool = {True: 0.2, False: 0.8}
 
@@ -114,13 +116,13 @@ new_global_var_prob = {True: 0.1, False: 0.9}
 
 doc['new_local_var_prob'] = "probability of creating a new local variable when one of the expected type" \
                              "already exists (default: 10%)"
-new_local_var_prob = {True: 0.01, False: 0.99}
+new_local_var_prob = {True: 0.1, False: 0.9}
 
 doc['reuse_func_prob'] = "probability of reusing an existing function of the expected type (default: 80%)"
-reuse_func_prob = {True: 0.8, False: 0.2}
+reuse_func_prob = {True: 0.99, False: 0.01}
 
 doc['reuse_proc_prob'] = "probability of reusing an existing procedure of the expected type (default: 70%)"
-reuse_proc_prob = {True: 0.7, False: 0.3}
+reuse_proc_prob = {True: 0.99, False: 0.01}
 
 doc['global_or_local_as_basic_lvalue_prob'] = "When a basic lvalue needs to be generated, this is the " \
                                               "probability of using a global variable; otherwise, " \
@@ -130,13 +132,30 @@ global_or_local_as_basic_lvalue_prob = {True: 0.5, False: 0.5}
 
 # ------------ Statements --------------
 
-doc['function_stmt_prob'] = "each kind of statement in functions (default: assignment=60%, invocation=20%, " \
-                            "increment/decrement= 20%, augmented assignment010%)"
-function_stmt_prob = {'assignment': 0.6, 'invocation': 0.2, 'incdec': 0.1, 'augmented_assignment': 0.1}
+doc['basic_or_compound_stmt_prob'] = "probability of generating a basic (no block) or compound statement " \
+                                     "(default: basic=70%, compound=30%)"
+basic_or_compound_stmt_prob = {True: 0.5, False: 0.5}
 
-doc['procedure_stmt_prob'] = "each kind of statement in procedures (default: assignment=60%, invocation=20%, " \
-                            "increment/decrement= 20%, augmented assignment010%)"
-procedure_stmt_prob = function_stmt_prob
+doc['function_basic_stmt_prob'] = "each kind of basic (no block) statement in functions (default: assignment=60%, " \
+                                  "invocation=20%, increment/decrement=20%, augmented assignment=10%)"
+function_basic_stmt_prob = probs_helper.compute_proportional_prob({'assignment': 4, 'invocation': 4, 'incdec': 2,
+                        'augmented_assignment': 2, 'expression_stmt': 1})
+
+doc['function_compound_stmt_prob'] = "each kind of compound statement (with blocks) in functions " \
+                                     "(equal probability for Block, If, Switch, Do, While, For)"
+function_compound_stmt_prob = probs_helper.compute_proportional_prob({'block': 1, 'while': 4, 'do': 4,
+                                                                      'if': 4, 'for': 40, 'switch': 4})
+
+doc['stmt_depth_prob'] = "statement depth (default: equal probabilities for [0-2])"
+stmt_depth_prob = probs_helper.compute_equal_prob(set(range(0, 3)))
+
+doc['procedure_basic_stmt_prob'] = "each kind of basic (no block) statement in functions (default: assignment=60%, " \
+                                  "invocation=20%, increment/decrement=20%, augmented assignment=10%)"
+procedure_basic_stmt_prob = function_basic_stmt_prob
+
+doc['procedure_compound_stmt_prob'] = "each kind of compound statement (with blocks) in functions " \
+                                     "(equal probability for Block, If, Switch, Do, While, For)"
+procedure_compound_stmt_prob = function_compound_stmt_prob
 
 doc['number_stmts_main_prob'] = "number of statements in the main function " \
                                 "(default: equal probabilities between 5 and 10)"
@@ -146,6 +165,37 @@ doc['number_stmts_func_prob'] = "number of statements in functions " \
                                 "(default: 20% for [1,4] and 10% for [5, 6])"
 number_stmts_func_prob = {1: 0.2, 2: 0.2, 3: 0.2, 4: 0.2, 5: 0.1, 6: 0.1}
 
+doc['number_stmts_block'] = "number of statements in blocks (default: 1/3 for 1, 2 and 3)"
+number_stmts_func_block = probs_helper.compute_equal_prob({1, 2, 3})
+
+doc['else_body_prob'] = "probability of generating an else body for an if statement " \
+                                     "(default: 50%)"
+else_body_prob = {True: 0.5, False: 0.5}
+
+doc['number_cases_prob'] = "number of cases in switch statements " \
+                                "(default: equal probabilities between 1 and 4)"
+number_cases_prob = probs_helper.compute_equal_prob(set(range(1, 5)))
+
+doc['cases_type_prob'] = "type of the cases clauses in switch statements " \
+                                "(default: equal probabilities between types promotable to int, excluding bool)"
+cases_type_prob = probs_helper.compute_equal_prob({ast.SignedChar, ast.UnsignedChar,
+                            ast.SignedShortInt, ast.UnsignedShortInt, ast.SignedInt, ast.UnsignedInt})
+
+doc['default_switch_prob'] = "probability of generating a default case in a switch statement " \
+                                     "(default: 80%)"
+default_switch_prob = {True: 0.8, False: 0.2}
+
+doc['break_case_prob'] = "probability of having a break statement at the end of a case block " \
+                                     "(default: 70%)"
+break_case_prob = {True: 0.7, False: 0.3}
+
+doc['return_at_end_if_else_bodies_prob'] = "probability of having a return at the end of a if / else blocks " \
+                                     "(default: 15%)"
+return_at_end_if_else_bodies_prob = {True: 0.15, False: 0.85}
+
+doc['return_at_end_case_prob'] = "probability of having a return at the end of the cases clauses in a switch " \
+                                     "statement (default: 15%)"
+return_at_end_case_prob = {True: 0.15, False: 0.85}
 
 # ------------ Promotions --------------
 

@@ -1,9 +1,10 @@
 {
-   "function_stmt_prob":{
-      "assignment":0.6,
+   "function_basic_stmt_prob":{
+      "assignment":0.5,
       "invocation":0.2,
       "incdec":0.1,
-      "augmented_assignment":0.1
+      "augmented_assignment":0.1,
+      "return": 0.1
    },
    "array_literal_initialization_prob":{
       "True":0.1,

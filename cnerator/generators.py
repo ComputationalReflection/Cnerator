@@ -1,10 +1,12 @@
 
 from __future__ import print_function
 
-from typing import Dict
+from typing import Union
 
-from cnerator import probs, probs_helper, ast, type_inference, utils, function_subs
+from cnerator import probs, probs_helper, ast, type_inference, utils
+from visitors import function_subs
 from cnerator.utils import print_if_verbose
+from cnerator.ast import *
 
 
 ################ Expressions ####################
@@ -18,7 +20,7 @@ def generate_basic_exp(program, function, c_type):
 
 def generate_global_var(program, function, c_type):
     if c_type.name not in program.global_vars.keys():
-        # Creates the global vars for that type
+        # Creates the global vars empty list for that type
         program.global_vars[c_type.name] = []
     create_new_global_var = probs_helper.random_value(probs.new_global_var_prob)
     number_of_vars = len(program.global_vars[c_type.name])
@@ -34,11 +36,11 @@ def generate_global_var(program, function, c_type):
 
 def generate_local_var(program, function, c_type):
     if c_type.name not in function.local_vars.keys():
-        # Creates the local vars for that type
+        # Creates the local vars empty list for that type
         function.local_vars[c_type.name] = []
     create_new_local_var = probs_helper.random_value(probs.new_local_var_prob)
     number_of_vars = len(function.local_vars[c_type.name])
-    if create_new_local_var and number_of_vars > 0:
+    if not create_new_local_var and number_of_vars > 0:
         selected = probs_helper.random_value(probs_helper.compute_equal_prob(range(number_of_vars)))
         # An existing local variable is taken
         return ast.local_variable(c_type, selected + 1)
@@ -212,8 +214,11 @@ def generate_expression_invocation(program, function, return_type, exp_depth_pro
 
     # generates the arguments
     params = []
+    expression_depth = probs_helper.random_value(exp_depth_prob)
+    lower_exp_depth_prob = {0: 1} if exp_depth_prob == 0 \
+        else probs_helper.compute_equal_prob(range(0, expression_depth + 1))
     for name, arg_type in invoked_func.param_types:
-        params.append(generate_expression(program, function, arg_type, exp_depth_prob))
+        params.append(generate_expression(program, function, arg_type, lower_exp_depth_prob))
 
     # Count invocation
     program.invocation_as_expr[invoked_func.name] += 1
@@ -229,19 +234,34 @@ def generate_expression_incdec(program, function, exp_type, operator):
     return ast.UnaryExpression(operator, sub_exp_1, exp_type, post_op)
 
 
-
 ################ Statements ####################
 
 
-def generate_stmt_proc(program, function):
-    generator = probs_helper.random_value(probs.procedure_stmt_prob)
-    return globals()[generator](program, function)
+def generate_stmt_func(program: Program, function: Function, stmt_depth: Union[int, None] = None)-> ASTNode:
+    """Generates a statement inside a function"""
+    is_basic_statement = probs_helper.random_value(probs.basic_or_compound_stmt_prob)
+    if is_basic_statement:
+        return generate_basic_stmt(program, function)
+    else:
+        stmt_depth = probs_helper.random_value(probs.stmt_depth_prob) if stmt_depth is None else stmt_depth
+        if stmt_depth <= 0:
+            return generate_basic_stmt(program, function)
+        else:
+            return generate_compound_stmt(program, function, stmt_depth)
 
 
-def generate_stmt_func(program, function):
-    statement_name = probs_helper.random_value(probs.function_stmt_prob)
+def generate_basic_stmt(program: Program, function: Function) -> ASTNode:
+    """Generates a statement with no block inside of it"""
+    statement_name = probs_helper.random_value(probs.function_basic_stmt_prob)
     generator_name = "generate_stmt_" + statement_name
     return globals()[generator_name](program, function)
+
+
+def generate_compound_stmt(program: Program, function: Function, stmt_depth: int)-> ASTNode:
+    """Generates a compound statement (with blocks inside of it), given the maximum depth for blocks"""
+    statement_name = probs_helper.random_value(probs.function_compound_stmt_prob)
+    generator_name = "generate_stmt_" + statement_name
+    return globals()[generator_name](program, function, stmt_depth)
 
 
 def generate_stmt_assignment(program, function):
@@ -261,6 +281,13 @@ def generate_stmt_assignment(program, function):
 
     # Compose all
     return ast.Assignment(left_exp, operator, right_exp, assignment_type)
+
+
+def generate_stmt_expression_stmt(program, function):
+    """Generates an expression statement: <expression> ;"""
+    expected_type_cls = probs_helper.random_value(probs.all_types_prob)
+    expected_type = generate_type(program, function, new_type_cls=expected_type_cls, old_type_obj=None)
+    return generate_expression(program, function, expected_type, None)
 
 
 def generate_stmt_augmented_assignment(program, function):
@@ -336,7 +363,7 @@ def generate_stmt_invocation(program, function, invoked_func=None):
     # generates the params
     params = []
     for name, arg_type in invoked_func.param_types:
-        params.append(generate_expression(program, function, arg_type, None))
+        params.append(generate_expression(program, function, arg_type, probs.exp_depth_prob))
 
     # Count invocation
     program.invocation_as_stmt[invoked_func.name] += 1
@@ -345,7 +372,7 @@ def generate_stmt_invocation(program, function, invoked_func=None):
     return ast.Invocation(invoked_func.name, params, invoked_func.return_type, True)
 
 
-def generate_stmt_return(program, function, exp):
+def generate_stmt_return(program, function, exp=None):
     c_type = function.return_type
     if exp is None:
         if isinstance(c_type, ast.SignedInt) and probs_helper.random_value(probs.int_emulate_bool):
@@ -354,6 +381,101 @@ def generate_stmt_return(program, function, exp):
         else: 
             exp = generate_expression(program, function, c_type, probs.return_exp_depth_prob)
     return ast.Return(exp, c_type)
+
+
+def generate_stmt_block(program: Program, function: Function, stmt_depth: int) -> Block:
+    """Generates a block statement"""
+    number_statements = probs_helper.random_value(probs.number_stmts_func_block)
+    statements = [generate_stmt_func(program, function, stmt_depth - 1) for _ in range(number_statements)]
+    return ast.Block(statements)
+
+
+def generate_stmt_while(program: Program, function: Function, stmt_depth: int) -> While:
+    """Generates a while statement"""
+    condition = generate_expression(program, function, SignedInt(), None)
+    number_statements = probs_helper.random_value(probs.number_stmts_func_block)
+    statements = [generate_stmt_func(program, function, stmt_depth - 1) for _ in range(number_statements)]
+    return ast.While(condition, statements)
+
+
+def generate_stmt_do(program: Program, function: Function, stmt_depth: int) -> Do:
+    """Generates a do statement"""
+    number_statements = probs_helper.random_value(probs.number_stmts_func_block)
+    statements = [generate_stmt_func(program, function, stmt_depth - 1) for _ in range(number_statements)]
+    condition = generate_expression(program, function, SignedInt(), None)
+    return ast.Do(statements, condition)
+
+
+def generate_stmt_if(program: Program, function: Function, stmt_depth: int) -> If:
+    """Generates an if / else statement"""
+    # generate condition
+    condition = generate_expression(program, function, SignedInt(), None)
+    # generate if body
+    number_if_statements = probs_helper.random_value(probs.number_stmts_func_block)
+    if_statements = [generate_stmt_func(program, function, stmt_depth - 1) for _ in range(number_if_statements)]
+    is_there_return_stmt = not isinstance(function.return_type, Void) and \
+                           probs_helper.random_value(probs.return_at_end_if_else_bodies_prob)
+    if is_there_return_stmt:  # generate a return statement at the end of the if block
+        if_statements.append(generate_stmt_return(program, function,
+                                    generate_expression(program, function, function.return_type, probs.exp_depth_prob)))
+    # generate else body
+    is_there_else_body = probs_helper.random_value(probs.else_body_prob)
+    if is_there_else_body:
+        number_else_statements = probs_helper.random_value(probs.number_stmts_func_block)
+        else_statements = [generate_stmt_func(program, function, stmt_depth - 1) for _ in range(number_else_statements)]
+        if is_there_return_stmt:  # generate a return statement at the end of the else block
+            else_statements.append(generate_stmt_return(program, function,
+                                generate_expression(program, function, function.return_type, probs.exp_depth_prob)))
+        return ast.If(condition, if_statements, else_statements)
+    else:
+        return ast.If(condition, if_statements, [])
+
+
+def generate_stmt_for(program: Program, function: Function, stmt_depth: int) -> For:
+    """Generates a for statement"""
+    initialization = generate_basic_stmt(program, function)
+    condition = generate_expression(program, function, SignedInt(), None)
+    increment = generate_basic_stmt(program, function)
+    number_statements = probs_helper.random_value(probs.number_stmts_func_block)
+    statements = [generate_stmt_func(program, function, stmt_depth-1) for _ in range(number_statements)]
+    return For(initialization, condition, increment, statements)
+
+
+def generate_stmt_switch(program: Program, function: Function, stmt_depth: int) -> Switch:
+    """Generates a switch statement"""
+    # generate the condition expression
+    condition_type = probs_helper.random_value(probs.cases_type_prob)()
+    condition = generate_expression(program, function, condition_type, None)
+    # generate cases
+    number_cases = probs_helper.random_value(probs.number_cases_prob)
+    is_there_return_stmt = not isinstance(function.return_type, Void) and \
+                           probs_helper.random_value(probs.return_at_end_case_prob)
+    cases = dict()
+    for _ in range(number_cases):
+        literal = generate_literal(program, function, condition_type)
+        if literal in cases.keys():
+            continue  # avoid repeated literals in case conditions
+        number_statements = probs_helper.random_value(probs.number_stmts_func_block)
+        case_statements = [generate_stmt_func(program, function, stmt_depth - 1) for _ in range(number_statements)]
+        if is_there_return_stmt:  # append a return statement at the end of the case block
+            case_statements.append(generate_stmt_return(program, function,
+                            generate_expression(program, function, function.return_type, probs.exp_depth_prob)))
+        else:
+            is_there_break = probs_helper.random_value(probs.break_case_prob)
+            if is_there_break:  # append a break statement at the end of the case block
+                case_statements.append(Break())
+        cases[literal] = case_statements
+    # generate default, if necessary
+    is_there_default = probs_helper.random_value(probs.default_switch_prob)
+    if is_there_default:
+        number_statements = probs_helper.random_value(probs.number_stmts_func_block)
+        default_statements = [generate_stmt_func(program, function, stmt_depth - 1) for _ in range(number_statements)]
+        if is_there_return_stmt:
+            default_statements.append(generate_stmt_return(program, function,
+                            generate_expression(program, function, function.return_type, probs.exp_depth_prob)))
+        return Switch(condition, cases, default_statements)
+    else:
+        return Switch(condition, cases, [])
 
 
 ################ Types ################

@@ -2,39 +2,14 @@ import json
 import cnerator
 
 
-def f(param):
-    print(type(param))
+class Literal:
+    def __init__(self, piki_wiki):
+        self.string = piki_wiki
 
-f(3 for i in range(3))
+    def __eq__(self, other):
+        return self.string == other.string
 
-with open('json/functions/1-function-each-type.json') as json_file:
-    data = json.load(json_file)
-    print(data)
-    for key, content in data.items():
-        lambda_function = eval(content["condition"])
-        content["condition"] = lambda_function
-    print(data)
+l1 = Literal("hello")
+l2 = Literal("hello")
 
-
-    """
-    for p in data['people']:
-        print('Name: ' + p['name'])
-        print('Website: ' + p['website'])
-        print('From: ' + p['from'])
-        print('')
-    """
-
-
-
-original_dict = {
-        "v_functions": {"total": 1, "condition": lambda f: isinstance(f.return_type, cnerator.ast.Void)},
-        "b_functions": {"total": 1, "condition": lambda f: isinstance(f.return_type, cnerator.ast.Bool)},
-        "sc_functions": {"total": 1, "condition": lambda f: isinstance(f.return_type, cnerator.ast.SignedChar)},
-        "sSi_functions": {"total": 1, "condition": lambda f: isinstance(f.return_type, cnerator.ast.SignedShortInt)},
-        "si_functions": {"total": 1, "condition": lambda f: isinstance(f.return_type, cnerator.ast.SignedInt)},
-        "sLLi_functions": {"total": 1, "condition": lambda f: isinstance(f.return_type, cnerator.ast.SignedLongLongInt)},
-        "f_functions": {"total": 1, "condition": lambda f: isinstance(f.return_type, cnerator.ast.Float)},
-        "d_functions": {"total": 1, "condition": lambda f: isinstance(f.return_type, cnerator.ast.Double)},
-        "p_functions": {"total": 1, "condition": lambda f: isinstance(f.return_type, cnerator.ast.Pointer)},
-        "struct_functions": {"total": 1, "condition": lambda f: isinstance(f.return_type, cnerator.ast.Struct)},
-    }
+print(l1 in [l2])

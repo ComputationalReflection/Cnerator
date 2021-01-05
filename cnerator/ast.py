@@ -5,6 +5,7 @@ import collections
 import random
 import re
 import string
+from typing import List, Dict
 
 
 ########### Utils ##############
@@ -18,7 +19,8 @@ class Singleton(object):
 
 
 class ASTNode(object):
-    pass
+    def __str__(self):
+        return self.__class__.__name__
 
 
 class UnaryASTNode(ASTNode):
@@ -84,10 +86,10 @@ class UnaryExpression(UnaryASTNode):
         self.post_op = post_op
         self.children = [exp]
 
-    def __str__(self):
+    def to_str(self, indent: int = 0):
         if self.post_op:
-            return "({}){}".format(self.exp, self.op)
-        return "{}({})".format(self.op, self.exp)
+            return "{}({}){}".format(indent_str(indent), self.exp.to_str(), self.op)
+        return "{}{}({})".format(indent_str(indent), self.op, self.exp.to_str())
 
 
 class BinaryExpression(BinaryASTNode):
@@ -96,8 +98,8 @@ class BinaryExpression(BinaryASTNode):
         self.type = c_type
         self.children = [left, right]
 
-    def __str__(self):
-        return "({}) {} ({})".format(self.left, self.op, self.right)
+    def to_str(self, indent: int = 0):
+        return "{}({}) {} ({})".format(indent_str(indent), self.left.to_str(), self.op, self.right.to_str())
 
 
 class TernaryExpression(TernaryASTNode):
@@ -106,8 +108,9 @@ class TernaryExpression(TernaryASTNode):
         self.type = c_type
         self.children = [exp_1, exp_2, exp_3]
 
-    def __str__(self):
-        return "({}) {} ({}) {} ({})".format(self.exp_1, self.op[0], self.exp_2, self.op[1], self.exp_3)
+    def to_str(self, indent: int = 0):
+        return "{}({}) {} ({}) {} ({})".format(indent_str(indent), self.exp_1.to_str(), self.op[0], self.exp_2.to_str(),
+                                               self.op[1], self.exp_3.to_str())
 
 
 class ArrayAccessExpression(BinaryASTNode):
@@ -117,8 +120,8 @@ class ArrayAccessExpression(BinaryASTNode):
         self.type = c_type
         self.children = [left, right]
 
-    def __str__(self):
-        return "({})[{}]".format(self.left, self.right)
+    def to_str(self, indent: int = 0):
+        return "{}({})[{}]".format(indent_str(indent), self.left.to_str(), self.right.to_str())
 
 
 class StructAccessExpression(UnaryASTNode):
@@ -129,8 +132,8 @@ class StructAccessExpression(UnaryASTNode):
         self.field = field
         self.children = [exp]
 
-    def __str__(self):
-        return "({}){}{}".format(self.exp, self.op, self.field)
+    def to_str(self, indent: int = 0):
+        return "{}({}){}{}".format(indent_str(indent), self.exp.to_str(), self.op, self.field)
 
 
 class CastExpression(UnaryExpression):
@@ -139,6 +142,33 @@ class CastExpression(UnaryExpression):
         op = "/* CAST */ ({}) ".format(c_type.__declaration__(from_return_in_func_decl=False,
                                                               forze_parenth_in_ptr_to_array=True))
         super(CastExpression, self).__init__(op, exp, c_type, post_op=False)
+
+
+########### Basic expression types #########
+
+class Literal(ASTNode):
+    def __init__(self, value, type):
+        self.value = value
+        self.type = type
+
+    def to_str(self, indent: int = 0):
+        return "{}{}".format(indent_str(indent), self.value)
+
+    def __eq__(self, other) -> bool:
+        if not isinstance(other, Literal):
+            return False
+        return self.value == other.value
+
+    def __hash__(self) -> int:
+        return self.value.__hash__()
+
+
+class Variable(ASTNode):
+    def __init__(self, value):
+        self.value = value
+
+    def to_str(self, indent: int = 0):
+        return "{}{}".format(indent_str(indent), self.value)
 
 
 ############ Statements ##################
@@ -151,11 +181,11 @@ class Invocation(ASTNode):
         self.children = arguments
         self._is_stmt = _is_stmt
 
-    def __str__(self):
+    def to_str(self, indent: int = 0):
         arguments = ""
         i = 0
         for arg in self.arguments:
-            arguments += str(arg)
+            arguments += arg.to_str()
             if i < len(self.arguments) - 1:
                 arguments += ", "
             i += 1
@@ -163,7 +193,7 @@ class Invocation(ASTNode):
             comment = "/* stmt invocation */"
         else:
             comment = "/* expr invocation */"
-        return "{} {}({})".format(comment, self.func_name, arguments)
+        return "{}{} {}({})".format(indent_str(indent), comment, self.func_name, arguments)
 
 
 class Assignment(BinaryASTNode):
@@ -172,8 +202,8 @@ class Assignment(BinaryASTNode):
         self.type = c_type
         self.children = [left, right]
 
-    def __str__(self):
-        return "{} {} {}".format(self.left, self.op, self.right)
+    def to_str(self, indent: int = 0):
+        return "{}{} {} {}".format(indent_str(indent), self.left.to_str(), self.op, self.right.to_str())
 
 
 class Return(UnaryASTNode):
@@ -181,36 +211,109 @@ class Return(UnaryASTNode):
         self.c_type = c_type
         self.children = [exp]
 
-    def __str__(self):
+    def to_str(self, indent: int = 0):
         if self.exp is not None:
-            return "return {}".format(self.exp)
-        return "return"
+            return "{}return {}".format(indent_str(indent), expression_to_str(self.exp))
+        return "{}return".format(indent_str(indent))
+
+
+class Break(ASTNode):
+    def __init__(self):
+        pass
+
+    def to_str(self, indent: int = 0):
+        return "{}break".format(indent_str(indent))
+
 
 class Label(ASTNode):
     def __init__(self, label):
         self.label = label
 
-    def __str__(self):
-        return f"{self.label}:"
+    def to_str(self, indent: int = 0):
+        return "{}{}:{}".format(indent_str(indent), self.label, NEW_LINE)
 
 
-########### Basic expression types #########
+class Block(ASTNode):
+    def __init__(self, statements: list):
+        self.statements = statements
 
-class Literal(ASTNode):
-    def __init__(self, value, type):
-        self.value = value
-        self.type = type
-
-    def __str__(self):
-        return self.value
+    def to_str(self, indent: int = 0):
+        stmts_str = statements_to_str(self.statements, indent)
+        return indent_str(indent) + "{" + NEW_LINE + stmts_str + indent_str(indent) + "}" + NEW_LINE
 
 
-class Variable(ASTNode):
-    def __init__(self, value):
-        self.value = value
+class While(ASTNode):
+    def __init__(self, condition: ASTNode, statements: List[ASTNode]):
+        self.condition = condition
+        self.statements = statements
 
-    def __str__(self):
-        return self.value
+    def to_str(self, indent: int = 0):
+        result = "{}while ({}) {{ {}".format(indent_str(indent), expression_to_str(self.condition), NEW_LINE)
+        result += statements_to_str(self.statements, indent)
+        result += indent_str(indent) + "}" + NEW_LINE
+        return result
+
+
+class Do(ASTNode):
+    def __init__(self, statements: List[ASTNode], condition: ASTNode):
+        self.statements = statements
+        self.condition = condition
+
+    def to_str(self, indent: int = 0):
+        result = "{}do {{ {}".format(indent_str(indent), NEW_LINE)
+        result += statements_to_str(self.statements, indent)
+        result += "{}}} while ({});{}".format(indent_str(indent), expression_to_str(self.condition), NEW_LINE)
+        return result
+
+
+class If(ASTNode):
+    def __init__(self, condition: ASTNode, if_statements: List[ASTNode], else_statements: List[ASTNode]):
+        self.condition = condition
+        self.if_statements = if_statements
+        self.else_statements = else_statements
+
+    def to_str(self, indent: int = 0):
+        result = "{}if ({}) {{ {}".format(indent_str(indent), expression_to_str(self.condition), NEW_LINE)
+        result += statements_to_str(self.if_statements, indent)
+        if self.else_statements and len(self.else_statements) > 0:
+            result += "{}}} else {{ {}".format(indent_str(indent), NEW_LINE)
+            result += statements_to_str(self.else_statements, indent)
+        result += "{}}}{}".format(indent_str(indent), NEW_LINE)
+        return result
+
+
+class For(ASTNode):
+    def __init__(self, initialization: ASTNode, condition: ASTNode, increment: ASTNode, statements: List[ASTNode]):
+        self.initialization = initialization
+        self.condition = condition
+        self.increment = increment
+        self.statements = statements
+
+    def to_str(self, indent: int = 0):
+        result = "{}for ({}; {}; {}) {{ {}".format(indent_str(indent), expression_to_str(self.initialization),
+                                               expression_to_str(self.condition), expression_to_str(self.increment),
+                                               NEW_LINE)
+        result += statements_to_str(self.statements, indent)
+        result += "{}}}{}".format(indent_str(indent), NEW_LINE)
+        return result
+
+
+class Switch(ASTNode):
+    def __init__(self, condition: ASTNode, cases: Dict[Literal, List[ASTNode]], default: List[ASTNode]):
+        self.condition = condition
+        self.cases = cases
+        self.default = default
+
+    def to_str(self, indent: int = 0):
+        result = "{}switch ({}) {{ {}".format(indent_str(indent), expression_to_str(self.condition), NEW_LINE)
+        for case_value, stmts in self.cases.items():
+            result += "{}case {}:{}".format(indent_str(indent + 1), literal_to_str(case_value), NEW_LINE)
+            result += statements_to_str(stmts, indent + 1)
+        if self.default and len(self.default) > 0:
+            result += "{}default:{}".format(indent_str(indent + 1), NEW_LINE)
+            result += statements_to_str(self.default, indent + 1)
+        result += "{}}}{}".format(indent_str(indent), NEW_LINE)
+        return result
 
 
 ############# Function and Program nodes ##############
@@ -233,7 +336,7 @@ class Function(ASTNode):
     def stmts(self, value):
         self.children = value
 
-    def __str__(self):
+    def to_str(self, indent: int = 0):
         # function declaration
         result = self.__declaration__() + " {" + NEW_LINE
         # local variables
@@ -241,20 +344,24 @@ class Function(ASTNode):
         for values in self.local_vars.values():
             for i in range(0, len(values)):
                 c_type, value = values[i]
-                declaration = ["    ", c_type.__declaration__(local_variable(c_type, i + 1))]
+                declaration = ['\t'*(indent+1), c_type.__declaration__(local_variable(c_type, i + 1))]
                 if value is not None:
                     declaration.append(" = ")
-                    declaration.append(str(value))
+                    declaration.append(literal_to_str(value))
                 declaration.append(";")
                 declaration.append(NEW_LINE)
                 local_vars.append("".join(declaration))
 
-        stmts = ["    {};{}".format(x, NEW_LINE) for x in self.stmts]
-        result += ''.join(local_vars)
-        result += NEW_LINE
+        stmts = list()
+        for stmt in self.stmts:
+            stmt_str = stmt.to_str(indent+1)
+            if not is_compound_statement(stmt):
+                stmt_str += (";" + NEW_LINE)
+            stmts.append(stmt_str)
+        result += ''.join(local_vars) + NEW_LINE
         # statements
         result += ''.join(stmts)
-        result += '}' + NEW_LINE*2
+        result += indent_str(indent) + '}' + NEW_LINE*2
         return result
 
     def __declaration__(self, **kwargs):
@@ -262,7 +369,7 @@ class Function(ASTNode):
         result = "/*" + NEW_LINE
         result += " * return type: {}{}".format(self.return_type.name, NEW_LINE)
         for param_name, param_type in self.param_types:
-            result += " * {} type: {}{}".format(param_name, param_type.name, NEW_LINE)
+            result += " * {} type: {}{}".format(param_name.to_str(), param_type.name, NEW_LINE)
         result += " */" + NEW_LINE
 
         result += "{} {}(".format(self.return_type.__declaration__(from_return_in_func_decl=True), self.name)
@@ -297,7 +404,7 @@ class Program(ASTNode):
         # self.defines = {"bool": "_Bool"}
         self.includes = []
         self.defines = {"bool": "_Bool", "true": "1", "false": "0", "NULL": "(void *) 0"}
-        self.global_vars = {} # type -> [value_of_global_1, value_of_global_2...]
+        self.global_vars = {}  # type -> [value_of_global_1, value_of_global_2...]
         self.structs = []
         self.main = None
         self.children = []
@@ -308,47 +415,6 @@ class Program(ASTNode):
     def functions(self):
         return self.children
 
-    # def __str__(self):
-    #
-    #     result = ""
-    #
-    #     # includes
-    #     includes = ["#include <%s>" % (f,) for f in self.includes]
-    #     result += NEW_LINE.join(includes)
-    #     result += NEW_LINE + NEW_LINE
-    #
-    #     # defines
-    #     defines = ["#define {} {}".format(k, v or "") for k, v in self.defines.items()]
-    #     result += NEW_LINE.join(defines)
-    #     result += NEW_LINE + NEW_LINE
-    #
-    #     # structs
-    #     structs = [s.prototype() for s in self._iterate_structs_by_dependencies()]
-    #     result += NEW_LINE.join(structs)
-    #     result += NEW_LINE + NEW_LINE
-    #
-    #     # prototypes
-    #     structs = [f.prototype() for f in self.functions]
-    #     result += NEW_LINE.join(structs)
-    #     result += NEW_LINE + NEW_LINE
-    #
-    #
-    #     # global variables
-    #     global_vars = []
-    #     for values in self.global_vars.values():
-    #         for i in range(0, len(values)):
-    #             c_type, value = values[i]
-    #             declaration = "%s = %s;%s" % (c_type.__declaration__(global_variable(c_type, i + 1)), value, NEW_LINE)
-    #             global_vars.append(declaration)
-    #     result += ''.join(global_vars)
-    #     result += NEW_LINE
-    #
-    #     # functions
-    #     result += ''.join(map(lambda func: str(func), self.functions))
-    #
-    #     # main function
-    #     result += str(self.main)
-    #     return result
 
     def stringify_parts(self):
 
@@ -376,21 +442,21 @@ class Program(ASTNode):
                 declaration = [c_type.__declaration__(global_variable(c_type, i + 1))]
                 if value is not None:
                     declaration.append(" = ")
-                    declaration.append(str(value))
+                    declaration.append(literal_to_str(value))
                 declaration.append(";")
                 declaration.append(NEW_LINE)
                 global_vars.append("".join(declaration))
         global_vars = "".join(global_vars)
 
         # functions
-        functions = "".join(str(func) for func in self.functions)
+        functions = "".join(func.to_str() for func in self.functions)
 
         # main function
-        main = str(self.main)
+        main = self.main.to_str()
 
         return includes, defines, structs, prototypes, global_vars, functions, main
 
-    def __str__(self):
+    def to_str(self, indent: int=0):
         includes, defines, structs, prototypes, global_vars, functions, main = self.stringify_parts()
 
         return "".join([
@@ -464,7 +530,7 @@ class Type(object):
     def __eq__(self, other):
         return self.name == other.name
 
-    def __str__(self):
+    def to_str(self, indent: int = 0):
         raise NotImplementedError("Not Implemented")
 
     def __hash__(self):
@@ -472,9 +538,10 @@ class Type(object):
         This implementation is not valid for composite types."""
         return self.__class__.__name__.__hash__()
 
-    def __declaration__(self, var_name=None, **kwargs):
-        if var_name:
-            return " ".join([self.name, str(var_name)])
+    def __declaration__(self, variable=None, **kwargs):
+        if variable:
+            var_name = variable_to_var_name(variable)
+            return " ".join([self.name, var_name])
         return self.name
 
     def __repr__(self):
@@ -647,23 +714,24 @@ class Struct(Type):
     def name(self):
         return "struct " + self._name
 
-    def __declaration__(self, var_name=None, **kwargs):
+    def __declaration__(self, variable=None, **kwargs):
         return "struct {} {}".format(
             self._name,
-            " " + str(var_name) if var_name else ""
+            " " + variable_to_var_name(variable)
         )
 
     def generate_literal(self, from_declaration):
         if not from_declaration:
             raise ValueError("The creation of literals is only allowed in var declarations")
         return Literal("{{ {} }}".format(
-            ", ".join(".{} = {}".format(n, t.generate_literal(from_declaration=from_declaration)) for n, t in self.fields)
+            ", ".join(".{} = {}".format(n, t.generate_literal(from_declaration=from_declaration).to_str())
+                      for n, t in self.fields)
         ), self)
 
     def prototype(self):
         return "struct {} {{\n    {}\n}};".format(
             self._name,
-            "\n    ".join(t.__declaration__(var_name=n) + ";" for n, t in self.fields),
+            "\n    ".join(t.__declaration__(variable=n) + ";" for n, t in self.fields),
         )
 
 
@@ -681,14 +749,9 @@ class Pointer(Type):
     def name(self):
         return "pointer " + self.type.name
 
-    # def __declaration__(self, var_name=None, from_return_in_func_decl=False, **kwargs):
-    #     var_name = " " + var_name if var_name else ""
-    #     if isinstance(self.type, Array):
-    #         return self.type.__declaration__("(*{})".format(var_name), from_return_in_func_decl=from_return_in_func_decl)
-    #     return self.type.__declaration__("*{}".format(var_name), from_return_in_func_decl=from_return_in_func_decl)
 
-    def __declaration__(self, var_name=None, from_return_in_func_decl=False, forze_parenth_in_ptr_to_array=False, **kwargs):
-        var_name = " " + str(var_name) if var_name else ""
+    def __declaration__(self, variable=None, from_return_in_func_decl=False, forze_parenth_in_ptr_to_array=False, **kwargs):
+        var_name = variable_to_var_name(variable)
         if isinstance(self.type, Array) and (not re.match(r"^[][()* ]*$", var_name) or forze_parenth_in_ptr_to_array):
             return self.type.__declaration__("(*{})".format(var_name), from_return_in_func_decl=from_return_in_func_decl)
         return self.type.__declaration__("*{}".format(var_name), from_return_in_func_decl=from_return_in_func_decl)
@@ -715,14 +778,14 @@ class Array(Pointer):
     def name(self):
         return "array " + str(self.size) + " " + self.type.name
 
-    def __declaration__(self, var_name=None, from_return_in_func_decl=False, **kwargs):
+    def __declaration__(self, variable=None, from_return_in_func_decl=False, **kwargs):
         from_return_in_func_decl = from_return_in_func_decl or self._pointer_declaration
 
         # It a function is returning an array, represent it as a pointer
         if from_return_in_func_decl:
-            return Pointer.__declaration__(self, var_name, from_return_in_func_decl=from_return_in_func_decl)
+            return Pointer.__declaration__(self, variable, from_return_in_func_decl=from_return_in_func_decl)
 
-        var_name = (str(var_name) or "") + "[{}]".format(self.size or "")
+        var_name = variable_to_var_name(variable) + "[{}]".format(self.size or "")
         return self.type.__declaration__(var_name, from_return_in_func_decl=from_return_in_func_decl)
 
 
@@ -737,7 +800,7 @@ class Array(Pointer):
         if isinstance(self.type, (SignedChar, UnsignedChar)):
             return generate_string_literal(size, from_declaration, self)
         return Literal("{{ {} }}".format(
-            ", ".join(str(self.type.generate_literal(from_declaration=from_declaration)) for _ in range(size))
+            ", ".join(self.type.generate_literal(from_declaration=from_declaration).to_str() for _ in range(size))
         ), self)
 
     def __hash__(self):
@@ -780,6 +843,50 @@ def param(number):
 
 def name_struct_field(c_type, number):
     return c_type.name.replace(" ", "_") + "_" + str(number)
+
+
+def variable_to_var_name(variable: object) -> str:
+    """Variable may be a Variable object or just a string; it returns its name as string"""
+    if not variable:
+        return ""
+    return variable.to_str() if isinstance(variable, Variable) else str(variable)
+
+
+def literal_to_str(literal: object) -> str:
+    """Variable may be a Variable object or just a string; it returns its name as string"""
+    if not literal:
+        return ""
+    return literal.to_str() if isinstance(literal, Literal) else str(literal)
+
+
+def expression_to_str(expression: object) -> str:
+    """Converts one expression (it could be an AST node) to a string"""
+    try:
+        return expression.to_str()
+    except:
+        return str(expression)
+
+
+def is_compound_statement(statement: ASTNode) -> bool:
+    """Returns if an ASTNode is a coumpund statement"""
+    return type(statement) in [Block, If, Switch, Do, While, For]
+
+
+def indent_str(indent_number: int) -> str:
+    """Given a number of indentation, returns the string to be used as prefix for indentation"""
+    return "\t" * indent_number
+
+
+def statements_to_str(statements: List[ASTNode], indent: int) -> str:
+    """Takes a list of statements and returns a string with their C representation"""
+    stmt_str_list = list()
+    for stmt in statements:
+        stmt_str = stmt.to_str(indent + 1)
+        if not is_compound_statement(stmt):
+            stmt_str += ";" + NEW_LINE
+        stmt_str_list.append(stmt_str)
+    return "".join(stmt_str_list)
+
 
 
 ########## Constants ###############
