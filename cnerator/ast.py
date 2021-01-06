@@ -229,8 +229,9 @@ class Label(ASTNode):
     def __init__(self, label):
         self.label = label
 
+    # TODO quitar el ; tras una LABEL
     def to_str(self, indent: int = 0):
-        return "{}{}:{}".format(indent_str(indent), self.label, NEW_LINE)
+        return "{}{}:".format(indent_str(indent), self.label)
 
 
 class Block(ASTNode):

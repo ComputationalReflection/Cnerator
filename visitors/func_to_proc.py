@@ -22,8 +22,8 @@ def _(program: ast.Program) -> None:
     print_if_verbose("*" * 80)
     print_if_verbose("* FUNC TO PROC INSTRUMENTATION")
     print_if_verbose("*" * 80)
-    for f in program.functions:
-        visit(f)
+    for function in program.functions:
+        visit(function)
     visit(program.main)
 
 
@@ -33,6 +33,8 @@ def _(function: ast.Function) -> None:
     if function.return_type == cnerator.ast.Void():
         print_if_verbose("Replacing func with proc: " + function.name)
         function.name = function.name.replace("func", "proc")
+    for stmt in function.stmts:
+        visit(stmt)
 
 
 @visit.register(cnerator.ast.Invocation)
@@ -79,8 +81,13 @@ def _(node: ast.Switch) -> None:
 
 
 @visit.register(cnerator.ast.Assignment)
-@visit.register(cnerator.ast.UnaryExpression)
+@visit.register(cnerator.ast.BinaryASTNode)
+@visit.register(cnerator.ast.UnaryASTNode)
+@visit.register(cnerator.ast.TernaryASTNode)
 @visit.register(cnerator.ast.Return)
+@visit.register(cnerator.ast.Literal)
+@visit.register(cnerator.ast.Variable)
+@visit.register(cnerator.ast.Break)
 def _(_: ast.ASTNode) -> None:
     pass
 

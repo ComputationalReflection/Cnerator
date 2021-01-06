@@ -68,7 +68,7 @@ def _(cast: ast.CastExpression, program: ast.Program, function, **kwargs):
             print_if_verbose("NEW")
             global_var = generators.generate_global_var(program, function, cast.exp.type)
         cast.exp = ast.UnaryExpression("/* PTR LITERAL */ & ", global_var, cast.exp.type, post_op=False)
-        print_if_verbose(cast)
+        print_if_verbose(cast.to_str())
         print_if_verbose("*" * 80)
     else:
         cast.children = [visit(cast.exp, program, function, **kwargs)]
@@ -112,7 +112,7 @@ def _(node, program: ast.Program, function: ast.Function, **kwargs):
 def _(node: ast.If, program: ast.Program, function: ast.Function, **kwargs):
     node.condition = visit(node.condition, program, function, **kwargs)
     node.if_statements = [visit(stmt, program, function, **kwargs) for stmt in node.if_statements]
-    node.else_statements = [visit(stmt, program, function, **kwargs) for stmt in node.if_statements]
+    node.else_statements = [visit(stmt, program, function, **kwargs) for stmt in node.else_statements]
     return node
 
 
