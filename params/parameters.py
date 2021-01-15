@@ -64,7 +64,8 @@ def get_modules_to_import(vst_param: str) -> List:
 def parse_function_specification_json_file(file_name: str) -> Dict[str, Dict]:
     """Parses a json file with function specifications and returns a valid representation"""
     import cnerator
-    global_variables = {"cnerator": cnerator}
+    from cnerator import ast
+    global_variables = {"cnerator": cnerator, "ast": ast}
     with open(file_name) as json_file:
         data = json.load(json_file)
         for key, content in data.items():

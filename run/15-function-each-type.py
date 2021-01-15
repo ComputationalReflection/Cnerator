@@ -10,8 +10,6 @@ import sys
 
 VERBOSE = True
 
-# TODO hacer que se generen más rápido, modificando las probabilidades en caliente
-
 if __name__ == "__main__":
     sys.argv.append('-O../out')  # generate output files in ../out
     sys.argv.append('-f../json/functions/15-function-each-type.json')

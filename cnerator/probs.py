@@ -111,17 +111,17 @@ int_emulate_bool = {True: 0.2, False: 0.8}
 # ------------ Variables --------------
 
 doc['new_global_var_prob'] = "probability of creating a new global variable when one of the expected type" \
-                             "already exists (default: 10%)"
-new_global_var_prob = {True: 0.1, False: 0.9}
+                             "already exists (default: 1%)"
+new_global_var_prob = {True: 0.01, False: 0.99}
 
 doc['new_local_var_prob'] = "probability of creating a new local variable when one of the expected type" \
-                             "already exists (default: 10%)"
-new_local_var_prob = {True: 0.1, False: 0.9}
+                             "already exists (default: 1%)"
+new_local_var_prob = {True: 0.01, False: 0.99}
 
-doc['reuse_func_prob'] = "probability of reusing an existing function of the expected type (default: 80%)"
+doc['reuse_func_prob'] = "probability of reusing an existing function of the expected type (default: 99%)"
 reuse_func_prob = {True: 0.99, False: 0.01}
 
-doc['reuse_proc_prob'] = "probability of reusing an existing procedure of the expected type (default: 70%)"
+doc['reuse_proc_prob'] = "probability of reusing an existing procedure of the expected type (default: 99%)"
 reuse_proc_prob = {True: 0.99, False: 0.01}
 
 doc['global_or_local_as_basic_lvalue_prob'] = "When a basic lvalue needs to be generated, this is the " \
@@ -134,7 +134,7 @@ global_or_local_as_basic_lvalue_prob = {True: 0.5, False: 0.5}
 
 doc['basic_or_compound_stmt_prob'] = "probability of generating a basic (no block) or compound statement " \
                                      "(default: basic=70%, compound=30%)"
-basic_or_compound_stmt_prob = {True: 0.5, False: 0.5}
+basic_or_compound_stmt_prob = {True: 0.7, False: 0.3}
 
 doc['function_basic_stmt_prob'] = "each kind of basic (no block) statement in functions (default: assignment=60%, " \
                                   "invocation=20%, increment/decrement=20%, augmented assignment=10%)"
@@ -144,7 +144,7 @@ function_basic_stmt_prob = probs_helper.compute_proportional_prob({'assignment':
 doc['function_compound_stmt_prob'] = "each kind of compound statement (with blocks) in functions " \
                                      "(equal probability for Block, If, Switch, Do, While, For)"
 function_compound_stmt_prob = probs_helper.compute_proportional_prob({'block': 1, 'while': 4, 'do': 4,
-                                                                      'if': 4, 'for': 40, 'switch': 4})
+                                                                      'if': 4, 'for': 4, 'switch': 4})
 
 doc['stmt_depth_prob'] = "statement depth (default: equal probabilities for [0-2])"
 stmt_depth_prob = probs_helper.compute_equal_prob(set(range(0, 3)))

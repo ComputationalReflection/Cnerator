@@ -16,6 +16,7 @@ _return_label_counter = 0
 
 
 def generate_label() -> str:
+    """Generates a new unique label string"""
     global _return_label_counter
     _return_label_counter += 1
     return f"__RETURN{_return_label_counter}__"
@@ -52,10 +53,10 @@ def _instrument_statements(statements: List[ast.ASTNode]) -> List[ast.ASTNode]:
 
 @visit.register(ast.Function)
 def _(function: ast.Function):
-    # Include RETURN label before return statements
+    """Traverses a function definition to add a RETURN label before each return statement"""
     function.stmts = _instrument_statements(function.stmts)
     # If is a procedure add at the end a return statement
-    if function.return_type == ast.Void():
+    if isinstance(function.return_type, ast.Void):
         function.stmts.append(ast.Label(generate_label()))
         function.stmts.append(ast.Return())
 
@@ -65,7 +66,7 @@ def _(function: ast.Function):
 @visit.register(ast.While)
 @visit.register(ast.For)
 def _(node):
-    # include RETURN label before return statements
+    """Traverses a control flow statement to add a RETURN label before each return statement"""
     node.statements = _instrument_statements(node.statements)
 
 

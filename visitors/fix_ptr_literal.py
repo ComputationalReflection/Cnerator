@@ -50,29 +50,10 @@ def _(invocation: ast.Invocation, program: ast.Program, function: ast.Function, 
 @visit.register(ast.Return)
 @visit.register(ast.StructAccessExpression)
 @visit.register(ast.TernaryExpression)
+@visit.register(ast.CastExpression)
 def _(node, program: ast.Program, function: ast.Function, **kwargs) -> ast.ASTNode:
     node.children = [visit(ch, program, function, **kwargs) if isinstance(ch, ast.ASTNode) else ch for ch in node.children]
     return node
-
-
-# TODO: Cambiar esta implementación
-@visit.register(ast.CastExpression)
-def _(cast: ast.CastExpression, program: ast.Program, function, **kwargs):
-    if isinstance(cast.type, ast.Pointer) and isinstance(cast.exp, ast.Literal):
-        print_if_verbose("*" * 80)
-        print_if_verbose(function.name)
-        print_if_verbose(repr(cast.type), "<-", repr(cast.exp.type))
-        try:
-            global_var = program.global_vars[cast.exp.type]
-        except KeyError:
-            print_if_verbose("NEW")
-            global_var = generators.generate_global_var(program, function, cast.exp.type)
-        cast.exp = ast.UnaryExpression("/* PTR LITERAL */ & ", global_var, cast.exp.type, post_op=False)
-        print_if_verbose(cast.to_str())
-        print_if_verbose("*" * 80)
-    else:
-        cast.children = [visit(cast.exp, program, function, **kwargs)]
-    return cast
 
 
 @visit.register(ast.Literal)

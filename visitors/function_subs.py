@@ -5,7 +5,7 @@
 from singledispatch import singledispatch
 from cnerator import ast, generators, probs
 from params.parameters import get_app_args
-from typing import List
+from typing import List, Union
 
 
 @singledispatch
@@ -42,13 +42,14 @@ def _(node: ast.Function, targets: List[str], function: ast.Function, is_stateme
 
 
 @visit.register(ast.Invocation)
-def _(invocation: ast.Invocation, targets: List[str], function: ast.Function, is_statement: bool) -> ast.ASTNode:
+def _(invocation: ast.Invocation, targets: List[str], function: ast.Function, is_statement: bool) \
+        -> Union[ast.ASTNode, None]:
     if invocation.func_name in targets and not isinstance(invocation.return_type, ast.Void):
         # If invocation is a statement
         if is_statement:
             if get_app_args().verbose:
                 print("{}: Remove call {}".format(function.name, invocation.func_name))
-            return None  # TODO Aquí está el error; funciona si sustituyo None por ast.Label("kkk")
+            return None
         # If invocation is an expression
         else:
             literal = generators.generate_literal(

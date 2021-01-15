@@ -229,9 +229,8 @@ class Label(ASTNode):
     def __init__(self, label):
         self.label = label
 
-    # TODO quitar el ; tras una LABEL
     def to_str(self, indent: int = 0):
-        return "{}{}:".format(indent_str(indent), self.label)
+        return "{}{}:{}".format(indent_str(indent), self.label, NEW_LINE)
 
 
 class Block(ASTNode):
@@ -352,16 +351,9 @@ class Function(ASTNode):
                 declaration.append(";")
                 declaration.append(NEW_LINE)
                 local_vars.append("".join(declaration))
-
-        stmts = list()
-        for stmt in self.stmts:
-            stmt_str = stmt.to_str(indent+1)
-            if not is_compound_statement(stmt):
-                stmt_str += (";" + NEW_LINE)
-            stmts.append(stmt_str)
         result += ''.join(local_vars) + NEW_LINE
         # statements
-        result += ''.join(stmts)
+        result += "".join(statements_to_str(self.stmts, indent))
         result += indent_str(indent) + '}' + NEW_LINE*2
         return result
 
@@ -883,7 +875,7 @@ def statements_to_str(statements: List[ASTNode], indent: int) -> str:
     stmt_str_list = list()
     for stmt in statements:
         stmt_str = stmt.to_str(indent + 1)
-        if not is_compound_statement(stmt):
+        if not is_compound_statement(stmt) and not isinstance(stmt, Label):
             stmt_str += ";" + NEW_LINE
         stmt_str_list.append(stmt_str)
     return "".join(stmt_str_list)
