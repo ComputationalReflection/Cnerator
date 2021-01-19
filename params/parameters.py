@@ -32,8 +32,8 @@ def parse_args():
                         help="json file specifying conditions of the functions to be created"                            
                              "(e.g., json/functions/1-function-each-type.json)")
     parser.add_argument("-V", "--visitors", metavar="VISITORS", default="",
-                        help="Semicolon-separated list of visitors, in order "
-                             "(e.g., visitors.func_to_proc;visitors.return_instrumentation)")
+                        help="Colon-separated list of visitors, in order "
+                             "(e.g., visitors.func_to_proc:visitors.return_instrumentation)")
     parser.add_argument("-v", "--verbose", action="store_true",
                         help="Verbose messages (default: %(default)s)")
     parser.add_argument("-d", "--debug", action="store_true",
@@ -48,7 +48,7 @@ def parse_args():
 def get_modules_to_import(vst_param: str) -> List:
     """Returns the list of visitors to import, given the args.visitors option"""
     import importlib
-    params = vst_param.split(";")
+    params = vst_param.split(":")
     try:
         modules = [importlib.import_module(visitor_module_name) for visitor_module_name in params
                     if len(visitor_module_name.replace(" ", "")) > 0]

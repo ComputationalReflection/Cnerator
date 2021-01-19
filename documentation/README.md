@@ -1,51 +1,194 @@
-# Cnerator
+# Documentation
+
+This text describes how to use Cnerator for the stochastic generation of compilable C source code.
+If you are looking for developer documentation, please check [this](docs).
 
 
-[![License](https://img.shields.io/github/license/ComputationalReflection/cnerator)](LICENSE)
-[![Latest release](https://img.shields.io/github/v/release/computationalreflection/cnerator?include_prereleases)](https://github.com/ComputationalReflection/cnerator/releases)
-<img alt="Code size" src="https://img.shields.io/github/languages/code-size/computationalreflection/cnerator">
-<img alt="Repo size" src="https://img.shields.io/github/repo-size/computationalreflection/cnerator">
+## Installation
 
-
-
-Cnerator is a C source code generation tool. Generated programs can be compiled with any standard ANSI C compiler. 
-The user may define different parameters such as the number of function to be generated or the probabilities of all
-the different syntactic constructs (e.g., the average number of statements in a function, expression types, 
-number and types of local variables, and the kind of syntactic constructs to be generated). 
-
-Generated programs fulfill the type rules of the C programming language, so they are compiled without errors. 
-Using the different parameters, the user can utilize Cnerator to create a huge amount of synthetic C programs,
-necessary in common "Big Code" scenarios.
-
-## Command line options:
+You need a Python 3.7+ standard implementation. 
+The only additional package to install is `singledispatch`:
 
 ``` text
-usage: cnerator.py [-h] [-w PATH] [-o NAME] [-p AMOUNT] [-r RECURSION]
-                   [-vst VISITORS] [-v] [-d]
-
-Generates a compilable C program
-
-optional arguments:
-  -h, --help            show this help message and exit
-  -w PATH, --working-dir PATH
-                        Working directory (default: out)
-  -o NAME, --output NAME
-                        C output file name, without the .c extension (default:
-                        main)
-  -p AMOUNT, --parts AMOUNT
-                        Split the program in different C files (default: 2)
-  -r RECURSION, --recursion RECURSION
-                        Python recursion limit (default: 50000)
-  -vst VISITORS, --visitors VISITORS
-                        Semicolon-separated list of visitors, in order (e.g.,
-                        visitors.func_to_proc;visitors.return_instrumentation)
-                        (default: )
-  -v, --verbose         Verbose messages (default: False)
-  -d, --debug           Generate debug info (call graph and struct structure)
-                        in .dot files (default: False)
+pip install singledispatch
 ```
 
+## Running Cnerator
 
-## License
+Then, you can run Cnerator with no arguments to generate a random C program:
 
-[BSD 3 clause license](LICENSE)
+``` text
+python cnerator.py
+```
+
+To see all the options, just run the `-h` or `--help` options.
+
+``` text
+python cnerator.py -h
+```
+
+## Command line arguments
+
+These are the command line arguments provided by Cnerator (all of them are optional):
+
+* `-o NAME` or `--output NAME`: `NAME` indicates the output file name, without the file extension.
+    The default value is `main`.
+   
+* `-O PATH` or `--output_dir PATH`: `PATH` is the output directory where the C source code
+    is placed. If the directory does not exist, it is created. The default value is `out`.
+
+* `-n NUMBER` or `--nfiles NUMBER`: Generates the output program in `NUMBER` compilation unit.
+    Each compilation unit is a pair of `.c` and `.h` files. 
+    A compilation unit can be compiled that can be compiled independently, 
+    even though they commonly depend on other compilation units.
+    The default value is 2.
+                        
+* `-r RECURSION_LIMIT` or `--recursion RECURSION_LIMIT`: Defines the maximum number of
+    Python recursive invocations. This parameter may be modified when massive codebases
+    are being modified, checking the the runtime environment provides sufficient memory. 
+    The default value is 50000.
+                        
+* `-v` or `--verbose`: Enables the verbose mode, to show runtime messages.
+    By default, the verbose mode is disabled.
+    
+* `-d` or `--debug`: Generates debug information, comprising call graphs and struct structures,
+    in .dot files.
+    By default, the debug option is disabled.
+
+* `-p PROBS` or `--probs PROBS`: `PROBS` represents a semicolon-separated list of probabilities 
+    and their values for different syntactic constructs.
+    An example use is `"call_prob={True:0.2,False:0.8}; param_number_prob={0:0.2,1:0.3,2:0.3,3:0.2}"`.
+    To now all the different syntactic constructs provided by Cnerator, please check the
+    [syntactic constructs](#syntactic-constructs) section.
+    
+     
+* `-P PROBSFILE` or `--probsfile PROBSFILE`: `PROBSFILE` is a JSON file specifying some probabilities 
+    for different language constructs. Different examples are provided in the `json/probabilites`
+    directory.
+    The structure of `PROBSFILE` JSON files is described in the 
+    [probability specification files](#probability-specification-files) section.
+                        
+* `-f FUNCTIONS` or `--functions FUNCTIONS`: `FUNCTIONS` is a JSON file specifying conditions 
+    of the functions to be created by Cnerator. The user can express properties that the 
+    generated functions will fulfill. 
+    Different examples are FUNCTIONS in the `json/functions` directory.
+    The structure of `PROBSFILE` JSON files is described in the 
+    [function generation files](#function-generation-files) section.
+
+* `-V VISITORS` or `--visitors VISITORS`: An ordered colon-separated list of visitors to
+    adapt, process or modify the program representation generated by Cnerator.
+    Once the visitors are run, Cnerator takes the final program representation and
+    generates the final C source code.
+    An example value of `VISOTORS` is `visitors.func_to_proc:visitors.return_instrumentation`.
+    The `visitors` directory provides different examples of visitors.
+    A brief description of how to implement of such visitors is presented in the
+    [post-processing specification files](#post-processing-specification-files) section.
+     
+     
+
+
+* `-h` or `--help`: Shows a description of the command line arguments, including the default values.
+
+
+
+### Syntactic constructs
+
+As mentioned, Cnerator allows defining the probabilites of different syntactic constructs of
+the C programming language. What follows is a description of all the constructs and the
+identifier to be used if the `-p` or `-P` options are used:
+
+-   `primitive_types_prob`: probabilities among primitive types (default: equal
+    probability for all the types).
+-   `assignment_types_prob`: assignment type (default: equal probability for all
+    the types).
+-   `augmented_assignment_types_prob`: augmented assignment type (+=, -=, *=...)
+    (default: equal probability for primitive types).
+-   `all_types_prob`: type probability when any type may occur in a syntax
+    construction (default: equal probability for any type).
+- `array_size`: size of the arrays to be created (default: 1-10).
+- `reuse_struct_prob`: when a struct is needed, probability of using and
+    existing one rather than creating a new one (default: 90%).
+-   `enhance_existing_struct_prob`: when a struct is needed, probability of
+    extending an existing one with the demanded field rather than creating a new
+    one (default: 70%).
+-   `array_literal_initialization_prob`: array initialization upon definition
+    (default: 10%).
+-   `struct_literal_initialization_prob`: struct initialization upon definition
+    (default: 10%).
+-   `exp_depth_prob`: expression depth (default: equal probabilities for [0-2]).
+-   `return_exp_depth_prob`: expression depth for the particular expressions to
+    be returned by functions (default: equal probabilities for [0-2]).
+-   `call_prob`: probability that a new expression is a function invocation
+    (default: 20%).
+-   `basic_expression_prob`: basic expressions (default: same probability among
+    literal, local_var, global_var, and param_var).
+-   `param_number_prob`: number of parameters (default: 10% for 1, 20% for [1,4]
+    and 5% for [5,6]).
+-   `param_types_prob`: types of the parameters (default: all types are equally
+    likely).
+-   `stmt_invocation_prob`: invocation statements to functions or procedures
+    (default: function=88%, procedure=12%).
+-   `return_types_prob`: function return types (default: all types are equally
+    likely).
+-   `int_emulate_bool`: probability of generating a bool return (0 or 1) when an
+    int type is expected (default: 20%).
+-   `new_global_var_prob`: probability of creating a new global variable when one
+    of the expected typealready exists (default: 1%).
+-   `new_local_var_prob`: probability of creating a new local variable when one
+    of the expected typealready exists (default: 1%).
+-   `reuse_func_prob`: probability of reusing an existing function of the
+    expected type (default: 99%).
+-   `reuse_proc_prob`: probability of reusing an existing procedure of the
+    expected type (default: 99%).
+-   `global_or_local_as_basic_lvalue_prob`: When a basic lvalue needs to be
+    generated, this is the probability of using a global variable; otherwise, a
+    local variable is used (default: 50%).
+-   `basic_or_compound_stmt_prob`: probability of generating a basic (no block)
+    or compound statement (default: basic=70%, compound=30%).
+-   `function_basic_stmt_prob`: each kind of basic (no block) statement in
+    functions (default: assignment=60%, invocation=20%, increment/decrement=20%,
+    augmented assignment=10%).
+-   `function_compound_stmt_prob`: each kind of compound statement (with blocks)
+    in functions (equal probability for Block, If, Switch, Do, While, For).
+-   `stmt_depth_prob`: statement depth (default: equal probabilities for [0-2]).
+-   `procedure_basic_stmt_prob`: each kind of basic (no block) statement in
+    functions (default: assignment=60%, invocation=20%, increment/decrement=20%,
+    augmented assignment=10%).
+-   `procedure_compound_stmt_prob`: each kind of compound statement (with blocks)
+    in functions (equal probability for Block, If, Switch, Do, While, For).
+-   `number_stmts_main_prob`: number of statements in the main function (default:
+    equal probabilities between 5 and 10).
+-   `number_stmts_func_prob`: number of statements in functions (default: 20% for
+    [1,4] and 10% for [5, 6]).
+-   `number_stmts_block`: number of statements in blocks (default: 1/3 for 1, 2
+    and 3).
+-   `else_body_prob`: probability of generating an else body for an if statement
+    (default: 50%).
+-   `number_cases_prob`: number of cases in switch statements (default: equal
+    probabilities between 1 and 4).
+-   `cases_type_prob`: type of the cases clauses in switch statements (default:
+    equal probabilities between types promotable to int, excluding bool).
+-   `default_switch_prob`: probability of generating a default case in a switch
+    statement (default: 80%).
+-   `break_case_prob`: probability of having a break statement at the end of a
+    case block (default: 70%).
+-   `return_at_end_if_else_bodies_prob`: probability of having a return at the
+    end of a if / else blocks (default: 15%).
+-   `return_at_end_case_prob`: probability of having a return at the end of the
+    cases clauses in a switch statement (default: 15%).
+-   `implicit_promotion_bool`: if an expression is expected, the probability to
+    generate it with another type promotable to the expected one (default: 30%).
+-   `promotions_prob`: promotions between types (default: all the conversions are
+    equally likely).
+
+
+### Probability specification files
+
+
+### Function generation files
+
+
+### Post-processing specification files
+
+
+
