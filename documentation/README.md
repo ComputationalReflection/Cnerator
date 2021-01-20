@@ -58,7 +58,7 @@ These are the command line arguments provided by Cnerator (all of them are optio
 * `-p PROBS` or `--probs PROBS`: `PROBS` represents a semicolon-separated list of probabilities 
     and their values for different syntactic constructs.
     An example use is `"call_prob={True:0.2,False:0.8}; param_number_prob={0:0.2,1:0.3,2:0.3,3:0.2}"`.
-    To now all the different syntactic constructs provided by Cnerator, please check the
+    To know all the different syntactic constructs provided by Cnerator, please check the
     [syntactic constructs](#syntactic-constructs) section.
     
      
@@ -207,8 +207,7 @@ The following JSON file shows an example:
          "ast.Bool",
          "ast.SignedChar",
          "ast.UnsignedChar",
-         "ast.SignedShortInt",
-         ...
+         "ast.SignedShortInt"
       ]
    },
    "param_number_prob": {
@@ -222,8 +221,7 @@ The following JSON file shows an example:
       "__prob_distribution__": "normal_prob",
       "__mean__": 10,
       "__stdev__": 3
-   },
-   ...
+   }
 }
 ```
 
