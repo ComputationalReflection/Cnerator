@@ -91,7 +91,7 @@ python cnerator.py -f json/functions/1-function-each-type.json
 Sometimes, the user needs the output program to fulfill some requirements not guaranteed by the 
 stochastic generation process.
 To this aim, Cnerator allows the specification of an ordered collection of Python 
-post-process specification files (see the [documentation])(documentation#post-processing-specification-files). 
+post-process specification files (see the [documentation](documentation#post-processing-specification-files)). 
 These post-processing files can modify the generated code to satisfy those requirements. 
 The following execution generates a random program and then executes two visitors: 
 one to rename `func` functions to `proc` (and their invocations) when they return `void`;
