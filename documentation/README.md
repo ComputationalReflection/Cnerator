@@ -1,7 +1,7 @@
 # Documentation
 
 This text describes how to use Cnerator for the stochastic generation of compilable C source code.
-If you are looking for developer documentation, please check [this](docs).
+If you are looking for developer documentation, please check this [developer reference](docs).
 
 
 ## Installation
@@ -15,13 +15,13 @@ pip install singledispatch
 
 ## Running Cnerator
 
-Then, you can run Cnerator with no arguments to generate a random C program:
+Then, you can run Cnerator with no arguments to generate a compilable random C program in the `out` directory:
 
 ``` text
 python cnerator.py
 ```
 
-To see all the options, just run the `-h` or `--help` options.
+To see all the options, just run the `-h` or `--help` option.
 
 ``` text
 python cnerator.py -h
@@ -37,22 +37,22 @@ These are the command line arguments provided by Cnerator (all of them are optio
 * `-O PATH` or `--output_dir PATH`: `PATH` is the output directory where the C source code
     is placed. If the directory does not exist, it is created. The default value is `out`.
 
-* `-n NUMBER` or `--nfiles NUMBER`: Generates the output program in `NUMBER` compilation unit.
+* `-n NUMBER` or `--nfiles NUMBER`: Generates the output program in `NUMBER` compilation units.
     Each compilation unit is a pair of `.c` and `.h` files. 
-    A compilation unit can be compiled that can be compiled independently, 
+    A compilation unit can be compiled independently, 
     even though they commonly depend on other compilation units.
     The default value is 2.
                         
 * `-r RECURSION_LIMIT` or `--recursion RECURSION_LIMIT`: Defines the maximum number of
     Python recursive invocations. This parameter may be modified when massive codebases
-    are being modified, checking the the runtime environment provides sufficient memory. 
+    are being modified, checking that the runtime environment provides sufficient memory. 
     The default value is 50000.
                         
-* `-v` or `--verbose`: Enables the verbose mode, to show runtime messages.
+* `-v` or `--verbose`: Enables the verbose mode to show runtime messages.
     By default, the verbose mode is disabled.
     
-* `-d` or `--debug`: Generates debug information, comprising call graphs and struct structures,
-    in .dot files.
+* `-d` or `--debug`: Generates debug information, comprising call graphs and struct structures
+    in `.dot` files.
     By default, the debug option is disabled.
 
 * `-p PROBS` or `--probs PROBS`: `PROBS` represents a semicolon-separated list of probabilities 
@@ -63,7 +63,7 @@ These are the command line arguments provided by Cnerator (all of them are optio
     
      
 * `-P PROBSFILE` or `--probsfile PROBSFILE`: `PROBSFILE` is a JSON file specifying some probabilities 
-    for different language constructs. Different examples are provided in the `json/probabilites`
+    for different language constructs. Different examples are provided in the `json/probabilities`
     directory.
     The structure of `PROBSFILE` JSON files is described in the 
     [probability specification files](#probability-specification-files) section.
@@ -71,8 +71,8 @@ These are the command line arguments provided by Cnerator (all of them are optio
 * `-f FUNCTIONS` or `--functions FUNCTIONS`: `FUNCTIONS` is a JSON file specifying conditions 
     of the functions to be created by Cnerator. The user can express properties that the 
     generated functions will fulfill. 
-    Different examples are FUNCTIONS in the `json/functions` directory.
-    The structure of `PROBSFILE` JSON files is described in the 
+    Different example files are provided in the `json/functions` directory.
+    The structure of `FUNCTIONS` JSON files is described in the 
     [function generation files](#function-generation-files) section.
 
 * `-V VISITORS` or `--visitors VISITORS`: An ordered colon-separated list of visitors to
@@ -80,7 +80,7 @@ These are the command line arguments provided by Cnerator (all of them are optio
     Once the visitors are run, Cnerator takes the final program representation and
     generates the final C source code.
     An example value of `VISOTORS` is `visitors.func_to_proc:visitors.return_instrumentation`.
-    The `visitors` directory provides different examples of visitors.
+    The `visitors` directory provides different examples of visitor implementations.
     A brief description of how to implement of such visitors is presented in the
     [post-processing specification files](#post-processing-specification-files) section.
      
@@ -93,9 +93,9 @@ These are the command line arguments provided by Cnerator (all of them are optio
 
 ### Syntactic constructs
 
-As mentioned, Cnerator allows defining the probabilites of different syntactic constructs of
-the C programming language. What follows is a description of all the constructs and the
-identifier to be used if the `-p` or `-P` options are used:
+As mentioned, Cnerator allows defining the probabilities of different syntactic constructs of
+the C programming language. What follows is a description of all the constructs and their
+unique identifiers, when the `-p` or `-P` options are used:
 
 -   `primitive_types_prob`: probabilities among primitive types (default: equal
     probability for all the types).
@@ -121,7 +121,7 @@ identifier to be used if the `-p` or `-P` options are used:
 -   `call_prob`: probability that a new expression is a function invocation
     (default: 20%).
 -   `basic_expression_prob`: basic expressions (default: same probability among
-    literal, local_var, global_var, and param_var).
+    literal, local variable, global variable, and param variable).
 -   `param_number_prob`: number of parameters (default: 10% for 1, 20% for [1,4]
     and 5% for [5,6]).
 -   `param_types_prob`: types of the parameters (default: all types are equally
@@ -133,14 +133,14 @@ identifier to be used if the `-p` or `-P` options are used:
 -   `int_emulate_bool`: probability of generating a bool return (0 or 1) when an
     int type is expected (default: 20%).
 -   `new_global_var_prob`: probability of creating a new global variable when one
-    of the expected typealready exists (default: 1%).
+    of the expected types already exists (default: 1%).
 -   `new_local_var_prob`: probability of creating a new local variable when one
-    of the expected typealready exists (default: 1%).
+    of the expected types already exists (default: 1%).
 -   `reuse_func_prob`: probability of reusing an existing function of the
     expected type (default: 99%).
 -   `reuse_proc_prob`: probability of reusing an existing procedure of the
     expected type (default: 99%).
--   `global_or_local_as_basic_lvalue_prob`: When a basic lvalue needs to be
+-   `global_or_local_as_basic_lvalue_prob`: When a basic l-value needs to be
     generated, this is the probability of using a global variable; otherwise, a
     local variable is used (default: 50%).
 -   `basic_or_compound_stmt_prob`: probability of generating a basic (no block)
@@ -173,7 +173,7 @@ identifier to be used if the `-p` or `-P` options are used:
 -   `break_case_prob`: probability of having a break statement at the end of a
     case block (default: 70%).
 -   `return_at_end_if_else_bodies_prob`: probability of having a return at the
-    end of a if / else blocks (default: 15%).
+    end of an if / else blocks (default: 15%).
 -   `return_at_end_case_prob`: probability of having a return at the end of the
     cases clauses in a switch statement (default: 15%).
 -   `implicit_promotion_bool`: if an expression is expected, the probability to
@@ -184,11 +184,146 @@ identifier to be used if the `-p` or `-P` options are used:
 
 ### Probability specification files
 
+Probability specification files are JSON documents that the user can use to define
+the probability of different [syntactic constructs](#syntactic-constructs). 
+The following JSON file shows an example:
+
+
+```json
+{
+   "function_basic_stmt_prob": {
+      "assignment": 0.3,
+      "invocation": 0.4,
+      "augmented_assignment": 0.15,
+      "incdec": 0.1,
+      "expression_stmt": 0.05
+   },
+   "array_literal_initialization_prob": {
+      "True": 0.1, "False": 0.9
+   },
+   "primitive_types_prob": {
+      "__prob_distribution__": "equal_prob",
+      "__values__": [
+         "ast.Bool",
+         "ast.SignedChar",
+         "ast.UnsignedChar",
+         "ast.SignedShortInt",
+         ...
+      ]
+   },
+   "param_number_prob": {
+      "__prob_distribution__": "proportional_prob",
+      "__values__": {
+         "0": 1, "1": 2, "2": 3,
+         "3": 3, "4": 2, "5": 1
+      }
+   },
+   "number_stmts_main_prob": {
+      "__prob_distribution__": "normal_prob",
+      "__mean__": 10,
+      "__stdev__": 3
+   },
+   ...
+}
+```
+
+The first entry (`function_basic_stmt_prob`) defines the probability of building basic statements 
+(i.e., statements not containing other statements, unlike `for` and `switch`), 
+and the second one (`array_literal_initialization_prob`) states when an array definition should initialize their values. 
+These two examples specify fixed probabilities that must sum zero. 
+The three remaining entries describe uniform/equal, proportional and normal distributions to define, respectively, 
+the usage of primitive types (`primitive_types_prob`), 
+the number of function parameters (`param_number_prob`) 
+and statements in the `main` function (`number_stmts_main_prob`).
+
 
 ### Function generation files
 
+Cnerator provides the capability of specifying features to be fulfilled by the generated functions.
+The following JSON file shows an example use of such capacity:
+
+```json
+{
+  "function_returning_void": {
+    "total": 1000,
+    "condition": "lambda f: isinstance(f.return_type, ast.Void)"
+  },
+  "function_returning_bool": {
+    "total": 1000,
+    "condition": "lambda f: isinstance(f.return_type, ast.Bool)"
+  },
+  "function_with_if_else": {
+    "total": 1,
+    "condition": "lambda f: any(stmt for stmt in f.children if isinstance(stmt, cnerator.ast.If) and any(stmt.else_statements))"
+  }
+}
+```
+
+The two first entries (`function_returning_void` and `function_returning_bool`)
+enforce Cnerator to generate 1000 functions returning `void` and the same
+number of functions returning `bool`. The only condition in the lambda expressions  
+checks that the returned type is the expected one. 
+The last entry (`function_with_if_else`) shows a different example,
+where the user demands Cnerator to generate a function containing an `if` statement with an `else` clause.
+
 
 ### Post-processing specification files
+
+Cnerator provides a mechanism to process / modify program representation before the final
+source code generalization. The following code shows an example Python post-process specification file:
+ 
+```Python
+from singledispatch import singledispatch
+from cnerator import ast
+
+def _instrument_statements(statements: List[ast.ASTNode]) -> List[ast.ASTNode]:
+    """Includes a unique label before any return statement"""
+    instrumented_stmts = []
+    for stmt in statements:                          # iterates through the statements
+        if isinstance(stmt, ast.Return):             # if the statement is return…
+            label_ast = ast.Label(generate_label())  # creates a new AST node for the label
+            instrumented_stmts.append(label_ast)     # and places the label before the return
+            visit(stmt)                              # traverses the statement
+            instrumented_stmts.append(stmt)          # appends return after the label
+    return instrumented_stmts
+
+@visit.register(ast.Function)
+def _(function: ast.Function):
+    """Traverses a function definition to add a unique label before each return statement"""
+    function.stmts = _instrument_statements(function.stmts)
+
+@visit.register(ast.Do)
+@visit.register(ast.While)
+@visit.register(ast.For)
+@visit.register(ast.Block)
+def _(node):
+    """Traverses a control flow statement to add a unique label before each return statement"""
+    node.statements = _instrument_statements(node.statements)
+
+_return_label_counter = 0
+	
+def generate_label() -> str:
+    """Generates a new unique label string"""
+    global _return_label_counter
+    _return_label_counter += 1
+    return f"__RETURN{_return_label_counter}__"
+ 
+...
+```
+
+The previous code traverses the representation of the generated program (i.e., its Abstract Syntax Tree (AST)), 
+and adds a unique label before each `return` statement. 
+The `_instrument_statements function` takes a list of statements (represented as
+AST nodes) and adds a unique label —prefixed with `__RETURN__`– before each `return` statement. 
+This is later used in the traversal of function definitions (`ast.Function`), 
+and `do`, `while`, `for` and block statements  
+–`if` and `switch` control flow statements follow the same template. 
+This instrumentation technique was used to associate
+fragments of binary code with their corresponding high-level `return` statements.
+
+The previous code is an instance of an introspective implementation of the _Visitor_ design pattern. 
+The `visit` annotations indicate the AST node to be traversed.
+
 
 
 
