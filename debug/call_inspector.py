@@ -8,7 +8,7 @@ import io
 
 from singledispatch import singledispatch
 
-from cnerator import ast
+from core import ast
 
 global_visit_main = True
 

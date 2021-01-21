@@ -6,13 +6,13 @@ This module is aimed at processing input json files specifying the probabilities
 be created by Cnerator (command line option -P). See json/probabilities for particular examples.
 """
 
-from cnerator import probs_helper
+from core import probs_helper
 from typing import Union, Dict
 import json
 import sys
 
 
-def parse_probabilites_specification_json_file(file_name: str) -> Dict[str, dict]:
+def parse_probabilities_specification_json_file(file_name: str) -> Dict[str, dict]:
     """Parses a json file with probabilities specifications and returns a valid representation"""
     with open(file_name) as json_file:
         data = json.load(json_file)
@@ -21,7 +21,7 @@ def parse_probabilites_specification_json_file(file_name: str) -> Dict[str, dict
 
 
 def _process_json_probs_data(data: dict)-> Dict[str, dict]:
-    """Takes the data extracted from the json file a dictionary of probabilites"""
+    """Takes the data extracted from the json file a dictionary of probabilities"""
     result = dict()
     for prob_name, prob_dictionary in data.items():
         _process_json_probs_entry(prob_name, prob_dictionary, result)
@@ -31,7 +31,7 @@ def _process_json_probs_data(data: dict)-> Dict[str, dict]:
 def _process_json_probs_entry(prob_name: str, prob_dictionary: dict, result: dict) -> None:
     """Takes one entry of the json probability specification file, process it
     and adds the correct representation to result"""
-    from cnerator import probs
+    from core import probs
     if not probs.does_this_probability_exist(prob_name):
         print(f"Unknown probability '{prob_name}'.", file=sys.stderr)  # probability name is not in probs module
     elif "__prob_distribution__" not in prob_dictionary.keys():
@@ -70,9 +70,9 @@ def _process_json_probs_entry(prob_name: str, prob_dictionary: dict, result: dic
 
 def _eval_str(string: str) -> object:
     """Evaluates a string and returns its evaluation"""
-    import cnerator
-    from cnerator import ast
-    global_variables = {"cnerator": cnerator, "ast": ast}
+    import core
+    from core import ast
+    global_variables = {"core": core, "cnerator": core, "ast": ast}
     try:
         return eval(string, global_variables)
     except:

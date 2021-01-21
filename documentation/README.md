@@ -252,7 +252,7 @@ The following JSON file shows an example use of such capacity:
   },
   "function_with_if_else": {
     "total": 1,
-    "condition": "lambda f: any(stmt for stmt in f.children if isinstance(stmt, cnerator.ast.If) and any(stmt.else_statements))"
+    "condition": "lambda f: any(stmt for stmt in f.children if isinstance(stmt, ast.If) and any(stmt.else_statements))"
   }
 }
 ```

@@ -7,10 +7,10 @@ If the function returns void, a label and an explicit return function is added a
 
 
 from singledispatch import singledispatch
-import cnerator
-from cnerator.utils import print_if_verbose
+import core
+from core.utils import print_if_verbose
 from typing import List
-from cnerator import ast
+from core import ast
 
 _return_label_counter = 0
 

@@ -1,7 +1,7 @@
 
 from functools import partial
 
-from cnerator import probs, operators_types, probs_helper, generators, ast
+from core import probs, operators_types, probs_helper, generators, ast
 
 
 def infer_return_type(program, function, operator, *args_t):

@@ -1,42 +1,42 @@
 {
   "functions_returning_void": {
     "total": 22,
-    "condition": "lambda f: isinstance(f.return_type, cnerator.ast.Void)"
+    "condition": "lambda f: isinstance(f.return_type, ast.Void)"
   },
   "functions_returning_bool": {
     "total": 11,
-    "condition": "lambda f: isinstance(f.return_type, cnerator.ast.Bool)"
+    "condition": "lambda f: isinstance(f.return_type, ast.Bool)"
   },
   "functions_returning_char": {
     "total": 10,
-    "condition": "lambda f: isinstance(f.return_type, cnerator.ast.SignedChar)"
+    "condition": "lambda f: isinstance(f.return_type, ast.SignedChar)"
   },
   "functions_returning_short": {
     "total": 21,
-    "condition": "lambda f: isinstance(f.return_type, cnerator.ast.SignedShortInt)"
+    "condition": "lambda f: isinstance(f.return_type, ast.SignedShortInt)"
   },
   "functions_returning_int": {
     "total": 7,
-    "condition": "lambda f: isinstance(f.return_type, cnerator.ast.SignedInt)"
+    "condition": "lambda f: isinstance(f.return_type, ast.SignedInt)"
   },
   "functions_returning_long_long": {
     "total": 21,
-    "condition": "lambda f: isinstance(f.return_type, cnerator.ast.SignedLongLongInt)"
+    "condition": "lambda f: isinstance(f.return_type, ast.SignedLongLongInt)"
   },
   "functions_returning_float": {
     "total": 22,
-    "condition": "lambda f: isinstance(f.return_type, cnerator.ast.Float)"
+    "condition": "lambda f: isinstance(f.return_type, ast.Float)"
   },
   "functions_returning_double": {
     "total": 22,
-    "condition": "lambda f: isinstance(f.return_type, cnerator.ast.Double)"
+    "condition": "lambda f: isinstance(f.return_type, ast.Double)"
   },
   "functions_returning_pointer": {
     "total": 7,
-    "condition": "lambda f: isinstance(f.return_type, cnerator.ast.Pointer)"
+    "condition": "lambda f: isinstance(f.return_type, ast.Pointer)"
   },
   "functions_returning_struct": {
     "total": 7,
-    "condition": "lambda f: isinstance(f.return_type, cnerator.ast.Struct)"
+    "condition": "lambda f: isinstance(f.return_type, ast.Struct)"
   }
 }

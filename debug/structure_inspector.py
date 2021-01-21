@@ -5,14 +5,14 @@ from __future__ import print_function
 from __future__ import unicode_literals
 
 import io
-import cnerator
+import core
 
 
 def get_struct_name(t):
     while True:
-        if isinstance(t, cnerator.ast.Struct):
+        if isinstance(t, core.ast.Struct):
             return t.name
-        elif isinstance(t, (cnerator.ast.Pointer, cnerator.ast.Array)):
+        elif isinstance(t, (core.ast.Pointer, core.ast.Array)):
             t = t.type
         else:
             return None

@@ -1,12 +1,11 @@
-""" A Python Class
-A simple Python graph class, demonstrating the essential
-facts and functionalities of graphs.
-
-From: http://www.python-course.eu/graphs_python.php
+"""
+A graph representing the struct structures created in memory"
 """
 
 
 class Graph(object):
+    """A general-purpose graph class"""
+
     def __init__(self, graph_dict=None):
         """ initializes a graph object
             If no dictionary or None is given, an empty dictionary will be used

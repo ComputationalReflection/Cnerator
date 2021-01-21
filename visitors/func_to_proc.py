@@ -7,16 +7,16 @@ All the invocations are also renamed."""
 
 
 from singledispatch import singledispatch
-import cnerator
-from cnerator.utils import print_if_verbose
-from cnerator import ast
+import core
+from core.utils import print_if_verbose
+from core import ast
 
 @singledispatch
 def visit(node):
     raise TypeError("Unknown node type: " + node.__class__.__name__)
 
 
-@visit.register(cnerator.ast.Program)
+@visit.register(ast.Program)
 def _(program: ast.Program) -> None:
     print_if_verbose("")
     print_if_verbose("*" * 80)
@@ -27,20 +27,20 @@ def _(program: ast.Program) -> None:
     visit(program.main)
 
 
-@visit.register(cnerator.ast.Function)
+@visit.register(ast.Function)
 def _(function: ast.Function) -> None:
     # Rename procedures
-    if function.return_type == cnerator.ast.Void():
+    if function.return_type == core.ast.Void():
         print_if_verbose("Replacing func with proc: " + function.name)
         function.name = function.name.replace("func", "proc")
     for stmt in function.stmts:
         visit(stmt)
 
 
-@visit.register(cnerator.ast.Invocation)
+@visit.register(ast.Invocation)
 def _(invocation: ast.Invocation) -> None:
     # Rename procedures
-    if invocation.return_type == cnerator.ast.Void():
+    if invocation.return_type == core.ast.Void():
         invocation.func_name = invocation.func_name.replace("func", "proc")
         print_if_verbose("Replacing: " + invocation.func_name)
 
@@ -80,14 +80,14 @@ def _(node: ast.Switch) -> None:
     _visit_ast_nodes(node.default)
 
 
-@visit.register(cnerator.ast.Assignment)
-@visit.register(cnerator.ast.BinaryASTNode)
-@visit.register(cnerator.ast.UnaryASTNode)
-@visit.register(cnerator.ast.TernaryASTNode)
-@visit.register(cnerator.ast.Return)
-@visit.register(cnerator.ast.Literal)
-@visit.register(cnerator.ast.Variable)
-@visit.register(cnerator.ast.Break)
+@visit.register(ast.Assignment)
+@visit.register(ast.BinaryASTNode)
+@visit.register(ast.UnaryASTNode)
+@visit.register(ast.TernaryASTNode)
+@visit.register(ast.Return)
+@visit.register(ast.Literal)
+@visit.register(ast.Variable)
+@visit.register(ast.Break)
 def _(_: ast.ASTNode) -> None:
     pass
 

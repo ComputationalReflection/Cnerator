@@ -1,12 +1,13 @@
 # -*- coding: utf-8 -*-
 
-# WARNING: This file has been generated with
-#    C:\Users\VirtualUser\Documents\phd\tools\cnerator\tools\gen_operators_types_code.py
+"""
+This module defines the types of C experessions, relative to the syntax of the C operators.
+"""
 
 
-from cnerator.ast import Array, Bool, Double, Float, LongDouble, Pointer, SignedChar, SignedInt, SignedLongInt
-from cnerator.ast import SignedLongLongInt, SignedShortInt, Struct, UnsignedChar, UnsignedInt, UnsignedLongInt
-from cnerator.ast import UnsignedLongLongInt, UnsignedShortInt
+from core.ast import Array, Bool, Double, Float, LongDouble, Pointer, SignedChar, SignedInt, SignedLongInt
+from core.ast import SignedLongLongInt, SignedShortInt, Struct, UnsignedChar, UnsignedInt, UnsignedLongInt
+from core.ast import UnsignedLongLongInt, UnsignedShortInt
 
 ###
 # By operand types

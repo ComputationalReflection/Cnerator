@@ -3,10 +3,10 @@ from __future__ import print_function
 
 from typing import Union
 
-from cnerator import probs, probs_helper, ast, type_inference, utils
+from core import probs, probs_helper, ast, type_inference, utils
 from visitors import function_subs
-from cnerator.utils import print_if_verbose
-from cnerator.ast import *
+from core.utils import print_if_verbose
+from core.ast import *
 
 
 ################ Expressions ####################

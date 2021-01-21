@@ -3,7 +3,7 @@
 """Visitor to replace the invocations to functions that have been removed"""
 
 from singledispatch import singledispatch
-from cnerator import ast, generators, probs
+from core import ast, generators, probs
 from params.parameters import get_app_args
 from typing import List, Union
 

@@ -1,9 +1,10 @@
 # -*- coding: utf-8 -*-
+"""
+This module defines the way expressions are built, relative to the syntax of the C operators.
+You can modify then to change the way expressions are created.
+However, do not change their names, since a naming convention is used (i.e., reflection).
+"""
 
-# WARNING: This file has been generated with
-#    C:\Users\VirtualUser\Documents\phd\tools\cnerator\tools\gen_operators_types_code.py
-# WARNING: This operators define the way expressions are built. You can modify then to change the way expressions are
-# created. DO NOT change their names, since a naming convention is used.
 
 from fractions import Fraction as fr
 

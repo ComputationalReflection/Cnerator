@@ -1,7 +1,7 @@
 import io
 import os
 
-import cnerator
+import core
 
 def write_in_multiple_headers(program, args):
     includes, defines, structs, prototypes, global_vars, functions, main = program.stringify_parts()
@@ -21,9 +21,9 @@ def write_in_multiple_headers(program, args):
         '#include "global_vars.h"\n',
         "/*\n"
         " * TOTAL functions:   {} + 1\n".format(len(program.functions)),
-        " * VOID functions:    {}\n".format(sum(1 for f in program.functions if f.return_type == cnerator.ast.Void())),
+        " * VOID functions:    {}\n".format(sum(1 for f in program.functions if f.return_type == core.ast.Void())),
         " * NO-VOID functions: {} + 1\n".format(
-            sum(1 for f in program.functions if f.return_type != cnerator.ast.Void())),
+            sum(1 for f in program.functions if f.return_type != core.ast.Void())),
         " */\n"
         '#include "functions.h"\n',
         "\n", main, "\n",
@@ -117,9 +117,9 @@ def write_in_multiple_files(program, args):
         "\n",
         "/*\n",
         " * TOTAL functions:   {} + 1\n".format(len(program.functions)),
-        " * VOID functions:    {}\n".format(sum(1 for f in program.functions if f.return_type == cnerator.ast.Void())),
+        " * VOID functions:    {}\n".format(sum(1 for f in program.functions if f.return_type == core.ast.Void())),
         " * NON-VOID functions: {} + 1\n".format(
-            sum(1 for f in program.functions if f.return_type != cnerator.ast.Void())),
+            sum(1 for f in program.functions if f.return_type != core.ast.Void())),
         " */\n",
         "\n", main, "\n",
     ])
@@ -182,9 +182,9 @@ def write_in_multiple_files(program, args):
             "/*\n",
             " * TOTAL functions:   {}\n".format(len(part)),
             " * VOID functions:    {}\n".format(
-                sum(1 for f in part if f.return_type == cnerator.ast.Void())),
+                sum(1 for f in part if f.return_type == core.ast.Void())),
             " * NO-VOID functions: {}\n".format(
-                sum(1 for f in part if f.return_type != cnerator.ast.Void())),
+                sum(1 for f in part if f.return_type != core.ast.Void())),
             " */\n",
             "\n", functions, "\n",
         ])

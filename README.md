@@ -3,10 +3,11 @@
 
 [![License](https://img.shields.io/github/license/ComputationalReflection/cnerator)](LICENSE)
 [![Latest release](https://img.shields.io/github/v/release/computationalreflection/cnerator?include_prereleases)](https://github.com/ComputationalReflection/cnerator/releases)
+[![Documentation](https://img.shields.io/static/v1?label=docs&message=Sphinx&color=blue)](https://computationalreflection.github.io/Cnerator/)
 <img alt="Code size" src="https://img.shields.io/github/languages/code-size/computationalreflection/cnerator">
 <img alt="Repo size" src="https://img.shields.io/github/repo-size/computationalreflection/cnerator">
 
-
+TODO CAMBIAR TAMBIEN EL DOCUMENTATION/README.MD por documentation.md (como changelog.md en https://github.com/s0md3v/XSStrike)
 
 Cnerator is a C source code generation tool. It can be used to generate large amounts of 
 [standard ANSI/ISO C source code](https://www.iso.org/standard/74528.html), ready to be compiled 
@@ -105,6 +106,12 @@ To see all the options, just run the `-h` or `--help` options.
 For more information, please check the [documentation](documentation).
 Developer documentation is also provided [here](docs).
 
+
+## Documentation
+
+* Check out the [manual](documentation) about how to use Cnerator.
+ 
+* A [developer manual](docs) is also available if you want to modify the source code.
 
 ## License
 

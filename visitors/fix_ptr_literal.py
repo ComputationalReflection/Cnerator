@@ -8,8 +8,8 @@ addresses of global variables.
 
 from singledispatch import singledispatch
 
-from cnerator import ast, generators
-from cnerator.utils import print_if_verbose
+from core import ast, generators
+from core.utils import print_if_verbose
 
 
 @singledispatch

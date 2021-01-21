@@ -1,4 +1,10 @@
 
+"""
+This module holds the Abstract Syntax Tree (AST) program representation.
+Upon generation, the program is represented as an AST that is finally stored as output C source files.
+That functionality is provided by the to_str method.
+"""
+
 from __future__ import print_function
 
 import collections
@@ -635,7 +641,7 @@ class LongDouble(NumericType):
 
 
 def structs_references_graph(structs):
-    from cnerator import graph
+    from core import graph
     references = collections.defaultdict(list)
     for s in structs:
         for f, t in s.fields:
@@ -814,7 +820,7 @@ class FuncProc(object):
 ########## Helper functions ##############
 
 def get_operators(c_type, _type):
-    from cnerator import utils, operators
+    from core import utils, operators
     operator_type = "{}_{}_operators".format(
         utils.camel_case_to_snake_case(c_type.__class__.__name__),
         _type
