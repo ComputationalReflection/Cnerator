@@ -1,0 +1,560 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" />
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  
+  <title>core.probs &mdash; Cnerator latest documentation</title>
+  
+
+  
+  <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+
+  
+  
+
+  
+  
+
+  
+
+  
+  <!--[if lt IE 9]>
+    <script src="../../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="../../" src="../../_static/documentation_options.js"></script>
+        <script src="../../_static/jquery.js"></script>
+        <script src="../../_static/underscore.js"></script>
+        <script src="../../_static/doctools.js"></script>
+    
+    <script type="text/javascript" src="../../_static/js/theme.js"></script>
+
+    
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="../../index.html" class="icon icon-home"> Cnerator
+          
+
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                latest
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <ul>
+<li class="toctree-l1"><a class="reference internal" href="../../modules.html">Cnerator API</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../getting_started.html">Getting started</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../user_manual.html">User manual</a></li>
+</ul>
+
+            
+          
+        </div>
+        
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../index.html">Cnerator</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../../index.html" class="icon icon-home"></a> &raquo;</li>
+        
+          <li><a href="../index.html">Module code</a> &raquo;</li>
+        
+      <li>core.probs</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <h1>Source code for core.probs</h1><div class="highlight"><pre>
+<span></span><span class="c1"># -*- coding: utf-8 -*-</span>
+
+<span class="sd">&quot;&quot;&quot;This file defines the probability for creating each part of the program.</span>
+<span class="sd">Probability may be defined manually, or using the helper functions in probs_helper.</span>
+<span class="sd">They are expressed as dictionaries: {value: probability of that value}.</span>
+<span class="sd">The sum of the probabilities must be 1.0.</span>
+<span class="sd">For a fixed value, just set its probability to 1.0.</span>
+<span class="sd">The doc:Dict[str,str] documents all the probabilities meanings to be shown to the user.</span>
+<span class="sd">&quot;&quot;&quot;</span>
+
+<span class="kn">from</span> <span class="nn">core</span> <span class="kn">import</span> <span class="n">probs_helper</span><span class="p">,</span> <span class="n">ast</span><span class="p">,</span> <span class="n">probs</span>
+<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Dict</span>
+
+<span class="c1"># Name of the global dictionary used to document the probabilities</span>
+<span class="n">DOC_NAME</span> <span class="o">=</span> <span class="s2">&quot;doc&quot;</span>
+
+<span class="c1"># the doc:Dict[str,str] documents all the probabilities meanings to be shown to the user.</span>
+<span class="n">doc</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">()</span>
+
+
+<span class="c1"># ------------ Types --------------</span>
+
+<span class="n">primitive_types</span> <span class="o">=</span> <span class="p">{</span>
+    <span class="n">ast</span><span class="o">.</span><span class="n">Bool</span><span class="p">,</span>
+    <span class="n">ast</span><span class="o">.</span><span class="n">SignedChar</span><span class="p">,</span>
+    <span class="n">ast</span><span class="o">.</span><span class="n">UnsignedChar</span><span class="p">,</span>
+    <span class="n">ast</span><span class="o">.</span><span class="n">SignedShortInt</span><span class="p">,</span>
+    <span class="n">ast</span><span class="o">.</span><span class="n">UnsignedShortInt</span><span class="p">,</span>
+    <span class="n">ast</span><span class="o">.</span><span class="n">SignedInt</span><span class="p">,</span>
+    <span class="n">ast</span><span class="o">.</span><span class="n">UnsignedInt</span><span class="p">,</span>
+    <span class="n">ast</span><span class="o">.</span><span class="n">SignedLongInt</span><span class="p">,</span>
+    <span class="n">ast</span><span class="o">.</span><span class="n">UnsignedLongInt</span><span class="p">,</span>
+    <span class="n">ast</span><span class="o">.</span><span class="n">SignedLongLongInt</span><span class="p">,</span>
+    <span class="n">ast</span><span class="o">.</span><span class="n">UnsignedLongLongInt</span><span class="p">,</span>
+    <span class="n">ast</span><span class="o">.</span><span class="n">Float</span><span class="p">,</span>
+    <span class="n">ast</span><span class="o">.</span><span class="n">Double</span><span class="p">,</span>
+    <span class="n">ast</span><span class="o">.</span><span class="n">LongDouble</span><span class="p">,</span>
+<span class="p">}</span>
+
+<span class="n">all_types</span> <span class="o">=</span> <span class="nb">set</span><span class="p">(</span><span class="n">primitive_types</span><span class="p">)</span><span class="o">.</span><span class="n">union</span><span class="p">({</span><span class="n">ast</span><span class="o">.</span><span class="n">Pointer</span><span class="p">,</span> <span class="n">ast</span><span class="o">.</span><span class="n">Struct</span><span class="p">,</span> <span class="n">ast</span><span class="o">.</span><span class="n">Array</span><span class="p">})</span>
+
+<span class="n">doc</span><span class="p">[</span><span class="s1">&#39;primitive_types_prob&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;probabilities among primitive types (default: equal probability for all the types)&quot;</span>
+<span class="n">primitive_types_prob</span> <span class="o">=</span> <span class="n">probs_helper</span><span class="o">.</span><span class="n">compute_equal_prob</span><span class="p">(</span><span class="n">primitive_types</span><span class="p">)</span>
+
+<span class="n">doc</span><span class="p">[</span><span class="s1">&#39;assignment_types_prob&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;assignment type (default: equal probability for all the types)&quot;</span>
+<span class="n">assignment_types_prob</span> <span class="o">=</span> <span class="n">probs_helper</span><span class="o">.</span><span class="n">compute_equal_prob</span><span class="p">(</span><span class="nb">set</span><span class="p">(</span><span class="n">primitive_types</span><span class="p">)</span><span class="o">.</span><span class="n">union</span><span class="p">({</span><span class="n">ast</span><span class="o">.</span><span class="n">Pointer</span><span class="p">,</span> <span class="n">ast</span><span class="o">.</span><span class="n">Struct</span><span class="p">}))</span>
+
+<span class="n">doc</span><span class="p">[</span><span class="s1">&#39;augmented_assignment_types_prob&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;augmented assignment type (+=, -=, *=...) &quot;</span> \
+                                         <span class="s2">&quot;(default: equal probability for primitive types)&quot;</span>
+<span class="n">augmented_assignment_types_prob</span> <span class="o">=</span> <span class="n">probs_helper</span><span class="o">.</span><span class="n">compute_equal_prob</span><span class="p">(</span><span class="n">primitive_types</span><span class="p">)</span>
+
+<span class="n">doc</span><span class="p">[</span><span class="s1">&#39;all_types_prob&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;type probability when any type may occur in a syntax construction &quot;</span> \
+                        <span class="s2">&quot;(default: equal probability for any type)&quot;</span>
+<span class="n">all_types_prob</span> <span class="o">=</span> <span class="n">probs_helper</span><span class="o">.</span><span class="n">compute_equal_prob</span><span class="p">(</span><span class="n">all_types</span><span class="p">)</span>
+
+<span class="n">doc</span><span class="p">[</span><span class="s1">&#39;array_size&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;size of the arrays to be created (default: 1-10)&quot;</span>
+<span class="n">array_size</span> <span class="o">=</span> <span class="n">probs_helper</span><span class="o">.</span><span class="n">compute_equal_prob</span><span class="p">(</span><span class="nb">set</span><span class="p">(</span><span class="nb">range</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">10</span><span class="p">)))</span>
+
+<span class="n">doc</span><span class="p">[</span><span class="s1">&#39;reuse_struct_prob&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;when a struct is needed, probability of using and existing one &quot;</span> \
+                           <span class="s2">&quot;rather than creating a new one (default: 90%)&quot;</span>
+<span class="n">reuse_struct_prob</span> <span class="o">=</span> <span class="p">{</span><span class="kc">True</span><span class="p">:</span> <span class="mf">0.99</span><span class="p">,</span> <span class="kc">False</span><span class="p">:</span> <span class="mf">0.01</span><span class="p">}</span>
+
+<span class="n">doc</span><span class="p">[</span><span class="s1">&#39;enhance_existing_struct_prob&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;when a struct is needed, probability of extending an existing one with &quot;</span> \
+                                      <span class="s2">&quot;the demanded field rather than creating a new one (default: 70%)&quot;</span>
+<span class="n">enhance_existing_struct_prob</span> <span class="o">=</span> <span class="p">{</span><span class="kc">True</span><span class="p">:</span> <span class="mf">0.7</span><span class="p">,</span> <span class="kc">False</span><span class="p">:</span> <span class="mf">0.3</span><span class="p">}</span>
+
+<span class="n">doc</span><span class="p">[</span><span class="s1">&#39;array_literal_initialization_prob&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;array initialization upon definition (default: 10%)&quot;</span>
+<span class="n">array_literal_initialization_prob</span> <span class="o">=</span> <span class="p">{</span><span class="kc">True</span><span class="p">:</span> <span class="mf">0.1</span><span class="p">,</span> <span class="kc">False</span><span class="p">:</span> <span class="mf">0.9</span><span class="p">}</span>
+
+<span class="n">doc</span><span class="p">[</span><span class="s1">&#39;struct_literal_initialization_prob&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;struct initialization upon definition (default: 10%)&quot;</span>
+<span class="n">struct_literal_initialization_prob</span> <span class="o">=</span> <span class="p">{</span><span class="kc">True</span><span class="p">:</span> <span class="mf">0.1</span><span class="p">,</span> <span class="kc">False</span><span class="p">:</span> <span class="mf">0.9</span><span class="p">}</span>
+
+
+<span class="c1"># ------------ Expressions --------------</span>
+
+<span class="n">doc</span><span class="p">[</span><span class="s1">&#39;exp_depth_prob&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;expression depth (default: equal probabilities for [0-2])&quot;</span>
+<span class="n">exp_depth_prob</span> <span class="o">=</span> <span class="n">probs_helper</span><span class="o">.</span><span class="n">compute_equal_prob</span><span class="p">(</span><span class="nb">set</span><span class="p">(</span><span class="nb">range</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">3</span><span class="p">)))</span>
+
+<span class="n">doc</span><span class="p">[</span><span class="s1">&#39;return_exp_depth_prob&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;expression depth for the particular expressions to be returned by functions &quot;</span> \
+                               <span class="s2">&quot;(default: equal probabilities for [0-2])&quot;</span>
+<span class="n">return_exp_depth_prob</span> <span class="o">=</span> <span class="n">probs_helper</span><span class="o">.</span><span class="n">compute_equal_prob</span><span class="p">(</span><span class="nb">set</span><span class="p">(</span><span class="nb">range</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">3</span><span class="p">)))</span>
+
+
+<span class="c1"># ------------ Functions --------------</span>
+
+<span class="n">doc</span><span class="p">[</span><span class="s1">&#39;call_prob&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;probability that a new expression is a function invocation (default: 20%)&quot;</span>
+<span class="n">call_prob</span> <span class="o">=</span> <span class="p">{</span><span class="kc">True</span><span class="p">:</span> <span class="mf">0.2</span><span class="p">,</span> <span class="kc">False</span><span class="p">:</span> <span class="mf">0.8</span><span class="p">}</span>
+
+<span class="n">doc</span><span class="p">[</span><span class="s1">&#39;basic_expression_prob&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;basic expressions (default: same probability among literal, local_var, &quot;</span> \
+                               <span class="s2">&quot;global_var, and param_var)&quot;</span>
+<span class="n">basic_expression_prob</span> <span class="o">=</span> <span class="n">probs_helper</span><span class="o">.</span><span class="n">compute_equal_prob</span><span class="p">({</span><span class="s1">&#39;literal&#39;</span><span class="p">,</span> <span class="s1">&#39;local_var&#39;</span><span class="p">,</span> <span class="s1">&#39;global_var&#39;</span><span class="p">,</span> <span class="s1">&#39;param_var&#39;</span><span class="p">})</span>
+
+<span class="n">doc</span><span class="p">[</span><span class="s1">&#39;param_number_prob&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;number of parameters (default: 10</span><span class="si">% f</span><span class="s2">or 1, 20</span><span class="si">% f</span><span class="s2">or [1,4] and 5</span><span class="si">% f</span><span class="s2">or [5,6])&quot;</span>
+<span class="n">param_number_prob</span> <span class="o">=</span> <span class="p">{</span><span class="mi">0</span><span class="p">:</span> <span class="mf">0.10</span><span class="p">,</span> <span class="mi">1</span><span class="p">:</span> <span class="mf">0.20</span><span class="p">,</span> <span class="mi">2</span><span class="p">:</span> <span class="mf">0.20</span><span class="p">,</span> <span class="mi">3</span><span class="p">:</span> <span class="mf">0.20</span><span class="p">,</span> <span class="mi">4</span><span class="p">:</span> <span class="mf">0.20</span><span class="p">,</span> <span class="mi">5</span><span class="p">:</span> <span class="mf">0.05</span><span class="p">,</span> <span class="mi">6</span><span class="p">:</span> <span class="mf">0.05</span><span class="p">}</span>
+
+<span class="n">doc</span><span class="p">[</span><span class="s1">&#39;param_types_prob&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;types of the parameters (default: all types are equally likely)&quot;</span>
+<span class="n">param_types_prob</span> <span class="o">=</span> <span class="n">all_types_prob</span>
+
+<span class="c1"># stmt_invocation_prob = {ast.FuncProc.Func: 0.2, ast.FuncProc.Proc: 0.8}</span>
+<span class="n">doc</span><span class="p">[</span><span class="s1">&#39;stmt_invocation_prob&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;invocation statements to functions or procedures (default: function=88%, procedure=12%)&quot;</span>
+<span class="n">stmt_invocation_prob</span> <span class="o">=</span> <span class="p">{</span><span class="n">ast</span><span class="o">.</span><span class="n">FuncProc</span><span class="o">.</span><span class="n">Func</span><span class="p">:</span> <span class="mf">0.88</span><span class="p">,</span> <span class="n">ast</span><span class="o">.</span><span class="n">FuncProc</span><span class="o">.</span><span class="n">Proc</span><span class="p">:</span> <span class="mf">0.12</span><span class="p">}</span>
+
+<span class="n">doc</span><span class="p">[</span><span class="s1">&#39;return_types_prob&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;function return types (default: all types are equally likely)&quot;</span>
+<span class="n">return_types_prob</span> <span class="o">=</span> <span class="n">all_types_prob</span>
+
+<span class="n">doc</span><span class="p">[</span><span class="s1">&#39;int_emulate_bool&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;probability of generating a bool return (0 or 1) when an int type is expected &quot;</span> \
+                          <span class="s2">&quot;(default: 20%)&quot;</span>
+<span class="n">int_emulate_bool</span> <span class="o">=</span> <span class="p">{</span><span class="kc">True</span><span class="p">:</span> <span class="mf">0.2</span><span class="p">,</span> <span class="kc">False</span><span class="p">:</span> <span class="mf">0.8</span><span class="p">}</span>
+
+
+<span class="c1"># ------------ Variables --------------</span>
+
+<span class="n">doc</span><span class="p">[</span><span class="s1">&#39;new_global_var_prob&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;probability of creating a new global variable when one of the expected type&quot;</span> \
+                             <span class="s2">&quot;already exists (default: 1%)&quot;</span>
+<span class="n">new_global_var_prob</span> <span class="o">=</span> <span class="p">{</span><span class="kc">True</span><span class="p">:</span> <span class="mf">0.01</span><span class="p">,</span> <span class="kc">False</span><span class="p">:</span> <span class="mf">0.99</span><span class="p">}</span>
+
+<span class="n">doc</span><span class="p">[</span><span class="s1">&#39;new_local_var_prob&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;probability of creating a new local variable when one of the expected type&quot;</span> \
+                             <span class="s2">&quot;already exists (default: 1%)&quot;</span>
+<span class="n">new_local_var_prob</span> <span class="o">=</span> <span class="p">{</span><span class="kc">True</span><span class="p">:</span> <span class="mf">0.01</span><span class="p">,</span> <span class="kc">False</span><span class="p">:</span> <span class="mf">0.99</span><span class="p">}</span>
+
+<span class="n">doc</span><span class="p">[</span><span class="s1">&#39;reuse_func_prob&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;probability of reusing an existing function of the expected type (default: 99%)&quot;</span>
+<span class="n">reuse_func_prob</span> <span class="o">=</span> <span class="p">{</span><span class="kc">True</span><span class="p">:</span> <span class="mf">0.99</span><span class="p">,</span> <span class="kc">False</span><span class="p">:</span> <span class="mf">0.01</span><span class="p">}</span>
+
+<span class="n">doc</span><span class="p">[</span><span class="s1">&#39;reuse_proc_prob&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;probability of reusing an existing procedure of the expected type (default: 99%)&quot;</span>
+<span class="n">reuse_proc_prob</span> <span class="o">=</span> <span class="p">{</span><span class="kc">True</span><span class="p">:</span> <span class="mf">0.99</span><span class="p">,</span> <span class="kc">False</span><span class="p">:</span> <span class="mf">0.01</span><span class="p">}</span>
+
+<span class="n">doc</span><span class="p">[</span><span class="s1">&#39;global_or_local_as_basic_lvalue_prob&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;When a basic lvalue needs to be generated, this is the &quot;</span> \
+                                              <span class="s2">&quot;probability of using a global variable; otherwise, &quot;</span> \
+                                              <span class="s2">&quot;a local variable is used (default: 50%)&quot;</span>
+<span class="n">global_or_local_as_basic_lvalue_prob</span> <span class="o">=</span> <span class="p">{</span><span class="kc">True</span><span class="p">:</span> <span class="mf">0.5</span><span class="p">,</span> <span class="kc">False</span><span class="p">:</span> <span class="mf">0.5</span><span class="p">}</span>
+
+
+<span class="c1"># ------------ Statements --------------</span>
+
+<span class="n">doc</span><span class="p">[</span><span class="s1">&#39;basic_or_compound_stmt_prob&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;probability of generating a basic (no block) or compound statement &quot;</span> \
+                                     <span class="s2">&quot;(default: basic=70%, compound=30%)&quot;</span>
+<span class="n">basic_or_compound_stmt_prob</span> <span class="o">=</span> <span class="p">{</span><span class="kc">True</span><span class="p">:</span> <span class="mf">0.7</span><span class="p">,</span> <span class="kc">False</span><span class="p">:</span> <span class="mf">0.3</span><span class="p">}</span>
+
+<span class="n">doc</span><span class="p">[</span><span class="s1">&#39;function_basic_stmt_prob&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;each kind of basic (no block) statement in functions (default: assignment=60%, &quot;</span> \
+                                  <span class="s2">&quot;invocation=20%, increment/decrement=20%, augmented assignment=10%)&quot;</span>
+<span class="n">function_basic_stmt_prob</span> <span class="o">=</span> <span class="n">probs_helper</span><span class="o">.</span><span class="n">compute_proportional_prob</span><span class="p">({</span><span class="s1">&#39;assignment&#39;</span><span class="p">:</span> <span class="mi">4</span><span class="p">,</span> <span class="s1">&#39;invocation&#39;</span><span class="p">:</span> <span class="mi">4</span><span class="p">,</span> <span class="s1">&#39;incdec&#39;</span><span class="p">:</span> <span class="mi">2</span><span class="p">,</span>
+                        <span class="s1">&#39;augmented_assignment&#39;</span><span class="p">:</span> <span class="mi">2</span><span class="p">,</span> <span class="s1">&#39;expression_stmt&#39;</span><span class="p">:</span> <span class="mi">1</span><span class="p">})</span>
+
+<span class="n">doc</span><span class="p">[</span><span class="s1">&#39;function_compound_stmt_prob&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;each kind of compound statement (with blocks) in functions &quot;</span> \
+                                     <span class="s2">&quot;(equal probability for Block, If, Switch, Do, While, For)&quot;</span>
+<span class="n">function_compound_stmt_prob</span> <span class="o">=</span> <span class="n">probs_helper</span><span class="o">.</span><span class="n">compute_proportional_prob</span><span class="p">({</span><span class="s1">&#39;block&#39;</span><span class="p">:</span> <span class="mi">1</span><span class="p">,</span> <span class="s1">&#39;while&#39;</span><span class="p">:</span> <span class="mi">4</span><span class="p">,</span> <span class="s1">&#39;do&#39;</span><span class="p">:</span> <span class="mi">4</span><span class="p">,</span>
+                                                                      <span class="s1">&#39;if&#39;</span><span class="p">:</span> <span class="mi">4</span><span class="p">,</span> <span class="s1">&#39;for&#39;</span><span class="p">:</span> <span class="mi">4</span><span class="p">,</span> <span class="s1">&#39;switch&#39;</span><span class="p">:</span> <span class="mi">4</span><span class="p">})</span>
+
+<span class="n">doc</span><span class="p">[</span><span class="s1">&#39;stmt_depth_prob&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;statement depth (default: equal probabilities for [0-2])&quot;</span>
+<span class="n">stmt_depth_prob</span> <span class="o">=</span> <span class="n">probs_helper</span><span class="o">.</span><span class="n">compute_equal_prob</span><span class="p">(</span><span class="nb">set</span><span class="p">(</span><span class="nb">range</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">3</span><span class="p">)))</span>
+
+<span class="n">doc</span><span class="p">[</span><span class="s1">&#39;procedure_basic_stmt_prob&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;each kind of basic (no block) statement in functions (default: assignment=60%, &quot;</span> \
+                                  <span class="s2">&quot;invocation=20%, increment/decrement=20%, augmented assignment=10%)&quot;</span>
+<span class="n">procedure_basic_stmt_prob</span> <span class="o">=</span> <span class="n">function_basic_stmt_prob</span>
+
+<span class="n">doc</span><span class="p">[</span><span class="s1">&#39;procedure_compound_stmt_prob&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;each kind of compound statement (with blocks) in functions &quot;</span> \
+                                     <span class="s2">&quot;(equal probability for Block, If, Switch, Do, While, For)&quot;</span>
+<span class="n">procedure_compound_stmt_prob</span> <span class="o">=</span> <span class="n">function_compound_stmt_prob</span>
+
+<span class="n">doc</span><span class="p">[</span><span class="s1">&#39;number_stmts_main_prob&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;number of statements in the main function &quot;</span> \
+                                <span class="s2">&quot;(default: equal probabilities between 5 and 10)&quot;</span>
+<span class="n">number_stmts_main_prob</span> <span class="o">=</span> <span class="n">probs_helper</span><span class="o">.</span><span class="n">compute_equal_prob</span><span class="p">(</span><span class="nb">set</span><span class="p">(</span><span class="nb">range</span><span class="p">(</span><span class="mi">5</span><span class="p">,</span> <span class="mi">11</span><span class="p">)))</span>
+
+<span class="n">doc</span><span class="p">[</span><span class="s1">&#39;number_stmts_func_prob&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;number of statements in functions &quot;</span> \
+                                <span class="s2">&quot;(default: 20</span><span class="si">% f</span><span class="s2">or [1,4] and 10</span><span class="si">% f</span><span class="s2">or [5, 6])&quot;</span>
+<span class="n">number_stmts_func_prob</span> <span class="o">=</span> <span class="p">{</span><span class="mi">1</span><span class="p">:</span> <span class="mf">0.2</span><span class="p">,</span> <span class="mi">2</span><span class="p">:</span> <span class="mf">0.2</span><span class="p">,</span> <span class="mi">3</span><span class="p">:</span> <span class="mf">0.2</span><span class="p">,</span> <span class="mi">4</span><span class="p">:</span> <span class="mf">0.2</span><span class="p">,</span> <span class="mi">5</span><span class="p">:</span> <span class="mf">0.1</span><span class="p">,</span> <span class="mi">6</span><span class="p">:</span> <span class="mf">0.1</span><span class="p">}</span>
+
+<span class="n">doc</span><span class="p">[</span><span class="s1">&#39;number_stmts_block&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;number of statements in blocks (default: 1/3 for 1, 2 and 3)&quot;</span>
+<span class="n">number_stmts_func_block</span> <span class="o">=</span> <span class="n">probs_helper</span><span class="o">.</span><span class="n">compute_equal_prob</span><span class="p">({</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">})</span>
+
+<span class="n">doc</span><span class="p">[</span><span class="s1">&#39;else_body_prob&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;probability of generating an else body for an if statement &quot;</span> \
+                                     <span class="s2">&quot;(default: 50%)&quot;</span>
+<span class="n">else_body_prob</span> <span class="o">=</span> <span class="p">{</span><span class="kc">True</span><span class="p">:</span> <span class="mf">0.5</span><span class="p">,</span> <span class="kc">False</span><span class="p">:</span> <span class="mf">0.5</span><span class="p">}</span>
+
+<span class="n">doc</span><span class="p">[</span><span class="s1">&#39;number_cases_prob&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;number of cases in switch statements &quot;</span> \
+                                <span class="s2">&quot;(default: equal probabilities between 1 and 4)&quot;</span>
+<span class="n">number_cases_prob</span> <span class="o">=</span> <span class="n">probs_helper</span><span class="o">.</span><span class="n">compute_equal_prob</span><span class="p">(</span><span class="nb">set</span><span class="p">(</span><span class="nb">range</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">5</span><span class="p">)))</span>
+
+<span class="n">doc</span><span class="p">[</span><span class="s1">&#39;cases_type_prob&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;type of the cases clauses in switch statements &quot;</span> \
+                                <span class="s2">&quot;(default: equal probabilities between types promotable to int, excluding bool)&quot;</span>
+<span class="n">cases_type_prob</span> <span class="o">=</span> <span class="n">probs_helper</span><span class="o">.</span><span class="n">compute_equal_prob</span><span class="p">({</span><span class="n">ast</span><span class="o">.</span><span class="n">SignedChar</span><span class="p">,</span> <span class="n">ast</span><span class="o">.</span><span class="n">UnsignedChar</span><span class="p">,</span>
+                            <span class="n">ast</span><span class="o">.</span><span class="n">SignedShortInt</span><span class="p">,</span> <span class="n">ast</span><span class="o">.</span><span class="n">UnsignedShortInt</span><span class="p">,</span> <span class="n">ast</span><span class="o">.</span><span class="n">SignedInt</span><span class="p">,</span> <span class="n">ast</span><span class="o">.</span><span class="n">UnsignedInt</span><span class="p">})</span>
+
+<span class="n">doc</span><span class="p">[</span><span class="s1">&#39;default_switch_prob&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;probability of generating a default case in a switch statement &quot;</span> \
+                                     <span class="s2">&quot;(default: 80%)&quot;</span>
+<span class="n">default_switch_prob</span> <span class="o">=</span> <span class="p">{</span><span class="kc">True</span><span class="p">:</span> <span class="mf">0.8</span><span class="p">,</span> <span class="kc">False</span><span class="p">:</span> <span class="mf">0.2</span><span class="p">}</span>
+
+<span class="n">doc</span><span class="p">[</span><span class="s1">&#39;break_case_prob&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;probability of having a break statement at the end of a case block &quot;</span> \
+                                     <span class="s2">&quot;(default: 70%)&quot;</span>
+<span class="n">break_case_prob</span> <span class="o">=</span> <span class="p">{</span><span class="kc">True</span><span class="p">:</span> <span class="mf">0.7</span><span class="p">,</span> <span class="kc">False</span><span class="p">:</span> <span class="mf">0.3</span><span class="p">}</span>
+
+<span class="n">doc</span><span class="p">[</span><span class="s1">&#39;return_at_end_if_else_bodies_prob&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;probability of having a return at the end of a if / else blocks &quot;</span> \
+                                     <span class="s2">&quot;(default: 15%)&quot;</span>
+<span class="n">return_at_end_if_else_bodies_prob</span> <span class="o">=</span> <span class="p">{</span><span class="kc">True</span><span class="p">:</span> <span class="mf">0.15</span><span class="p">,</span> <span class="kc">False</span><span class="p">:</span> <span class="mf">0.85</span><span class="p">}</span>
+
+<span class="n">doc</span><span class="p">[</span><span class="s1">&#39;return_at_end_case_prob&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;probability of having a return at the end of the cases clauses in a switch &quot;</span> \
+                                     <span class="s2">&quot;statement (default: 15%)&quot;</span>
+<span class="n">return_at_end_case_prob</span> <span class="o">=</span> <span class="p">{</span><span class="kc">True</span><span class="p">:</span> <span class="mf">0.15</span><span class="p">,</span> <span class="kc">False</span><span class="p">:</span> <span class="mf">0.85</span><span class="p">}</span>
+
+<span class="c1"># ------------ Promotions --------------</span>
+
+<span class="n">doc</span><span class="p">[</span><span class="s1">&#39;implicit_promotion_bool&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;if an expression is expected, the probability to generate it with another type &quot;</span> \
+                                 <span class="s2">&quot;promotable to the expected one (default: 30%)&quot;</span>
+<span class="n">implicit_promotion_bool</span> <span class="o">=</span> <span class="p">{</span><span class="kc">True</span><span class="p">:</span> <span class="mf">0.3</span><span class="p">,</span> <span class="kc">False</span><span class="p">:</span> <span class="mf">0.7</span><span class="p">}</span>
+
+
+<span class="n">doc</span><span class="p">[</span><span class="s1">&#39;promotions_prob&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;promotions between types (default: all the conversions are equally likely)&quot;</span>
+<span class="c1">#  the key of the dictionary represents the higher type (to) and the content the low type (from)</span>
+<span class="n">promotions_prob</span> <span class="o">=</span> <span class="p">{</span>
+    <span class="n">ast</span><span class="o">.</span><span class="n">Bool</span><span class="p">:</span> <span class="n">probs_helper</span><span class="o">.</span><span class="n">compute_equal_prob</span><span class="p">({</span>
+        <span class="n">ast</span><span class="o">.</span><span class="n">Bool</span>
+    <span class="p">}),</span>
+    <span class="n">ast</span><span class="o">.</span><span class="n">UnsignedChar</span><span class="p">:</span> <span class="n">probs_helper</span><span class="o">.</span><span class="n">compute_equal_prob</span><span class="p">({</span>
+        <span class="n">ast</span><span class="o">.</span><span class="n">Bool</span><span class="p">,</span>
+        <span class="n">ast</span><span class="o">.</span><span class="n">SignedChar</span><span class="p">,</span>
+        <span class="n">ast</span><span class="o">.</span><span class="n">UnsignedChar</span><span class="p">,</span>
+    <span class="p">}),</span>
+    <span class="n">ast</span><span class="o">.</span><span class="n">SignedChar</span><span class="p">:</span> <span class="n">probs_helper</span><span class="o">.</span><span class="n">compute_equal_prob</span><span class="p">({</span>
+        <span class="n">ast</span><span class="o">.</span><span class="n">Bool</span><span class="p">,</span>
+        <span class="n">ast</span><span class="o">.</span><span class="n">SignedChar</span><span class="p">,</span>
+        <span class="n">ast</span><span class="o">.</span><span class="n">UnsignedChar</span><span class="p">,</span>
+    <span class="p">}),</span>
+    <span class="n">ast</span><span class="o">.</span><span class="n">UnsignedShortInt</span><span class="p">:</span> <span class="n">probs_helper</span><span class="o">.</span><span class="n">compute_equal_prob</span><span class="p">({</span>
+        <span class="n">ast</span><span class="o">.</span><span class="n">Bool</span><span class="p">,</span>
+        <span class="n">ast</span><span class="o">.</span><span class="n">SignedChar</span><span class="p">,</span>
+        <span class="n">ast</span><span class="o">.</span><span class="n">UnsignedChar</span><span class="p">,</span>
+        <span class="n">ast</span><span class="o">.</span><span class="n">SignedShortInt</span><span class="p">,</span>
+        <span class="n">ast</span><span class="o">.</span><span class="n">UnsignedShortInt</span><span class="p">,</span>
+    <span class="p">}),</span>
+    <span class="n">ast</span><span class="o">.</span><span class="n">SignedShortInt</span><span class="p">:</span> <span class="n">probs_helper</span><span class="o">.</span><span class="n">compute_equal_prob</span><span class="p">({</span>
+        <span class="n">ast</span><span class="o">.</span><span class="n">Bool</span><span class="p">,</span>
+        <span class="n">ast</span><span class="o">.</span><span class="n">SignedChar</span><span class="p">,</span>
+        <span class="n">ast</span><span class="o">.</span><span class="n">UnsignedChar</span><span class="p">,</span>
+        <span class="n">ast</span><span class="o">.</span><span class="n">SignedShortInt</span><span class="p">,</span>
+        <span class="n">ast</span><span class="o">.</span><span class="n">UnsignedShortInt</span><span class="p">,</span>
+    <span class="p">}),</span>
+    <span class="n">ast</span><span class="o">.</span><span class="n">UnsignedInt</span><span class="p">:</span> <span class="n">probs_helper</span><span class="o">.</span><span class="n">compute_equal_prob</span><span class="p">({</span>
+        <span class="n">ast</span><span class="o">.</span><span class="n">Bool</span><span class="p">,</span>
+        <span class="n">ast</span><span class="o">.</span><span class="n">SignedChar</span><span class="p">,</span>
+        <span class="n">ast</span><span class="o">.</span><span class="n">UnsignedChar</span><span class="p">,</span>
+        <span class="n">ast</span><span class="o">.</span><span class="n">SignedShortInt</span><span class="p">,</span>
+        <span class="n">ast</span><span class="o">.</span><span class="n">UnsignedShortInt</span><span class="p">,</span>
+        <span class="n">ast</span><span class="o">.</span><span class="n">SignedInt</span><span class="p">,</span>
+        <span class="n">ast</span><span class="o">.</span><span class="n">UnsignedInt</span><span class="p">,</span>
+        <span class="n">ast</span><span class="o">.</span><span class="n">SignedLongInt</span><span class="p">,</span>
+        <span class="n">ast</span><span class="o">.</span><span class="n">UnsignedLongInt</span><span class="p">,</span>
+    <span class="p">}),</span>
+    <span class="n">ast</span><span class="o">.</span><span class="n">SignedInt</span><span class="p">:</span> <span class="n">probs_helper</span><span class="o">.</span><span class="n">compute_equal_prob</span><span class="p">({</span>
+        <span class="n">ast</span><span class="o">.</span><span class="n">Bool</span><span class="p">,</span>
+        <span class="n">ast</span><span class="o">.</span><span class="n">SignedChar</span><span class="p">,</span>
+        <span class="n">ast</span><span class="o">.</span><span class="n">UnsignedChar</span><span class="p">,</span>
+        <span class="n">ast</span><span class="o">.</span><span class="n">SignedShortInt</span><span class="p">,</span>
+        <span class="n">ast</span><span class="o">.</span><span class="n">UnsignedShortInt</span><span class="p">,</span>
+        <span class="n">ast</span><span class="o">.</span><span class="n">SignedInt</span><span class="p">,</span>
+        <span class="n">ast</span><span class="o">.</span><span class="n">UnsignedInt</span><span class="p">,</span>
+        <span class="n">ast</span><span class="o">.</span><span class="n">SignedLongInt</span><span class="p">,</span>
+        <span class="n">ast</span><span class="o">.</span><span class="n">UnsignedLongInt</span><span class="p">,</span>
+    <span class="p">}),</span>
+    <span class="n">ast</span><span class="o">.</span><span class="n">UnsignedLongInt</span><span class="p">:</span> <span class="n">probs_helper</span><span class="o">.</span><span class="n">compute_equal_prob</span><span class="p">({</span>
+        <span class="n">ast</span><span class="o">.</span><span class="n">Bool</span><span class="p">,</span>
+        <span class="n">ast</span><span class="o">.</span><span class="n">SignedChar</span><span class="p">,</span>
+        <span class="n">ast</span><span class="o">.</span><span class="n">UnsignedChar</span><span class="p">,</span>
+        <span class="n">ast</span><span class="o">.</span><span class="n">SignedShortInt</span><span class="p">,</span>
+        <span class="n">ast</span><span class="o">.</span><span class="n">UnsignedShortInt</span><span class="p">,</span>
+        <span class="n">ast</span><span class="o">.</span><span class="n">SignedInt</span><span class="p">,</span>
+        <span class="n">ast</span><span class="o">.</span><span class="n">UnsignedInt</span><span class="p">,</span>
+        <span class="n">ast</span><span class="o">.</span><span class="n">SignedLongInt</span><span class="p">,</span>
+        <span class="n">ast</span><span class="o">.</span><span class="n">UnsignedLongInt</span><span class="p">,</span>
+    <span class="p">}),</span>
+    <span class="n">ast</span><span class="o">.</span><span class="n">SignedLongInt</span><span class="p">:</span> <span class="n">probs_helper</span><span class="o">.</span><span class="n">compute_equal_prob</span><span class="p">({</span>
+        <span class="n">ast</span><span class="o">.</span><span class="n">Bool</span><span class="p">,</span>
+        <span class="n">ast</span><span class="o">.</span><span class="n">SignedChar</span><span class="p">,</span>
+        <span class="n">ast</span><span class="o">.</span><span class="n">UnsignedChar</span><span class="p">,</span>
+        <span class="n">ast</span><span class="o">.</span><span class="n">SignedShortInt</span><span class="p">,</span>
+        <span class="n">ast</span><span class="o">.</span><span class="n">UnsignedShortInt</span><span class="p">,</span>
+        <span class="n">ast</span><span class="o">.</span><span class="n">SignedInt</span><span class="p">,</span>
+        <span class="n">ast</span><span class="o">.</span><span class="n">UnsignedInt</span><span class="p">,</span>
+        <span class="n">ast</span><span class="o">.</span><span class="n">SignedLongInt</span><span class="p">,</span>
+        <span class="n">ast</span><span class="o">.</span><span class="n">UnsignedLongInt</span><span class="p">,</span>
+    <span class="p">}),</span>
+    <span class="n">ast</span><span class="o">.</span><span class="n">UnsignedLongLongInt</span><span class="p">:</span> <span class="n">probs_helper</span><span class="o">.</span><span class="n">compute_equal_prob</span><span class="p">({</span>
+        <span class="n">ast</span><span class="o">.</span><span class="n">Bool</span><span class="p">,</span>
+        <span class="n">ast</span><span class="o">.</span><span class="n">SignedChar</span><span class="p">,</span>
+        <span class="n">ast</span><span class="o">.</span><span class="n">UnsignedChar</span><span class="p">,</span>
+        <span class="n">ast</span><span class="o">.</span><span class="n">SignedShortInt</span><span class="p">,</span>
+        <span class="n">ast</span><span class="o">.</span><span class="n">UnsignedShortInt</span><span class="p">,</span>
+        <span class="n">ast</span><span class="o">.</span><span class="n">SignedInt</span><span class="p">,</span>
+        <span class="n">ast</span><span class="o">.</span><span class="n">UnsignedInt</span><span class="p">,</span>
+        <span class="n">ast</span><span class="o">.</span><span class="n">SignedLongInt</span><span class="p">,</span>
+        <span class="n">ast</span><span class="o">.</span><span class="n">UnsignedLongInt</span><span class="p">,</span>
+        <span class="n">ast</span><span class="o">.</span><span class="n">SignedLongLongInt</span><span class="p">,</span>
+        <span class="n">ast</span><span class="o">.</span><span class="n">UnsignedLongLongInt</span><span class="p">,</span>
+    <span class="p">}),</span>
+    <span class="n">ast</span><span class="o">.</span><span class="n">SignedLongLongInt</span><span class="p">:</span> <span class="n">probs_helper</span><span class="o">.</span><span class="n">compute_equal_prob</span><span class="p">({</span>
+        <span class="n">ast</span><span class="o">.</span><span class="n">Bool</span><span class="p">,</span>
+        <span class="n">ast</span><span class="o">.</span><span class="n">SignedChar</span><span class="p">,</span>
+        <span class="n">ast</span><span class="o">.</span><span class="n">UnsignedChar</span><span class="p">,</span>
+        <span class="n">ast</span><span class="o">.</span><span class="n">SignedShortInt</span><span class="p">,</span>
+        <span class="n">ast</span><span class="o">.</span><span class="n">UnsignedShortInt</span><span class="p">,</span>
+        <span class="n">ast</span><span class="o">.</span><span class="n">SignedInt</span><span class="p">,</span>
+        <span class="n">ast</span><span class="o">.</span><span class="n">UnsignedInt</span><span class="p">,</span>
+        <span class="n">ast</span><span class="o">.</span><span class="n">SignedLongInt</span><span class="p">,</span>
+        <span class="n">ast</span><span class="o">.</span><span class="n">UnsignedLongInt</span><span class="p">,</span>
+        <span class="n">ast</span><span class="o">.</span><span class="n">SignedLongLongInt</span><span class="p">,</span>
+        <span class="n">ast</span><span class="o">.</span><span class="n">UnsignedLongLongInt</span><span class="p">,</span>
+    <span class="p">}),</span>
+    <span class="n">ast</span><span class="o">.</span><span class="n">Float</span><span class="p">:</span> <span class="n">probs_helper</span><span class="o">.</span><span class="n">compute_equal_prob</span><span class="p">({</span>
+        <span class="n">ast</span><span class="o">.</span><span class="n">Bool</span><span class="p">,</span>
+        <span class="n">ast</span><span class="o">.</span><span class="n">SignedChar</span><span class="p">,</span>
+        <span class="n">ast</span><span class="o">.</span><span class="n">UnsignedChar</span><span class="p">,</span>
+        <span class="n">ast</span><span class="o">.</span><span class="n">SignedShortInt</span><span class="p">,</span>
+        <span class="n">ast</span><span class="o">.</span><span class="n">UnsignedShortInt</span><span class="p">,</span>
+        <span class="n">ast</span><span class="o">.</span><span class="n">Float</span><span class="p">,</span>
+    <span class="p">}),</span>
+    <span class="n">ast</span><span class="o">.</span><span class="n">Double</span><span class="p">:</span> <span class="n">probs_helper</span><span class="o">.</span><span class="n">compute_equal_prob</span><span class="p">({</span>
+        <span class="n">ast</span><span class="o">.</span><span class="n">Bool</span><span class="p">,</span>
+        <span class="n">ast</span><span class="o">.</span><span class="n">SignedChar</span><span class="p">,</span>
+        <span class="n">ast</span><span class="o">.</span><span class="n">UnsignedChar</span><span class="p">,</span>
+        <span class="n">ast</span><span class="o">.</span><span class="n">SignedShortInt</span><span class="p">,</span>
+        <span class="n">ast</span><span class="o">.</span><span class="n">UnsignedShortInt</span><span class="p">,</span>
+        <span class="n">ast</span><span class="o">.</span><span class="n">SignedInt</span><span class="p">,</span>
+        <span class="n">ast</span><span class="o">.</span><span class="n">UnsignedInt</span><span class="p">,</span>
+        <span class="n">ast</span><span class="o">.</span><span class="n">SignedLongInt</span><span class="p">,</span>
+        <span class="n">ast</span><span class="o">.</span><span class="n">UnsignedLongInt</span><span class="p">,</span>
+        <span class="n">ast</span><span class="o">.</span><span class="n">Float</span><span class="p">,</span>
+        <span class="n">ast</span><span class="o">.</span><span class="n">Double</span><span class="p">,</span>
+    <span class="p">}),</span>
+    <span class="n">ast</span><span class="o">.</span><span class="n">LongDouble</span><span class="p">:</span> <span class="n">probs_helper</span><span class="o">.</span><span class="n">compute_equal_prob</span><span class="p">({</span>
+        <span class="n">ast</span><span class="o">.</span><span class="n">Bool</span><span class="p">,</span>
+        <span class="n">ast</span><span class="o">.</span><span class="n">SignedChar</span><span class="p">,</span>
+        <span class="n">ast</span><span class="o">.</span><span class="n">UnsignedChar</span><span class="p">,</span>
+        <span class="n">ast</span><span class="o">.</span><span class="n">SignedShortInt</span><span class="p">,</span>
+        <span class="n">ast</span><span class="o">.</span><span class="n">UnsignedShortInt</span><span class="p">,</span>
+        <span class="n">ast</span><span class="o">.</span><span class="n">SignedInt</span><span class="p">,</span>
+        <span class="n">ast</span><span class="o">.</span><span class="n">UnsignedInt</span><span class="p">,</span>
+        <span class="n">ast</span><span class="o">.</span><span class="n">SignedLongInt</span><span class="p">,</span>
+        <span class="n">ast</span><span class="o">.</span><span class="n">UnsignedLongInt</span><span class="p">,</span>
+        <span class="n">ast</span><span class="o">.</span><span class="n">Float</span><span class="p">,</span>
+        <span class="n">ast</span><span class="o">.</span><span class="n">Double</span><span class="p">,</span>
+        <span class="n">ast</span><span class="o">.</span><span class="n">LongDouble</span><span class="p">,</span>
+    <span class="p">}),</span>
+<span class="p">}</span>
+
+
+<span class="c1"># ------------ Functions --------------</span>
+
+<div class="viewcode-block" id="set_probabilities"><a class="viewcode-back" href="../../core.html#core.probs.set_probabilities">[docs]</a><span class="k">def</span> <span class="nf">set_probabilities</span><span class="p">(</span><span class="n">probabilities</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">dict</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+    <span class="sd">&quot;&quot;&quot;Modifies the global variables of this module, that is the default probabilities of Cnerator&quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="n">probabilities</span><span class="p">:</span>
+        <span class="k">for</span> <span class="p">(</span><span class="n">prob_name</span><span class="p">,</span> <span class="n">prob_dict</span><span class="p">)</span> <span class="ow">in</span> <span class="n">probabilities</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+            <span class="k">assert</span> <span class="n">does_this_probability_exist</span><span class="p">(</span><span class="n">prob_name</span><span class="p">),</span> <span class="sa">f</span><span class="s2">&quot;The probability &#39;</span><span class="si">{</span><span class="n">prob_name</span><span class="si">}</span><span class="s2">&#39; is not defined in probs module&quot;</span>
+            <span class="n">probs</span><span class="o">.</span><span class="vm">__dict__</span><span class="p">[</span><span class="n">prob_name</span><span class="p">]</span> <span class="o">=</span> <span class="n">prob_dict</span></div>
+
+
+<div class="viewcode-block" id="does_this_probability_exist"><a class="viewcode-back" href="../../core.html#core.probs.does_this_probability_exist">[docs]</a><span class="k">def</span> <span class="nf">does_this_probability_exist</span><span class="p">(</span><span class="n">probability_name</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
+    <span class="k">return</span> <span class="n">probability_name</span> <span class="ow">in</span> <span class="n">probs</span><span class="o">.</span><span class="vm">__dict__</span><span class="o">.</span><span class="n">keys</span><span class="p">()</span></div>
+</pre></div>
+
+           </div>
+           
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &#169; Copyright 2021, Francisco Ortin and Javier Escalada.
+
+    </p>
+  </div>
+    
+    
+    
+    Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    
+    provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>
