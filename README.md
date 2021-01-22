@@ -69,7 +69,7 @@ python cnerator.py -p "call_prob = {True: 0.2, False: 0.8}"
 ```
 
 If more sophisticated probabilities are required, you can specify them in a JSON file and pass it as
-a parameter (see the [documentation](documentation#probability-specification-files) to know the JSON file format). 
+a parameter (see the [documentation](user-manual#probability-specification-files) to know the JSON file format). 
 The following line passes an example JSON file in the `json/probabilities` folder where
 different probability distributions are specified for some syntactic constructs:
 
@@ -79,7 +79,7 @@ python cnerator.py -P json/probabilities/example_probs.json
 
 Cnerator also provides allows the user to control the number and characteristics of 
 all the functions to be generated. A JSON file is used for that purpose 
-(see the [documentation](documentation#function-generation-files)). 
+(see the [documentation](user-manual#function-generation-files)). 
 The following command makes Cnerator generate one function for each high-level return
 type in the C programming language:
 
@@ -91,7 +91,7 @@ python cnerator.py -f json/functions/1-function-each-type.json
 Sometimes, the user needs the output program to fulfill some requirements not guaranteed by the 
 stochastic generation process.
 To this aim, Cnerator allows the specification of an ordered collection of Python 
-post-process specification files (see the [documentation](documentation#post-processing-specification-files)). 
+post-process specification files (see the [documentation](user-manual#post-processing-specification-files)). 
 These post-processing files can modify the generated code to satisfy those requirements. 
 The following execution generates a random program and then executes two visitors: 
 one to rename `func` functions to `proc` (and their invocations) when they return `void`;
