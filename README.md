@@ -35,7 +35,7 @@ by any standard compiler implementation.
 Some examples include the types of each language construct, array dimensions and sizes, struct fields, 
 maximum depth of expression and statement trees, number of function parameters and statements, 
 global and local variables, structures of control flow statements and type promotions, 
-among others –see the detailed [documentation](https://computationalreflection.github.io/Cnerator). 
+among others –see the detailed [documentation](user-manual.md). 
 
 5. _Large amounts of code_. Cnerator is designed to allow generating large amounts of C source code. 
 A parameter indicates the number of independent compilation units to be created for the output application, 
