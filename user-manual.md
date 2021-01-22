@@ -1,4 +1,4 @@
-# Documentation
+# User manual
 
 This text describes how to use Cnerator for the stochastic generation of compilable C source code.
 If you are looking for developer documentation, please check this 

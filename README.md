@@ -35,7 +35,7 @@ by any standard compiler implementation.
 Some examples include the types of each language construct, array dimensions and sizes, struct fields, 
 maximum depth of expression and statement trees, number of function parameters and statements, 
 global and local variables, structures of control flow statements and type promotions, 
-among others –see the detailed [documentation](documentation). 
+among others –see the detailed [documentation](https://computationalreflection.github.io/Cnerator). 
 
 5. _Large amounts of code_. Cnerator is designed to allow generating large amounts of C source code. 
 A parameter indicates the number of independent compilation units to be created for the output application, 
@@ -102,8 +102,8 @@ python cnerator.py -V visitors.func_to_proc:visitors.return_instrumentation
 ```
 
 To see all the options, just run the `-h` or `--help` options.
-For more information, please check the [documentation](documentation).
-Developer documentation is also provided [here](sphinx).
+For more information, please check the [documentation](user-manual.md).
+Developer documentation is also provided [here](https://computationalreflection.github.io/Cnerator).
 
 
 ## Documentation
