@@ -1,4 +1,7 @@
 # -*- coding: utf-8 -*-
+"""
+Information of the Cnerator application to be used by setuptools.
+"""
 
 from __future__ import absolute_import
 

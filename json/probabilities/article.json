@@ -1,0 +1,38 @@
+{
+   "function_basic_stmt_prob":{
+      "assignment":0.5,
+      "invocation":0.2,
+      "incdec":0.1,
+      "augmented_assignment":0.1,
+      "return": 0.1
+   },
+   "array_literal_initialization_prob":{
+      "True":0.1,
+      "False":0.9
+   },
+   "primitive_types_prob":{
+      "__prob_distribution__":"equal_prob",
+      "__values__":[
+         "ast.Bool",
+         "ast.SignedChar",
+         "ast.UnsignedChar",
+         "ast.SignedShortInt"
+      ]
+   },
+   "param_number_prob":{
+      "__prob_distribution__":"proportional_prob",
+      "__values__":{
+         "0":1,
+         "1":2,
+         "2":3,
+         "3":3,
+         "4":2,
+         "5":1
+      }
+   },
+   "number_stmts_main_prob":{
+      "__prob_distribution__":"normal_prob",
+      "__mean__": 10,
+      "__stdev__":  3
+   }
+}

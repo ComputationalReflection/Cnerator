@@ -20,10 +20,6 @@ parts/
 sdist/
 var/
 wheels/
-<<<<<<< HEAD
-=======
-pip-wheel-metadata/
->>>>>>> 892da8f00d4ce0b5f981ca1329f6b076693c0ad7
 share/python-wheels/
 *.egg-info/
 .installed.cfg
@@ -53,10 +49,7 @@ coverage.xml
 *.py,cover
 .hypothesis/
 .pytest_cache/
-<<<<<<< HEAD
 cover/
-=======
->>>>>>> 892da8f00d4ce0b5f981ca1329f6b076693c0ad7
 
 # Translations
 *.mo
@@ -75,14 +68,8 @@ instance/
 # Scrapy stuff:
 .scrapy
 
-# Sphinx documentation
-docs/_build/
-
 # PyBuilder
-<<<<<<< HEAD
 .pybuilder/
-=======
->>>>>>> 892da8f00d4ce0b5f981ca1329f6b076693c0ad7
 target/
 
 # Jupyter Notebook
@@ -93,7 +80,6 @@ profile_default/
 ipython_config.py
 
 # pyenv
-<<<<<<< HEAD
 #   For a library or package, you might want to ignore these files since the code is
 #   intended to run in multiple environments; otherwise, check them in:
 # .python-version
@@ -144,7 +130,6 @@ dmypy.json
 
 # Pyre type checker
 .pyre/
-<<<<<<< HEAD
 
 # pytype static type analyzer
 .pytype/
@@ -161,3 +146,8 @@ out/
 # Pycharm config dir
 .idea/
 
+# Sphinx documentation
+sphinx/_build/
+
+scratch.py
+out/

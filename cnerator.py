@@ -1,6 +1,12 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
+"""
+This is the entry point to the Cnerator source code generation tool.
+The main function runs Cnerator.
+To see the different arguments provided, run Cnerator with either ``-h`` or ``--help`` command line arguments.
+"""
+
 from __future__ import print_function
 
 import os
@@ -11,26 +17,32 @@ from params import parameters
 from params.parameters import parse_args, get_modules_to_import, get_probs_to_override
 from params.writter import write_in_files
 from params import json_probs
-import cnerator
+import core
 
 
 def run(args):
+    """
+    This function runs Cnerator, receiving the command line arguments.
+
+    :param args: The command line arguments returned by ``argparse.ArgumentParser.parse_args``.
+    :return: None.
+    """
     # Set the recursion limit
     sys.setrecursionlimit(args.recursion)
 
-    # Get the probabilites from the command line arguments and modify the default ones
-    cnerator.probs.set_probabilites(get_probs_to_override(args.probs))
+    # Get the probabilities from the command line arguments and modify the default ones
+    core.probs.set_probabilities(get_probs_to_override(args.probs))
     if args.probsfile:
-        from cnerator import probs
-        probabilites = json_probs.parse_probabilites_specification_json_file(args.probsfile)
-        probs.set_probabilites(probabilites)
+        from core import probs
+        probabilities = json_probs.parse_probabilities_specification_json_file(args.probsfile)
+        probs.set_probabilities(probabilities)
 
     # Process the json file to create functions, or generates a program using the probabilities defined
     if args.functions:  # if a json file was passed, it defines the functions to be generated
         dictionary = parameters.parse_function_specification_json_file(args.functions)
-        program = cnerator.generators.generate_program_with_function_distribution(dictionary, args, remove_unwanted_functions=True)
+        program = core.generators.generate_program_with_function_distribution(dictionary, args, remove_unwanted_functions=True)
     else:  # otherwise, a random program is generated, considering the specified probabilities
-        program = cnerator.generators.generate_program()
+        program = core.generators.generate_program()
 
     # Load all the visitor modules and run them, in the same order as specified by the user
     modules = get_modules_to_import(args.visitors)
@@ -54,6 +66,9 @@ def run(args):
 
 
 def main():
+    """Main function.
+    To see the different arguments provided, run Cnerator with either ``-h`` or ``--help`` command line arguments.
+    """
     exit(run(parse_args()))
 
 

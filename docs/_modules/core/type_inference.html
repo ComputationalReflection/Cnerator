@@ -1,0 +1,367 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" />
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  
+  <title>core.type_inference &mdash; Cnerator latest documentation</title>
+  
+
+  
+  <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+
+  
+  
+
+  
+  
+
+  
+
+  
+  <!--[if lt IE 9]>
+    <script src="../../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="../../" src="../../_static/documentation_options.js"></script>
+        <script src="../../_static/jquery.js"></script>
+        <script src="../../_static/underscore.js"></script>
+        <script src="../../_static/doctools.js"></script>
+    
+    <script type="text/javascript" src="../../_static/js/theme.js"></script>
+
+    
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="../../index.html" class="icon icon-home"> Cnerator
+          
+
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                latest
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <ul>
+<li class="toctree-l1"><a class="reference internal" href="../../getting_started.html">Getting started</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../user_manual.html">User manual</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../modules.html">Cnerator API</a></li>
+</ul>
+
+            
+          
+        </div>
+        
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../index.html">Cnerator</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../../index.html" class="icon icon-home"></a> &raquo;</li>
+        
+          <li><a href="../index.html">Module code</a> &raquo;</li>
+        
+      <li>core.type_inference</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <h1>Source code for core.type_inference</h1><div class="highlight"><pre>
+<span></span><span class="ch">#!/usr/bin/env python</span>
+<span class="c1"># -*- coding: utf-8 -*-</span>
+
+<span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">Different functions to infer the type of a syntax construct.</span>
+<span class="sd">This module heavily depends on the data provided in the ``operators_types`` module.</span>
+<span class="sd">&quot;&quot;&quot;</span>
+
+<span class="kn">from</span> <span class="nn">functools</span> <span class="kn">import</span> <span class="n">partial</span>
+
+<span class="kn">from</span> <span class="nn">core</span> <span class="kn">import</span> <span class="n">probs</span><span class="p">,</span> <span class="n">operators_types</span><span class="p">,</span> <span class="n">probs_helper</span><span class="p">,</span> <span class="n">generators</span><span class="p">,</span> <span class="n">ast</span>
+
+
+<div class="viewcode-block" id="infer_return_type"><a class="viewcode-back" href="../../core.html#core.type_inference.infer_return_type">[docs]</a><span class="k">def</span> <span class="nf">infer_return_type</span><span class="p">(</span><span class="n">program</span><span class="p">,</span> <span class="n">function</span><span class="p">,</span> <span class="n">operator</span><span class="p">,</span> <span class="o">*</span><span class="n">args_t</span><span class="p">):</span>
+    <span class="n">arity</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">args_t</span><span class="p">)</span>
+    <span class="n">_generate_type</span> <span class="o">=</span> <span class="n">partial</span><span class="p">(</span><span class="n">generators</span><span class="o">.</span><span class="n">generate_type</span><span class="p">,</span> <span class="n">program</span><span class="p">,</span> <span class="n">function</span><span class="p">)</span>
+
+    <span class="k">if</span> <span class="n">operator</span> <span class="o">==</span> <span class="s2">&quot;*&quot;</span> <span class="ow">and</span> <span class="n">arity</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
+        <span class="k">assert</span> <span class="n">args_t</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="vm">__class__</span> <span class="o">==</span> <span class="n">ast</span><span class="o">.</span><span class="n">Pointer</span>
+        <span class="k">return</span> <span class="p">[</span><span class="n">args_t</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">type</span><span class="p">]</span>
+
+    <span class="k">if</span> <span class="n">operator</span> <span class="o">==</span> <span class="s2">&quot;&amp;&quot;</span> <span class="ow">and</span> <span class="n">arity</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">_generate_type</span><span class="p">(</span><span class="n">ast</span><span class="o">.</span><span class="n">Pointer</span><span class="p">,</span> <span class="n">args_t</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+
+    <span class="k">if</span> <span class="n">operator</span> <span class="o">==</span> <span class="s2">&quot;[]&quot;</span><span class="p">:</span>
+        <span class="k">assert</span> <span class="n">arity</span> <span class="o">==</span> <span class="mi">2</span>
+        <span class="k">assert</span> <span class="n">args_t</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="vm">__class__</span> <span class="o">==</span> <span class="n">ast</span><span class="o">.</span><span class="n">Array</span>
+        <span class="k">assert</span> <span class="n">args_t</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="vm">__class__</span> <span class="ow">in</span> <span class="p">[</span><span class="n">t</span> <span class="k">for</span> <span class="n">t</span> <span class="ow">in</span> <span class="n">probs</span><span class="o">.</span><span class="n">primitive_types_prob</span><span class="o">.</span><span class="n">keys</span><span class="p">()</span> <span class="k">if</span> <span class="s2">&quot;Int&quot;</span> <span class="ow">in</span> <span class="n">t</span><span class="o">.</span><span class="vm">__name__</span><span class="p">]</span>
+        <span class="k">return</span> <span class="p">[</span><span class="n">args_t</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">type</span><span class="p">]</span>
+
+    <span class="k">if</span> <span class="n">operator</span> <span class="o">==</span> <span class="s2">&quot;.&quot;</span><span class="p">:</span>
+        <span class="k">assert</span> <span class="n">arity</span> <span class="o">==</span> <span class="mi">1</span>
+        <span class="k">assert</span> <span class="n">args_t</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="vm">__class__</span> <span class="o">==</span> <span class="n">ast</span><span class="o">.</span><span class="n">Struct</span>
+        <span class="k">assert</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">args_t</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="nb">str</span><span class="p">)</span>
+        <span class="k">return</span> <span class="p">[</span><span class="n">args_t</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">get_field</span><span class="p">(</span><span class="n">args_t</span><span class="p">[</span><span class="mi">1</span><span class="p">])]</span>
+
+    <span class="k">if</span> <span class="n">operator</span> <span class="o">==</span> <span class="s2">&quot;-&gt;&quot;</span><span class="p">:</span>
+        <span class="k">assert</span> <span class="n">arity</span> <span class="o">==</span> <span class="mi">1</span>
+        <span class="k">assert</span> <span class="n">args_t</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="vm">__class__</span> <span class="o">==</span> <span class="n">ast</span><span class="o">.</span><span class="n">Pointer</span>
+        <span class="k">assert</span> <span class="n">args_t</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">type</span><span class="o">.</span><span class="vm">__class__</span> <span class="o">==</span> <span class="n">ast</span><span class="o">.</span><span class="n">Struct</span>
+        <span class="k">assert</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">args_t</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="nb">str</span><span class="p">)</span>
+        <span class="k">return</span> <span class="p">[</span><span class="n">args_t</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">type</span><span class="o">.</span><span class="n">get_type_by_field</span><span class="p">(</span><span class="n">args_t</span><span class="p">[</span><span class="mi">1</span><span class="p">])]</span>
+
+    <span class="k">if</span> <span class="n">operator</span> <span class="o">==</span> <span class="s2">&quot;?:&quot;</span><span class="p">:</span>
+        <span class="k">assert</span> <span class="n">arity</span> <span class="o">==</span> <span class="mi">3</span>
+        <span class="k">assert</span> <span class="n">args_t</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="vm">__class__</span> <span class="ow">in</span> <span class="p">[</span><span class="n">t</span> <span class="k">for</span> <span class="n">t</span> <span class="ow">in</span> <span class="n">probs</span><span class="o">.</span><span class="n">primitive_types_prob</span><span class="o">.</span><span class="n">keys</span><span class="p">()</span> <span class="k">if</span> <span class="s2">&quot;Int&quot;</span> <span class="ow">in</span> <span class="n">t</span><span class="o">.</span><span class="vm">__name__</span><span class="p">]</span>
+        <span class="k">assert</span> <span class="n">args_t</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="vm">__class__</span> <span class="o">==</span> <span class="n">args_t</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span><span class="o">.</span><span class="vm">__class__</span>
+        <span class="k">return</span> <span class="p">[</span><span class="n">args_t</span><span class="p">[</span><span class="mi">1</span><span class="p">]]</span>
+
+    <span class="k">if</span> <span class="n">operator</span> <span class="o">==</span> <span class="s2">&quot;=&quot;</span><span class="p">:</span>
+        <span class="k">assert</span> <span class="n">arity</span> <span class="o">==</span> <span class="mi">1</span>
+        <span class="k">assert</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">args_t</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">ast</span><span class="o">.</span><span class="n">Array</span><span class="p">)</span>
+        <span class="k">return</span> <span class="p">[</span><span class="n">args_t</span><span class="p">[</span><span class="mi">0</span><span class="p">]]</span>
+
+    <span class="k">return</span> <span class="nb">list</span><span class="p">(</span><span class="n">_infer_return_type</span><span class="p">(</span><span class="n">program</span><span class="p">,</span> <span class="n">function</span><span class="p">,</span> <span class="n">operator</span><span class="p">,</span> <span class="o">*</span><span class="n">args_t</span><span class="p">))</span></div>
+
+
+<span class="k">def</span> <span class="nf">_infer_return_type</span><span class="p">(</span><span class="n">program</span><span class="p">,</span> <span class="n">function</span><span class="p">,</span> <span class="n">operator</span><span class="p">,</span> <span class="o">*</span><span class="n">args_t</span><span class="p">):</span>
+    <span class="n">arity</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">args_t</span><span class="p">)</span>
+    <span class="n">_generate_type</span> <span class="o">=</span> <span class="n">partial</span><span class="p">(</span><span class="n">generators</span><span class="o">.</span><span class="n">generate_type</span><span class="p">,</span> <span class="n">program</span><span class="p">,</span> <span class="n">function</span><span class="p">)</span>
+
+    <span class="c1"># Otherwise search on the table</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="n">selected_arity</span> <span class="o">=</span> <span class="n">operators_types</span><span class="o">.</span><span class="n">by_operands</span><span class="p">[</span><span class="n">arity</span><span class="p">]</span>
+    <span class="k">except</span> <span class="ne">KeyError</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Unknown arity &#39;</span><span class="si">{}</span><span class="s2">&#39;&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">arity</span><span class="p">))</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="n">selected_operator</span> <span class="o">=</span> <span class="n">selected_arity</span><span class="p">[</span><span class="n">operator</span><span class="p">]</span>
+    <span class="k">except</span> <span class="ne">KeyError</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Unknown operator &#39;</span><span class="si">{}</span><span class="s2">&#39;&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">operator</span><span class="p">))</span>
+
+    <span class="n">last_selected_arg</span> <span class="o">=</span> <span class="n">selected_operator</span>
+    <span class="k">for</span> <span class="n">pos</span><span class="p">,</span> <span class="n">arg</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">args_t</span><span class="p">):</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">last_selected_arg</span> <span class="o">=</span> <span class="n">last_selected_arg</span><span class="p">[</span><span class="n">arg</span><span class="o">.</span><span class="vm">__class__</span><span class="p">]</span>
+        <span class="k">except</span> <span class="ne">KeyError</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;In arg &#39;</span><span class="si">{}</span><span class="s2">&#39;. Unknown type in arg </span><span class="si">{}</span><span class="s2"> &#39;</span><span class="si">{}</span><span class="s2">&#39;&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
+                <span class="n">arg</span><span class="p">,</span> <span class="n">pos</span><span class="p">,</span> <span class="n">arg</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="vm">__name__</span><span class="p">))</span>
+    <span class="n">ret_ts_cls</span> <span class="o">=</span> <span class="n">last_selected_arg</span>
+
+    <span class="c1"># And return one of the types</span>
+    <span class="k">for</span> <span class="n">ret_t_cls</span> <span class="ow">in</span> <span class="n">ret_ts_cls</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">ret_t_cls</span> <span class="ow">is</span> <span class="n">ast</span><span class="o">.</span><span class="n">Pointer</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">arity</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
+                <span class="k">assert</span> <span class="n">args_t</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="vm">__class__</span> <span class="ow">is</span> <span class="n">ast</span><span class="o">.</span><span class="n">Pointer</span>
+                <span class="k">yield</span> <span class="n">_generate_type</span><span class="p">(</span><span class="n">ast</span><span class="o">.</span><span class="n">Pointer</span><span class="p">,</span> <span class="n">args_t</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">type</span><span class="p">)</span>
+            <span class="k">elif</span> <span class="n">arity</span> <span class="o">==</span> <span class="mi">2</span><span class="p">:</span>
+                <span class="k">if</span> <span class="n">args_t</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="vm">__class__</span> <span class="ow">is</span> <span class="n">ast</span><span class="o">.</span><span class="n">Pointer</span><span class="p">:</span>
+                    <span class="k">yield</span> <span class="n">_generate_type</span><span class="p">(</span><span class="n">ast</span><span class="o">.</span><span class="n">Pointer</span><span class="p">,</span> <span class="n">args_t</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">type</span><span class="p">)</span>
+                <span class="k">elif</span> <span class="n">args_t</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="vm">__class__</span> <span class="ow">is</span> <span class="n">ast</span><span class="o">.</span><span class="n">Pointer</span><span class="p">:</span>
+                    <span class="k">yield</span> <span class="n">_generate_type</span><span class="p">(</span><span class="n">ast</span><span class="o">.</span><span class="n">Pointer</span><span class="p">,</span> <span class="n">args_t</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">type</span><span class="p">)</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Unknown operation with Pointers&quot;</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">yield</span> <span class="n">ret_t_cls</span><span class="p">()</span>                                        <span class="c1"># Direct call to constructor because are basic types</span>
+
+
+<div class="viewcode-block" id="infer_operands_type"><a class="viewcode-back" href="../../core.html#core.type_inference.infer_operands_type">[docs]</a><span class="k">def</span> <span class="nf">infer_operands_type</span><span class="p">(</span><span class="n">program</span><span class="p">,</span> <span class="n">function</span><span class="p">,</span> <span class="n">arity</span><span class="p">,</span> <span class="n">operator</span><span class="p">,</span> <span class="n">ret_t</span><span class="p">):</span>
+    <span class="n">_generate_type</span> <span class="o">=</span> <span class="n">partial</span><span class="p">(</span><span class="n">generators</span><span class="o">.</span><span class="n">generate_type</span><span class="p">,</span> <span class="n">program</span><span class="p">,</span> <span class="n">function</span><span class="p">)</span>
+
+    <span class="k">if</span> <span class="n">operator</span> <span class="o">==</span> <span class="s2">&quot;*&quot;</span> <span class="ow">and</span> <span class="n">arity</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
+        <span class="k">return</span> <span class="p">[</span><span class="n">_generate_type</span><span class="p">(</span><span class="n">ast</span><span class="o">.</span><span class="n">Pointer</span><span class="p">,</span> <span class="n">ret_t</span><span class="p">)]</span>
+
+    <span class="k">if</span> <span class="n">operator</span> <span class="o">==</span> <span class="s2">&quot;&amp;&quot;</span> <span class="ow">and</span> <span class="n">arity</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
+        <span class="k">assert</span> <span class="n">ret_t</span><span class="o">.</span><span class="vm">__class__</span> <span class="o">==</span> <span class="n">ast</span><span class="o">.</span><span class="n">Pointer</span>
+        <span class="c1"># Pointer(T) &lt;- &amp; T</span>
+        <span class="k">return</span> <span class="p">[</span><span class="n">ret_t</span><span class="o">.</span><span class="n">type</span><span class="p">]</span>
+
+    <span class="k">if</span> <span class="n">operator</span> <span class="o">==</span> <span class="s2">&quot;[]&quot;</span><span class="p">:</span>
+        <span class="k">assert</span> <span class="n">arity</span> <span class="o">==</span> <span class="mi">2</span>
+        <span class="n">array_obj</span> <span class="o">=</span> <span class="n">_generate_type</span><span class="p">(</span><span class="n">ast</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="n">ret_t</span><span class="p">)</span>
+        <span class="k">return</span> <span class="p">[(</span><span class="n">array_obj</span><span class="p">,</span> <span class="n">t</span><span class="p">())</span> <span class="k">for</span> <span class="n">t</span> <span class="ow">in</span> <span class="n">probs</span><span class="o">.</span><span class="n">primitive_types_prob</span><span class="o">.</span><span class="n">keys</span><span class="p">()</span> <span class="k">if</span> <span class="s2">&quot;Int&quot;</span> <span class="ow">in</span> <span class="n">t</span><span class="o">.</span><span class="vm">__name__</span><span class="p">]</span>
+
+    <span class="k">if</span> <span class="n">operator</span> <span class="o">==</span> <span class="s2">&quot;.&quot;</span><span class="p">:</span>
+        <span class="k">assert</span> <span class="n">arity</span> <span class="o">==</span> <span class="mi">1</span>
+        <span class="k">return</span> <span class="p">[</span><span class="n">_generate_type</span><span class="p">(</span><span class="n">ast</span><span class="o">.</span><span class="n">Struct</span><span class="p">,</span> <span class="n">ret_t</span><span class="p">)]</span>
+
+    <span class="k">if</span> <span class="n">operator</span> <span class="o">==</span> <span class="s2">&quot;-&gt;&quot;</span><span class="p">:</span>
+        <span class="k">assert</span> <span class="n">arity</span> <span class="o">==</span> <span class="mi">1</span>
+        <span class="n">struct_t</span> <span class="o">=</span> <span class="n">_generate_type</span><span class="p">(</span><span class="n">ast</span><span class="o">.</span><span class="n">Struct</span><span class="p">,</span> <span class="n">ret_t</span><span class="p">)</span>
+        <span class="k">return</span> <span class="p">[</span><span class="n">_generate_type</span><span class="p">(</span><span class="n">ast</span><span class="o">.</span><span class="n">Pointer</span><span class="p">,</span> <span class="n">struct_t</span><span class="p">)]</span>
+
+    <span class="k">if</span> <span class="n">operator</span> <span class="o">==</span> <span class="s2">&quot;?:&quot;</span><span class="p">:</span>
+        <span class="k">assert</span> <span class="n">arity</span> <span class="o">==</span> <span class="mi">3</span>
+        <span class="k">return</span> <span class="p">[(</span><span class="n">ast</span><span class="o">.</span><span class="n">SignedInt</span><span class="p">(),</span> <span class="n">ret_t</span><span class="p">,</span> <span class="n">ret_t</span><span class="p">)]</span>
+
+    <span class="k">if</span> <span class="n">operator</span> <span class="o">==</span> <span class="s2">&quot;=&quot;</span><span class="p">:</span>
+        <span class="k">assert</span> <span class="n">arity</span> <span class="o">==</span> <span class="mi">1</span>
+        <span class="k">assert</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">ret_t</span><span class="p">,</span> <span class="n">ast</span><span class="o">.</span><span class="n">Array</span><span class="p">)</span>
+        <span class="k">return</span> <span class="p">[</span><span class="n">ret_t</span><span class="p">]</span>
+
+    <span class="k">return</span> <span class="n">_infer_operands_type</span><span class="p">(</span><span class="n">program</span><span class="p">,</span> <span class="n">function</span><span class="p">,</span> <span class="n">arity</span><span class="p">,</span> <span class="n">operator</span><span class="p">,</span> <span class="n">ret_t</span><span class="p">)</span></div>
+
+
+<span class="k">def</span> <span class="nf">_infer_operands_type</span><span class="p">(</span><span class="n">program</span><span class="p">,</span> <span class="n">function</span><span class="p">,</span> <span class="n">arity</span><span class="p">,</span> <span class="n">operator</span><span class="p">,</span> <span class="n">ret_t</span><span class="p">):</span>
+    <span class="n">_generate_type</span> <span class="o">=</span> <span class="n">partial</span><span class="p">(</span><span class="n">generators</span><span class="o">.</span><span class="n">generate_type</span><span class="p">,</span> <span class="n">program</span><span class="p">,</span> <span class="n">function</span><span class="p">)</span>
+
+    <span class="c1"># Otherwise search on the table</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="n">selected_arity</span> <span class="o">=</span> <span class="n">operators_types</span><span class="o">.</span><span class="n">by_return</span><span class="p">[</span><span class="n">arity</span><span class="p">]</span>
+    <span class="k">except</span> <span class="ne">KeyError</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Unknown arity &#39;</span><span class="si">{}</span><span class="s2">&#39;&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">arity</span><span class="p">))</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="n">selected_operator</span> <span class="o">=</span> <span class="n">selected_arity</span><span class="p">[</span><span class="n">operator</span><span class="p">]</span>
+    <span class="k">except</span> <span class="ne">KeyError</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Unknown operator &#39;</span><span class="si">{}</span><span class="s2">&#39;&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">operator</span><span class="p">))</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="n">args_t</span> <span class="o">=</span> <span class="n">selected_operator</span><span class="p">[</span><span class="n">ret_t</span><span class="o">.</span><span class="vm">__class__</span><span class="p">]</span>
+    <span class="k">except</span> <span class="ne">KeyError</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;There&#39;s no </span><span class="si">{}</span><span class="s2"> that use the operator &#39;</span><span class="si">{}</span><span class="s2">&#39; and return &#39;</span><span class="si">{}</span><span class="s2">&#39;&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
+            <span class="s2">&quot;type&quot;</span> <span class="k">if</span> <span class="n">arity</span> <span class="o">==</span> <span class="mi">1</span> <span class="k">else</span> <span class="s2">&quot;types&quot;</span><span class="p">,</span> <span class="n">operator</span><span class="p">,</span> <span class="n">ret_t</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="vm">__name__</span><span class="p">))</span>
+
+    <span class="c1"># And return one of the types</span>
+    <span class="k">if</span> <span class="n">ret_t</span><span class="o">.</span><span class="vm">__class__</span> <span class="ow">in</span> <span class="p">[</span><span class="n">ast</span><span class="o">.</span><span class="n">Pointer</span><span class="p">,</span> <span class="n">ast</span><span class="o">.</span><span class="n">Array</span><span class="p">]:</span>
+        <span class="n">type_obj</span> <span class="o">=</span> <span class="n">ret_t</span><span class="o">.</span><span class="n">type</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">type_cls</span> <span class="o">=</span> <span class="n">probs_helper</span><span class="o">.</span><span class="n">random_value</span><span class="p">(</span><span class="n">probs</span><span class="o">.</span><span class="n">primitive_types_prob</span><span class="p">)</span>
+        <span class="n">type_obj</span> <span class="o">=</span> <span class="n">type_cls</span><span class="p">()</span>
+    <span class="k">if</span> <span class="n">arity</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
+        <span class="k">return</span> <span class="p">[</span><span class="n">_generate_type</span><span class="p">(</span><span class="n">arg_t</span><span class="p">,</span> <span class="n">type_obj</span><span class="p">)</span> <span class="k">for</span> <span class="n">arg_t</span> <span class="ow">in</span> <span class="n">args_t</span><span class="p">]</span>
+    <span class="k">if</span> <span class="n">arity</span> <span class="o">==</span> <span class="mi">2</span><span class="p">:</span>
+        <span class="k">return</span> <span class="p">[(</span><span class="n">_generate_type</span><span class="p">(</span><span class="n">arg1_t</span><span class="p">,</span> <span class="n">type_obj</span><span class="p">),</span> <span class="n">_generate_type</span><span class="p">(</span><span class="n">arg2_t</span><span class="p">,</span> <span class="n">type_obj</span><span class="p">))</span> <span class="k">for</span> <span class="n">arg1_t</span><span class="p">,</span> <span class="n">arg2_t</span> <span class="ow">in</span> <span class="n">args_t</span><span class="p">]</span>
+    <span class="k">raise</span> <span class="ne">AssertionError</span><span class="p">(</span><span class="s2">&quot;Unknown arity&quot;</span><span class="p">)</span>
+</pre></div>
+
+           </div>
+           
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &#169; Copyright 2021, Francisco Ortin and Javier Escalada.
+
+    </p>
+  </div>
+    
+    
+    
+    Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    
+    provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>

@@ -1,0 +1,1099 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" />
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  
+  <title>core.ast &mdash; Cnerator latest documentation</title>
+  
+
+  
+  <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+
+  
+  
+
+  
+  
+
+  
+
+  
+  <!--[if lt IE 9]>
+    <script src="../../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="../../" src="../../_static/documentation_options.js"></script>
+        <script src="../../_static/jquery.js"></script>
+        <script src="../../_static/underscore.js"></script>
+        <script src="../../_static/doctools.js"></script>
+    
+    <script type="text/javascript" src="../../_static/js/theme.js"></script>
+
+    
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="../../index.html" class="icon icon-home"> Cnerator
+          
+
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                latest
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <ul>
+<li class="toctree-l1"><a class="reference internal" href="../../getting_started.html">Getting started</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../user_manual.html">User manual</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../modules.html">Cnerator API</a></li>
+</ul>
+
+            
+          
+        </div>
+        
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../index.html">Cnerator</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../../index.html" class="icon icon-home"></a> &raquo;</li>
+        
+          <li><a href="../index.html">Module code</a> &raquo;</li>
+        
+      <li>core.ast</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <h1>Source code for core.ast</h1><div class="highlight"><pre>
+<span></span><span class="ch">#!/usr/bin/env python</span>
+<span class="c1"># -*- coding: utf-8 -*-</span>
+
+<span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">This module holds the Abstract Syntax Tree (AST) program representation.</span>
+<span class="sd">Upon generation, the program is represented as an AST that is finally stored as output C source files.</span>
+<span class="sd">That functionality is provided by the to_str method.</span>
+<span class="sd">&quot;&quot;&quot;</span>
+
+<span class="kn">from</span> <span class="nn">__future__</span> <span class="kn">import</span> <span class="n">print_function</span>
+
+<span class="kn">import</span> <span class="nn">collections</span>
+<span class="kn">import</span> <span class="nn">random</span>
+<span class="kn">import</span> <span class="nn">re</span>
+<span class="kn">import</span> <span class="nn">string</span>
+<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">List</span><span class="p">,</span> <span class="n">Dict</span>
+
+
+<span class="c1">########### Utils ##############</span>
+
+<div class="viewcode-block" id="Singleton"><a class="viewcode-back" href="../../core.html#core.ast.Singleton">[docs]</a><span class="k">class</span> <span class="nc">Singleton</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+  <span class="n">_instance</span> <span class="o">=</span> <span class="kc">None</span>
+  <span class="k">def</span> <span class="fm">__new__</span><span class="p">(</span><span class="n">class_</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">class_</span><span class="o">.</span><span class="n">_instance</span><span class="p">,</span> <span class="n">class_</span><span class="p">):</span>
+        <span class="n">class_</span><span class="o">.</span><span class="n">_instance</span> <span class="o">=</span> <span class="nb">object</span><span class="o">.</span><span class="fm">__new__</span><span class="p">(</span><span class="n">class_</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">class_</span><span class="o">.</span><span class="n">_instance</span></div>
+
+
+<div class="viewcode-block" id="ASTNode"><a class="viewcode-back" href="../../core.html#core.ast.ASTNode">[docs]</a><span class="k">class</span> <span class="nc">ASTNode</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+    <span class="k">def</span> <span class="fm">__str__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="vm">__name__</span></div>
+
+
+<div class="viewcode-block" id="UnaryASTNode"><a class="viewcode-back" href="../../core.html#core.ast.UnaryASTNode">[docs]</a><span class="k">class</span> <span class="nc">UnaryASTNode</span><span class="p">(</span><span class="n">ASTNode</span><span class="p">):</span>
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">exp</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">children</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+
+    <span class="nd">@exp</span><span class="o">.</span><span class="n">setter</span>
+    <span class="k">def</span> <span class="nf">exp</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">children</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="n">value</span></div>
+
+
+<div class="viewcode-block" id="BinaryASTNode"><a class="viewcode-back" href="../../core.html#core.ast.BinaryASTNode">[docs]</a><span class="k">class</span> <span class="nc">BinaryASTNode</span><span class="p">(</span><span class="n">ASTNode</span><span class="p">):</span>
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">left</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">children</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+
+    <span class="nd">@left</span><span class="o">.</span><span class="n">setter</span>
+    <span class="k">def</span> <span class="nf">left</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">children</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="n">value</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">right</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">children</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
+
+    <span class="nd">@right</span><span class="o">.</span><span class="n">setter</span>
+    <span class="k">def</span> <span class="nf">right</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">children</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="n">value</span></div>
+
+
+<div class="viewcode-block" id="TernaryASTNode"><a class="viewcode-back" href="../../core.html#core.ast.TernaryASTNode">[docs]</a><span class="k">class</span> <span class="nc">TernaryASTNode</span><span class="p">(</span><span class="n">ASTNode</span><span class="p">):</span>
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">exp_1</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">children</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+
+    <span class="nd">@exp_1</span><span class="o">.</span><span class="n">setter</span>
+    <span class="k">def</span> <span class="nf">exp_1</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">children</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="n">value</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">exp_2</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">children</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
+
+    <span class="nd">@exp_2</span><span class="o">.</span><span class="n">setter</span>
+    <span class="k">def</span> <span class="nf">exp_2</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">children</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="n">value</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">exp_3</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">children</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span>
+
+    <span class="nd">@exp_3</span><span class="o">.</span><span class="n">setter</span>
+    <span class="k">def</span> <span class="nf">exp_3</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">children</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span> <span class="o">=</span> <span class="n">value</span></div>
+
+
+<span class="c1">######### Expressions #############</span>
+
+<div class="viewcode-block" id="UnaryExpression"><a class="viewcode-back" href="../../core.html#core.ast.UnaryExpression">[docs]</a><span class="k">class</span> <span class="nc">UnaryExpression</span><span class="p">(</span><span class="n">UnaryASTNode</span><span class="p">):</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">op</span><span class="p">,</span> <span class="n">exp</span><span class="p">,</span> <span class="n">c_type</span><span class="p">,</span> <span class="n">post_op</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">op</span> <span class="o">=</span> <span class="n">op</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">type</span> <span class="o">=</span> <span class="n">c_type</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">post_op</span> <span class="o">=</span> <span class="n">post_op</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">children</span> <span class="o">=</span> <span class="p">[</span><span class="n">exp</span><span class="p">]</span>
+
+<div class="viewcode-block" id="UnaryExpression.to_str"><a class="viewcode-back" href="../../core.html#core.ast.UnaryExpression.to_str">[docs]</a>    <span class="k">def</span> <span class="nf">to_str</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">indent</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">0</span><span class="p">):</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">post_op</span><span class="p">:</span>
+            <span class="k">return</span> <span class="s2">&quot;</span><span class="si">{}</span><span class="s2">(</span><span class="si">{}</span><span class="s2">)</span><span class="si">{}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">indent_str</span><span class="p">(</span><span class="n">indent</span><span class="p">),</span> <span class="bp">self</span><span class="o">.</span><span class="n">exp</span><span class="o">.</span><span class="n">to_str</span><span class="p">(),</span> <span class="bp">self</span><span class="o">.</span><span class="n">op</span><span class="p">)</span>
+        <span class="k">return</span> <span class="s2">&quot;</span><span class="si">{}{}</span><span class="s2">(</span><span class="si">{}</span><span class="s2">)&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">indent_str</span><span class="p">(</span><span class="n">indent</span><span class="p">),</span> <span class="bp">self</span><span class="o">.</span><span class="n">op</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">exp</span><span class="o">.</span><span class="n">to_str</span><span class="p">())</span></div></div>
+
+
+<div class="viewcode-block" id="BinaryExpression"><a class="viewcode-back" href="../../core.html#core.ast.BinaryExpression">[docs]</a><span class="k">class</span> <span class="nc">BinaryExpression</span><span class="p">(</span><span class="n">BinaryASTNode</span><span class="p">):</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">left</span><span class="p">,</span> <span class="n">op</span><span class="p">,</span> <span class="n">right</span><span class="p">,</span> <span class="n">c_type</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">op</span> <span class="o">=</span> <span class="n">op</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">type</span> <span class="o">=</span> <span class="n">c_type</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">children</span> <span class="o">=</span> <span class="p">[</span><span class="n">left</span><span class="p">,</span> <span class="n">right</span><span class="p">]</span>
+
+<div class="viewcode-block" id="BinaryExpression.to_str"><a class="viewcode-back" href="../../core.html#core.ast.BinaryExpression.to_str">[docs]</a>    <span class="k">def</span> <span class="nf">to_str</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">indent</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">0</span><span class="p">):</span>
+        <span class="k">return</span> <span class="s2">&quot;</span><span class="si">{}</span><span class="s2">(</span><span class="si">{}</span><span class="s2">) </span><span class="si">{}</span><span class="s2"> (</span><span class="si">{}</span><span class="s2">)&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">indent_str</span><span class="p">(</span><span class="n">indent</span><span class="p">),</span> <span class="bp">self</span><span class="o">.</span><span class="n">left</span><span class="o">.</span><span class="n">to_str</span><span class="p">(),</span> <span class="bp">self</span><span class="o">.</span><span class="n">op</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">right</span><span class="o">.</span><span class="n">to_str</span><span class="p">())</span></div></div>
+
+
+<div class="viewcode-block" id="TernaryExpression"><a class="viewcode-back" href="../../core.html#core.ast.TernaryExpression">[docs]</a><span class="k">class</span> <span class="nc">TernaryExpression</span><span class="p">(</span><span class="n">TernaryASTNode</span><span class="p">):</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">exp_1</span><span class="p">,</span> <span class="n">exp_2</span><span class="p">,</span> <span class="n">exp_3</span><span class="p">,</span> <span class="n">op</span><span class="p">,</span> <span class="n">c_type</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">op</span> <span class="o">=</span> <span class="n">op</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">type</span> <span class="o">=</span> <span class="n">c_type</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">children</span> <span class="o">=</span> <span class="p">[</span><span class="n">exp_1</span><span class="p">,</span> <span class="n">exp_2</span><span class="p">,</span> <span class="n">exp_3</span><span class="p">]</span>
+
+<div class="viewcode-block" id="TernaryExpression.to_str"><a class="viewcode-back" href="../../core.html#core.ast.TernaryExpression.to_str">[docs]</a>    <span class="k">def</span> <span class="nf">to_str</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">indent</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">0</span><span class="p">):</span>
+        <span class="k">return</span> <span class="s2">&quot;</span><span class="si">{}</span><span class="s2">(</span><span class="si">{}</span><span class="s2">) </span><span class="si">{}</span><span class="s2"> (</span><span class="si">{}</span><span class="s2">) </span><span class="si">{}</span><span class="s2"> (</span><span class="si">{}</span><span class="s2">)&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">indent_str</span><span class="p">(</span><span class="n">indent</span><span class="p">),</span> <span class="bp">self</span><span class="o">.</span><span class="n">exp_1</span><span class="o">.</span><span class="n">to_str</span><span class="p">(),</span> <span class="bp">self</span><span class="o">.</span><span class="n">op</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="bp">self</span><span class="o">.</span><span class="n">exp_2</span><span class="o">.</span><span class="n">to_str</span><span class="p">(),</span>
+                                               <span class="bp">self</span><span class="o">.</span><span class="n">op</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="bp">self</span><span class="o">.</span><span class="n">exp_3</span><span class="o">.</span><span class="n">to_str</span><span class="p">())</span></div></div>
+
+
+<div class="viewcode-block" id="ArrayAccessExpression"><a class="viewcode-back" href="../../core.html#core.ast.ArrayAccessExpression">[docs]</a><span class="k">class</span> <span class="nc">ArrayAccessExpression</span><span class="p">(</span><span class="n">BinaryASTNode</span><span class="p">):</span>
+
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">left</span><span class="p">,</span> <span class="n">right</span><span class="p">,</span> <span class="n">c_type</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">op</span> <span class="o">=</span> <span class="s2">&quot;[]&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">type</span> <span class="o">=</span> <span class="n">c_type</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">children</span> <span class="o">=</span> <span class="p">[</span><span class="n">left</span><span class="p">,</span> <span class="n">right</span><span class="p">]</span>
+
+<div class="viewcode-block" id="ArrayAccessExpression.to_str"><a class="viewcode-back" href="../../core.html#core.ast.ArrayAccessExpression.to_str">[docs]</a>    <span class="k">def</span> <span class="nf">to_str</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">indent</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">0</span><span class="p">):</span>
+        <span class="k">return</span> <span class="s2">&quot;</span><span class="si">{}</span><span class="s2">(</span><span class="si">{}</span><span class="s2">)[</span><span class="si">{}</span><span class="s2">]&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">indent_str</span><span class="p">(</span><span class="n">indent</span><span class="p">),</span> <span class="bp">self</span><span class="o">.</span><span class="n">left</span><span class="o">.</span><span class="n">to_str</span><span class="p">(),</span> <span class="bp">self</span><span class="o">.</span><span class="n">right</span><span class="o">.</span><span class="n">to_str</span><span class="p">())</span></div></div>
+
+
+<div class="viewcode-block" id="StructAccessExpression"><a class="viewcode-back" href="../../core.html#core.ast.StructAccessExpression">[docs]</a><span class="k">class</span> <span class="nc">StructAccessExpression</span><span class="p">(</span><span class="n">UnaryASTNode</span><span class="p">):</span>
+
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">op</span><span class="p">,</span> <span class="n">exp</span><span class="p">,</span> <span class="n">field</span><span class="p">,</span> <span class="n">c_type</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">op</span> <span class="o">=</span> <span class="n">op</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">type</span> <span class="o">=</span> <span class="n">c_type</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">field</span> <span class="o">=</span> <span class="n">field</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">children</span> <span class="o">=</span> <span class="p">[</span><span class="n">exp</span><span class="p">]</span>
+
+<div class="viewcode-block" id="StructAccessExpression.to_str"><a class="viewcode-back" href="../../core.html#core.ast.StructAccessExpression.to_str">[docs]</a>    <span class="k">def</span> <span class="nf">to_str</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">indent</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">0</span><span class="p">):</span>
+        <span class="k">return</span> <span class="s2">&quot;</span><span class="si">{}</span><span class="s2">(</span><span class="si">{}</span><span class="s2">)</span><span class="si">{}{}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">indent_str</span><span class="p">(</span><span class="n">indent</span><span class="p">),</span> <span class="bp">self</span><span class="o">.</span><span class="n">exp</span><span class="o">.</span><span class="n">to_str</span><span class="p">(),</span> <span class="bp">self</span><span class="o">.</span><span class="n">op</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">field</span><span class="p">)</span></div></div>
+
+
+<div class="viewcode-block" id="CastExpression"><a class="viewcode-back" href="../../core.html#core.ast.CastExpression">[docs]</a><span class="k">class</span> <span class="nc">CastExpression</span><span class="p">(</span><span class="n">UnaryExpression</span><span class="p">):</span>
+
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">exp</span><span class="p">,</span> <span class="n">c_type</span><span class="p">):</span>
+        <span class="n">op</span> <span class="o">=</span> <span class="s2">&quot;/* CAST */ (</span><span class="si">{}</span><span class="s2">) &quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">c_type</span><span class="o">.</span><span class="n">__declaration__</span><span class="p">(</span><span class="n">from_return_in_func_decl</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+                                                              <span class="n">forze_parenth_in_ptr_to_array</span><span class="o">=</span><span class="kc">True</span><span class="p">))</span>
+        <span class="nb">super</span><span class="p">(</span><span class="n">CastExpression</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">op</span><span class="p">,</span> <span class="n">exp</span><span class="p">,</span> <span class="n">c_type</span><span class="p">,</span> <span class="n">post_op</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span></div>
+
+
+<span class="c1">########### Basic expression types #########</span>
+
+<div class="viewcode-block" id="Literal"><a class="viewcode-back" href="../../core.html#core.ast.Literal">[docs]</a><span class="k">class</span> <span class="nc">Literal</span><span class="p">(</span><span class="n">ASTNode</span><span class="p">):</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">,</span> <span class="nb">type</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">value</span> <span class="o">=</span> <span class="n">value</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">type</span> <span class="o">=</span> <span class="nb">type</span>
+
+<div class="viewcode-block" id="Literal.to_str"><a class="viewcode-back" href="../../core.html#core.ast.Literal.to_str">[docs]</a>    <span class="k">def</span> <span class="nf">to_str</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">indent</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">0</span><span class="p">):</span>
+        <span class="k">return</span> <span class="s2">&quot;</span><span class="si">{}{}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">indent_str</span><span class="p">(</span><span class="n">indent</span><span class="p">),</span> <span class="bp">self</span><span class="o">.</span><span class="n">value</span><span class="p">)</span></div>
+
+    <span class="k">def</span> <span class="fm">__eq__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">other</span><span class="p">,</span> <span class="n">Literal</span><span class="p">):</span>
+            <span class="k">return</span> <span class="kc">False</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">value</span> <span class="o">==</span> <span class="n">other</span><span class="o">.</span><span class="n">value</span>
+
+    <span class="k">def</span> <span class="fm">__hash__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">value</span><span class="o">.</span><span class="fm">__hash__</span><span class="p">()</span></div>
+
+
+<div class="viewcode-block" id="Variable"><a class="viewcode-back" href="../../core.html#core.ast.Variable">[docs]</a><span class="k">class</span> <span class="nc">Variable</span><span class="p">(</span><span class="n">ASTNode</span><span class="p">):</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">value</span> <span class="o">=</span> <span class="n">value</span>
+
+<div class="viewcode-block" id="Variable.to_str"><a class="viewcode-back" href="../../core.html#core.ast.Variable.to_str">[docs]</a>    <span class="k">def</span> <span class="nf">to_str</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">indent</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">0</span><span class="p">):</span>
+        <span class="k">return</span> <span class="s2">&quot;</span><span class="si">{}{}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">indent_str</span><span class="p">(</span><span class="n">indent</span><span class="p">),</span> <span class="bp">self</span><span class="o">.</span><span class="n">value</span><span class="p">)</span></div></div>
+
+
+<span class="c1">############ Statements ##################</span>
+
+<div class="viewcode-block" id="Invocation"><a class="viewcode-back" href="../../core.html#core.ast.Invocation">[docs]</a><span class="k">class</span> <span class="nc">Invocation</span><span class="p">(</span><span class="n">ASTNode</span><span class="p">):</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">func_name</span><span class="p">,</span> <span class="n">arguments</span><span class="p">,</span> <span class="n">return_type</span><span class="p">,</span> <span class="n">_is_stmt</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">func_name</span> <span class="o">=</span> <span class="n">func_name</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">arguments</span> <span class="o">=</span> <span class="n">arguments</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">return_type</span> <span class="o">=</span> <span class="n">return_type</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">children</span> <span class="o">=</span> <span class="n">arguments</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_is_stmt</span> <span class="o">=</span> <span class="n">_is_stmt</span>
+
+<div class="viewcode-block" id="Invocation.to_str"><a class="viewcode-back" href="../../core.html#core.ast.Invocation.to_str">[docs]</a>    <span class="k">def</span> <span class="nf">to_str</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">indent</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">0</span><span class="p">):</span>
+        <span class="n">arguments</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span>
+        <span class="n">i</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="k">for</span> <span class="n">arg</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">arguments</span><span class="p">:</span>
+            <span class="n">arguments</span> <span class="o">+=</span> <span class="n">arg</span><span class="o">.</span><span class="n">to_str</span><span class="p">()</span>
+            <span class="k">if</span> <span class="n">i</span> <span class="o">&lt;</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">arguments</span><span class="p">)</span> <span class="o">-</span> <span class="mi">1</span><span class="p">:</span>
+                <span class="n">arguments</span> <span class="o">+=</span> <span class="s2">&quot;, &quot;</span>
+            <span class="n">i</span> <span class="o">+=</span> <span class="mi">1</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_is_stmt</span><span class="p">:</span>
+            <span class="n">comment</span> <span class="o">=</span> <span class="s2">&quot;/* stmt invocation */&quot;</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">comment</span> <span class="o">=</span> <span class="s2">&quot;/* expr invocation */&quot;</span>
+        <span class="k">return</span> <span class="s2">&quot;</span><span class="si">{}{}</span><span class="s2"> </span><span class="si">{}</span><span class="s2">(</span><span class="si">{}</span><span class="s2">)&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">indent_str</span><span class="p">(</span><span class="n">indent</span><span class="p">),</span> <span class="n">comment</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">func_name</span><span class="p">,</span> <span class="n">arguments</span><span class="p">)</span></div></div>
+
+
+<div class="viewcode-block" id="Assignment"><a class="viewcode-back" href="../../core.html#core.ast.Assignment">[docs]</a><span class="k">class</span> <span class="nc">Assignment</span><span class="p">(</span><span class="n">BinaryASTNode</span><span class="p">):</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">left</span><span class="p">,</span> <span class="n">op</span><span class="p">,</span> <span class="n">right</span><span class="p">,</span> <span class="n">c_type</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">op</span> <span class="o">=</span> <span class="n">op</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">type</span> <span class="o">=</span> <span class="n">c_type</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">children</span> <span class="o">=</span> <span class="p">[</span><span class="n">left</span><span class="p">,</span> <span class="n">right</span><span class="p">]</span>
+
+<div class="viewcode-block" id="Assignment.to_str"><a class="viewcode-back" href="../../core.html#core.ast.Assignment.to_str">[docs]</a>    <span class="k">def</span> <span class="nf">to_str</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">indent</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">0</span><span class="p">):</span>
+        <span class="k">return</span> <span class="s2">&quot;</span><span class="si">{}{}</span><span class="s2"> </span><span class="si">{}</span><span class="s2"> </span><span class="si">{}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">indent_str</span><span class="p">(</span><span class="n">indent</span><span class="p">),</span> <span class="bp">self</span><span class="o">.</span><span class="n">left</span><span class="o">.</span><span class="n">to_str</span><span class="p">(),</span> <span class="bp">self</span><span class="o">.</span><span class="n">op</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">right</span><span class="o">.</span><span class="n">to_str</span><span class="p">())</span></div></div>
+
+
+<div class="viewcode-block" id="Return"><a class="viewcode-back" href="../../core.html#core.ast.Return">[docs]</a><span class="k">class</span> <span class="nc">Return</span><span class="p">(</span><span class="n">UnaryASTNode</span><span class="p">):</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">exp</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">c_type</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">c_type</span> <span class="o">=</span> <span class="n">c_type</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">children</span> <span class="o">=</span> <span class="p">[</span><span class="n">exp</span><span class="p">]</span>
+
+<div class="viewcode-block" id="Return.to_str"><a class="viewcode-back" href="../../core.html#core.ast.Return.to_str">[docs]</a>    <span class="k">def</span> <span class="nf">to_str</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">indent</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">0</span><span class="p">):</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">exp</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">return</span> <span class="s2">&quot;</span><span class="si">{}</span><span class="s2">return </span><span class="si">{}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">indent_str</span><span class="p">(</span><span class="n">indent</span><span class="p">),</span> <span class="n">expression_to_str</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">exp</span><span class="p">))</span>
+        <span class="k">return</span> <span class="s2">&quot;</span><span class="si">{}</span><span class="s2">return&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">indent_str</span><span class="p">(</span><span class="n">indent</span><span class="p">))</span></div></div>
+
+
+<div class="viewcode-block" id="Break"><a class="viewcode-back" href="../../core.html#core.ast.Break">[docs]</a><span class="k">class</span> <span class="nc">Break</span><span class="p">(</span><span class="n">ASTNode</span><span class="p">):</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">pass</span>
+
+<div class="viewcode-block" id="Break.to_str"><a class="viewcode-back" href="../../core.html#core.ast.Break.to_str">[docs]</a>    <span class="k">def</span> <span class="nf">to_str</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">indent</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">0</span><span class="p">):</span>
+        <span class="k">return</span> <span class="s2">&quot;</span><span class="si">{}</span><span class="s2">break&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">indent_str</span><span class="p">(</span><span class="n">indent</span><span class="p">))</span></div></div>
+
+
+<div class="viewcode-block" id="Label"><a class="viewcode-back" href="../../core.html#core.ast.Label">[docs]</a><span class="k">class</span> <span class="nc">Label</span><span class="p">(</span><span class="n">ASTNode</span><span class="p">):</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">label</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">label</span> <span class="o">=</span> <span class="n">label</span>
+
+<div class="viewcode-block" id="Label.to_str"><a class="viewcode-back" href="../../core.html#core.ast.Label.to_str">[docs]</a>    <span class="k">def</span> <span class="nf">to_str</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">indent</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">0</span><span class="p">):</span>
+        <span class="k">return</span> <span class="s2">&quot;</span><span class="si">{}{}</span><span class="s2">:</span><span class="si">{}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">indent_str</span><span class="p">(</span><span class="n">indent</span><span class="p">),</span> <span class="bp">self</span><span class="o">.</span><span class="n">label</span><span class="p">,</span> <span class="n">NEW_LINE</span><span class="p">)</span></div></div>
+
+
+<div class="viewcode-block" id="Block"><a class="viewcode-back" href="../../core.html#core.ast.Block">[docs]</a><span class="k">class</span> <span class="nc">Block</span><span class="p">(</span><span class="n">ASTNode</span><span class="p">):</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">statements</span><span class="p">:</span> <span class="nb">list</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">statements</span> <span class="o">=</span> <span class="n">statements</span>
+
+<div class="viewcode-block" id="Block.to_str"><a class="viewcode-back" href="../../core.html#core.ast.Block.to_str">[docs]</a>    <span class="k">def</span> <span class="nf">to_str</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">indent</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">0</span><span class="p">):</span>
+        <span class="n">stmts_str</span> <span class="o">=</span> <span class="n">statements_to_str</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">statements</span><span class="p">,</span> <span class="n">indent</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">indent_str</span><span class="p">(</span><span class="n">indent</span><span class="p">)</span> <span class="o">+</span> <span class="s2">&quot;{&quot;</span> <span class="o">+</span> <span class="n">NEW_LINE</span> <span class="o">+</span> <span class="n">stmts_str</span> <span class="o">+</span> <span class="n">indent_str</span><span class="p">(</span><span class="n">indent</span><span class="p">)</span> <span class="o">+</span> <span class="s2">&quot;}&quot;</span> <span class="o">+</span> <span class="n">NEW_LINE</span></div></div>
+
+
+<div class="viewcode-block" id="While"><a class="viewcode-back" href="../../core.html#core.ast.While">[docs]</a><span class="k">class</span> <span class="nc">While</span><span class="p">(</span><span class="n">ASTNode</span><span class="p">):</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">condition</span><span class="p">:</span> <span class="n">ASTNode</span><span class="p">,</span> <span class="n">statements</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">ASTNode</span><span class="p">]):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">condition</span> <span class="o">=</span> <span class="n">condition</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">statements</span> <span class="o">=</span> <span class="n">statements</span>
+
+<div class="viewcode-block" id="While.to_str"><a class="viewcode-back" href="../../core.html#core.ast.While.to_str">[docs]</a>    <span class="k">def</span> <span class="nf">to_str</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">indent</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">0</span><span class="p">):</span>
+        <span class="n">result</span> <span class="o">=</span> <span class="s2">&quot;</span><span class="si">{}</span><span class="s2">while (</span><span class="si">{}</span><span class="s2">) {{ </span><span class="si">{}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">indent_str</span><span class="p">(</span><span class="n">indent</span><span class="p">),</span> <span class="n">expression_to_str</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">condition</span><span class="p">),</span> <span class="n">NEW_LINE</span><span class="p">)</span>
+        <span class="n">result</span> <span class="o">+=</span> <span class="n">statements_to_str</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">statements</span><span class="p">,</span> <span class="n">indent</span><span class="p">)</span>
+        <span class="n">result</span> <span class="o">+=</span> <span class="n">indent_str</span><span class="p">(</span><span class="n">indent</span><span class="p">)</span> <span class="o">+</span> <span class="s2">&quot;}&quot;</span> <span class="o">+</span> <span class="n">NEW_LINE</span>
+        <span class="k">return</span> <span class="n">result</span></div></div>
+
+
+<div class="viewcode-block" id="Do"><a class="viewcode-back" href="../../core.html#core.ast.Do">[docs]</a><span class="k">class</span> <span class="nc">Do</span><span class="p">(</span><span class="n">ASTNode</span><span class="p">):</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">statements</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">ASTNode</span><span class="p">],</span> <span class="n">condition</span><span class="p">:</span> <span class="n">ASTNode</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">statements</span> <span class="o">=</span> <span class="n">statements</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">condition</span> <span class="o">=</span> <span class="n">condition</span>
+
+<div class="viewcode-block" id="Do.to_str"><a class="viewcode-back" href="../../core.html#core.ast.Do.to_str">[docs]</a>    <span class="k">def</span> <span class="nf">to_str</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">indent</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">0</span><span class="p">):</span>
+        <span class="n">result</span> <span class="o">=</span> <span class="s2">&quot;</span><span class="si">{}</span><span class="s2">do {{ </span><span class="si">{}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">indent_str</span><span class="p">(</span><span class="n">indent</span><span class="p">),</span> <span class="n">NEW_LINE</span><span class="p">)</span>
+        <span class="n">result</span> <span class="o">+=</span> <span class="n">statements_to_str</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">statements</span><span class="p">,</span> <span class="n">indent</span><span class="p">)</span>
+        <span class="n">result</span> <span class="o">+=</span> <span class="s2">&quot;</span><span class="si">{}</span><span class="s2">}} while (</span><span class="si">{}</span><span class="s2">);</span><span class="si">{}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">indent_str</span><span class="p">(</span><span class="n">indent</span><span class="p">),</span> <span class="n">expression_to_str</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">condition</span><span class="p">),</span> <span class="n">NEW_LINE</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">result</span></div></div>
+
+
+<div class="viewcode-block" id="If"><a class="viewcode-back" href="../../core.html#core.ast.If">[docs]</a><span class="k">class</span> <span class="nc">If</span><span class="p">(</span><span class="n">ASTNode</span><span class="p">):</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">condition</span><span class="p">:</span> <span class="n">ASTNode</span><span class="p">,</span> <span class="n">if_statements</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">ASTNode</span><span class="p">],</span> <span class="n">else_statements</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">ASTNode</span><span class="p">]):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">condition</span> <span class="o">=</span> <span class="n">condition</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">if_statements</span> <span class="o">=</span> <span class="n">if_statements</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">else_statements</span> <span class="o">=</span> <span class="n">else_statements</span>
+
+<div class="viewcode-block" id="If.to_str"><a class="viewcode-back" href="../../core.html#core.ast.If.to_str">[docs]</a>    <span class="k">def</span> <span class="nf">to_str</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">indent</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">0</span><span class="p">):</span>
+        <span class="n">result</span> <span class="o">=</span> <span class="s2">&quot;</span><span class="si">{}</span><span class="s2">if (</span><span class="si">{}</span><span class="s2">) {{ </span><span class="si">{}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">indent_str</span><span class="p">(</span><span class="n">indent</span><span class="p">),</span> <span class="n">expression_to_str</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">condition</span><span class="p">),</span> <span class="n">NEW_LINE</span><span class="p">)</span>
+        <span class="n">result</span> <span class="o">+=</span> <span class="n">statements_to_str</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">if_statements</span><span class="p">,</span> <span class="n">indent</span><span class="p">)</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">else_statements</span> <span class="ow">and</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">else_statements</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="n">result</span> <span class="o">+=</span> <span class="s2">&quot;</span><span class="si">{}</span><span class="s2">}} else {{ </span><span class="si">{}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">indent_str</span><span class="p">(</span><span class="n">indent</span><span class="p">),</span> <span class="n">NEW_LINE</span><span class="p">)</span>
+            <span class="n">result</span> <span class="o">+=</span> <span class="n">statements_to_str</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">else_statements</span><span class="p">,</span> <span class="n">indent</span><span class="p">)</span>
+        <span class="n">result</span> <span class="o">+=</span> <span class="s2">&quot;</span><span class="si">{}</span><span class="s2">}}</span><span class="si">{}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">indent_str</span><span class="p">(</span><span class="n">indent</span><span class="p">),</span> <span class="n">NEW_LINE</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">result</span></div></div>
+
+
+<div class="viewcode-block" id="For"><a class="viewcode-back" href="../../core.html#core.ast.For">[docs]</a><span class="k">class</span> <span class="nc">For</span><span class="p">(</span><span class="n">ASTNode</span><span class="p">):</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">initialization</span><span class="p">:</span> <span class="n">ASTNode</span><span class="p">,</span> <span class="n">condition</span><span class="p">:</span> <span class="n">ASTNode</span><span class="p">,</span> <span class="n">increment</span><span class="p">:</span> <span class="n">ASTNode</span><span class="p">,</span> <span class="n">statements</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">ASTNode</span><span class="p">]):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">initialization</span> <span class="o">=</span> <span class="n">initialization</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">condition</span> <span class="o">=</span> <span class="n">condition</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">increment</span> <span class="o">=</span> <span class="n">increment</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">statements</span> <span class="o">=</span> <span class="n">statements</span>
+
+<div class="viewcode-block" id="For.to_str"><a class="viewcode-back" href="../../core.html#core.ast.For.to_str">[docs]</a>    <span class="k">def</span> <span class="nf">to_str</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">indent</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">0</span><span class="p">):</span>
+        <span class="n">result</span> <span class="o">=</span> <span class="s2">&quot;</span><span class="si">{}</span><span class="s2">for (</span><span class="si">{}</span><span class="s2">; </span><span class="si">{}</span><span class="s2">; </span><span class="si">{}</span><span class="s2">) {{ </span><span class="si">{}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">indent_str</span><span class="p">(</span><span class="n">indent</span><span class="p">),</span> <span class="n">expression_to_str</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">initialization</span><span class="p">),</span>
+                                               <span class="n">expression_to_str</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">condition</span><span class="p">),</span> <span class="n">expression_to_str</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">increment</span><span class="p">),</span>
+                                               <span class="n">NEW_LINE</span><span class="p">)</span>
+        <span class="n">result</span> <span class="o">+=</span> <span class="n">statements_to_str</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">statements</span><span class="p">,</span> <span class="n">indent</span><span class="p">)</span>
+        <span class="n">result</span> <span class="o">+=</span> <span class="s2">&quot;</span><span class="si">{}</span><span class="s2">}}</span><span class="si">{}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">indent_str</span><span class="p">(</span><span class="n">indent</span><span class="p">),</span> <span class="n">NEW_LINE</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">result</span></div></div>
+
+
+<div class="viewcode-block" id="Switch"><a class="viewcode-back" href="../../core.html#core.ast.Switch">[docs]</a><span class="k">class</span> <span class="nc">Switch</span><span class="p">(</span><span class="n">ASTNode</span><span class="p">):</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">condition</span><span class="p">:</span> <span class="n">ASTNode</span><span class="p">,</span> <span class="n">cases</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="n">Literal</span><span class="p">,</span> <span class="n">List</span><span class="p">[</span><span class="n">ASTNode</span><span class="p">]],</span> <span class="n">default</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">ASTNode</span><span class="p">]):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">condition</span> <span class="o">=</span> <span class="n">condition</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">cases</span> <span class="o">=</span> <span class="n">cases</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">default</span> <span class="o">=</span> <span class="n">default</span>
+
+<div class="viewcode-block" id="Switch.to_str"><a class="viewcode-back" href="../../core.html#core.ast.Switch.to_str">[docs]</a>    <span class="k">def</span> <span class="nf">to_str</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">indent</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">0</span><span class="p">):</span>
+        <span class="n">result</span> <span class="o">=</span> <span class="s2">&quot;</span><span class="si">{}</span><span class="s2">switch (</span><span class="si">{}</span><span class="s2">) {{ </span><span class="si">{}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">indent_str</span><span class="p">(</span><span class="n">indent</span><span class="p">),</span> <span class="n">expression_to_str</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">condition</span><span class="p">),</span> <span class="n">NEW_LINE</span><span class="p">)</span>
+        <span class="k">for</span> <span class="n">case_value</span><span class="p">,</span> <span class="n">stmts</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">cases</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+            <span class="n">result</span> <span class="o">+=</span> <span class="s2">&quot;</span><span class="si">{}</span><span class="s2">case </span><span class="si">{}</span><span class="s2">:</span><span class="si">{}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">indent_str</span><span class="p">(</span><span class="n">indent</span> <span class="o">+</span> <span class="mi">1</span><span class="p">),</span> <span class="n">literal_to_str</span><span class="p">(</span><span class="n">case_value</span><span class="p">),</span> <span class="n">NEW_LINE</span><span class="p">)</span>
+            <span class="n">result</span> <span class="o">+=</span> <span class="n">statements_to_str</span><span class="p">(</span><span class="n">stmts</span><span class="p">,</span> <span class="n">indent</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">default</span> <span class="ow">and</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">default</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="n">result</span> <span class="o">+=</span> <span class="s2">&quot;</span><span class="si">{}</span><span class="s2">default:</span><span class="si">{}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">indent_str</span><span class="p">(</span><span class="n">indent</span> <span class="o">+</span> <span class="mi">1</span><span class="p">),</span> <span class="n">NEW_LINE</span><span class="p">)</span>
+            <span class="n">result</span> <span class="o">+=</span> <span class="n">statements_to_str</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">default</span><span class="p">,</span> <span class="n">indent</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span>
+        <span class="n">result</span> <span class="o">+=</span> <span class="s2">&quot;</span><span class="si">{}</span><span class="s2">}}</span><span class="si">{}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">indent_str</span><span class="p">(</span><span class="n">indent</span><span class="p">),</span> <span class="n">NEW_LINE</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">result</span></div></div>
+
+
+<span class="c1">############# Function and Program nodes ##############</span>
+
+<div class="viewcode-block" id="Function"><a class="viewcode-back" href="../../core.html#core.ast.Function">[docs]</a><span class="k">class</span> <span class="nc">Function</span><span class="p">(</span><span class="n">ASTNode</span><span class="p">):</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="n">return_type</span><span class="p">,</span> <span class="n">param_types</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">name</span> <span class="o">=</span> <span class="n">name</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">return_type</span> <span class="o">=</span> <span class="n">return_type</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">param_types</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">param_types</span><span class="p">)):</span> <span class="c1"># ordered list of (name, type)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">param_types</span><span class="o">.</span><span class="n">append</span><span class="p">((</span><span class="n">param</span><span class="p">(</span><span class="n">i</span><span class="p">),</span> <span class="n">param_types</span><span class="p">[</span><span class="n">i</span><span class="p">]))</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">local_vars</span> <span class="o">=</span> <span class="p">{}</span> <span class="c1"># type -&gt; [value_of_local_1, value_of_local_2...]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">children</span> <span class="o">=</span> <span class="p">[]</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">stmts</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">children</span>
+
+    <span class="nd">@stmts</span><span class="o">.</span><span class="n">setter</span>
+    <span class="k">def</span> <span class="nf">stmts</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">children</span> <span class="o">=</span> <span class="n">value</span>
+
+<div class="viewcode-block" id="Function.to_str"><a class="viewcode-back" href="../../core.html#core.ast.Function.to_str">[docs]</a>    <span class="k">def</span> <span class="nf">to_str</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">indent</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">0</span><span class="p">):</span>
+        <span class="c1"># function declaration</span>
+        <span class="n">result</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">__declaration__</span><span class="p">()</span> <span class="o">+</span> <span class="s2">&quot; {&quot;</span> <span class="o">+</span> <span class="n">NEW_LINE</span>
+        <span class="c1"># local variables</span>
+        <span class="n">local_vars</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">for</span> <span class="n">values</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">local_vars</span><span class="o">.</span><span class="n">values</span><span class="p">():</span>
+            <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">values</span><span class="p">)):</span>
+                <span class="n">c_type</span><span class="p">,</span> <span class="n">value</span> <span class="o">=</span> <span class="n">values</span><span class="p">[</span><span class="n">i</span><span class="p">]</span>
+                <span class="n">declaration</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;</span><span class="se">\t</span><span class="s1">&#39;</span><span class="o">*</span><span class="p">(</span><span class="n">indent</span><span class="o">+</span><span class="mi">1</span><span class="p">),</span> <span class="n">c_type</span><span class="o">.</span><span class="n">__declaration__</span><span class="p">(</span><span class="n">local_variable</span><span class="p">(</span><span class="n">c_type</span><span class="p">,</span> <span class="n">i</span> <span class="o">+</span> <span class="mi">1</span><span class="p">))]</span>
+                <span class="k">if</span> <span class="n">value</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+                    <span class="n">declaration</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s2">&quot; = &quot;</span><span class="p">)</span>
+                    <span class="n">declaration</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">literal_to_str</span><span class="p">(</span><span class="n">value</span><span class="p">))</span>
+                <span class="n">declaration</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s2">&quot;;&quot;</span><span class="p">)</span>
+                <span class="n">declaration</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">NEW_LINE</span><span class="p">)</span>
+                <span class="n">local_vars</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s2">&quot;&quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">declaration</span><span class="p">))</span>
+        <span class="n">result</span> <span class="o">+=</span> <span class="s1">&#39;&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">local_vars</span><span class="p">)</span> <span class="o">+</span> <span class="n">NEW_LINE</span>
+        <span class="c1"># statements</span>
+        <span class="n">result</span> <span class="o">+=</span> <span class="s2">&quot;&quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">statements_to_str</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">stmts</span><span class="p">,</span> <span class="n">indent</span><span class="p">))</span>
+        <span class="n">result</span> <span class="o">+=</span> <span class="n">indent_str</span><span class="p">(</span><span class="n">indent</span><span class="p">)</span> <span class="o">+</span> <span class="s1">&#39;}&#39;</span> <span class="o">+</span> <span class="n">NEW_LINE</span><span class="o">*</span><span class="mi">2</span>
+        <span class="k">return</span> <span class="n">result</span></div>
+
+    <span class="k">def</span> <span class="nf">__declaration__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="c1"># Debug info</span>
+        <span class="n">result</span> <span class="o">=</span> <span class="s2">&quot;/*&quot;</span> <span class="o">+</span> <span class="n">NEW_LINE</span>
+        <span class="n">result</span> <span class="o">+=</span> <span class="s2">&quot; * return type: </span><span class="si">{}{}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">return_type</span><span class="o">.</span><span class="n">name</span><span class="p">,</span> <span class="n">NEW_LINE</span><span class="p">)</span>
+        <span class="k">for</span> <span class="n">param_name</span><span class="p">,</span> <span class="n">param_type</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">param_types</span><span class="p">:</span>
+            <span class="n">result</span> <span class="o">+=</span> <span class="s2">&quot; * </span><span class="si">{}</span><span class="s2"> type: </span><span class="si">{}{}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">param_name</span><span class="o">.</span><span class="n">to_str</span><span class="p">(),</span> <span class="n">param_type</span><span class="o">.</span><span class="n">name</span><span class="p">,</span> <span class="n">NEW_LINE</span><span class="p">)</span>
+        <span class="n">result</span> <span class="o">+=</span> <span class="s2">&quot; */&quot;</span> <span class="o">+</span> <span class="n">NEW_LINE</span>
+
+        <span class="n">result</span> <span class="o">+=</span> <span class="s2">&quot;</span><span class="si">{}</span><span class="s2"> </span><span class="si">{}</span><span class="s2">(&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">return_type</span><span class="o">.</span><span class="n">__declaration__</span><span class="p">(</span><span class="n">from_return_in_func_decl</span><span class="o">=</span><span class="kc">True</span><span class="p">),</span> <span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="p">)</span>
+        <span class="n">i</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="k">for</span> <span class="n">param_name</span><span class="p">,</span> <span class="n">param_type</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">param_types</span><span class="p">:</span>
+            <span class="n">result</span> <span class="o">+=</span> <span class="n">param_type</span><span class="o">.</span><span class="n">__declaration__</span><span class="p">(</span><span class="n">param_name</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">i</span> <span class="o">&lt;</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">param_types</span><span class="p">)</span><span class="o">-</span><span class="mi">1</span><span class="p">:</span>
+                <span class="n">result</span> <span class="o">+=</span> <span class="s2">&quot;, &quot;</span>
+            <span class="n">i</span> <span class="o">+=</span> <span class="mi">1</span>
+        <span class="n">result</span> <span class="o">+=</span> <span class="s2">&quot;)&quot;</span>
+        <span class="k">return</span> <span class="n">result</span>
+
+<div class="viewcode-block" id="Function.prototype"><a class="viewcode-back" href="../../core.html#core.ast.Function.prototype">[docs]</a>    <span class="k">def</span> <span class="nf">prototype</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">__declaration__</span><span class="p">()</span> <span class="o">+</span> <span class="s2">&quot;;&quot;</span></div>
+
+<div class="viewcode-block" id="Function.get_param_by_type"><a class="viewcode-back" href="../../core.html#core.ast.Function.get_param_by_type">[docs]</a>    <span class="k">def</span> <span class="nf">get_param_by_type</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">c_type</span><span class="p">):</span>
+        <span class="c1"># returns one param name for that type</span>
+        <span class="n">found_params</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">for</span> <span class="n">param_name</span><span class="p">,</span> <span class="n">param_type</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">param_types</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">param_type</span> <span class="o">==</span> <span class="n">c_type</span><span class="p">:</span>
+                <span class="n">found_params</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">param_name</span><span class="p">)</span>
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">found_params</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="c1"># no param with that type</span>
+            <span class="k">return</span> <span class="kc">None</span>
+        <span class="k">return</span> <span class="n">found_params</span><span class="p">[</span><span class="n">random</span><span class="o">.</span><span class="n">randint</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">found_params</span><span class="p">)</span><span class="o">-</span><span class="mi">1</span><span class="p">)]</span></div></div>
+
+
+<div class="viewcode-block" id="Program"><a class="viewcode-back" href="../../core.html#core.ast.Program">[docs]</a><span class="k">class</span> <span class="nc">Program</span><span class="p">(</span><span class="n">ASTNode</span><span class="p">):</span>
+
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="c1"># self.includes = [&quot;stdlib.h&quot;, &quot;stdbool.h&quot;]</span>
+        <span class="c1"># self.defines = {&quot;bool&quot;: &quot;_Bool&quot;}</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">includes</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">defines</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;bool&quot;</span><span class="p">:</span> <span class="s2">&quot;_Bool&quot;</span><span class="p">,</span> <span class="s2">&quot;true&quot;</span><span class="p">:</span> <span class="s2">&quot;1&quot;</span><span class="p">,</span> <span class="s2">&quot;false&quot;</span><span class="p">:</span> <span class="s2">&quot;0&quot;</span><span class="p">,</span> <span class="s2">&quot;NULL&quot;</span><span class="p">:</span> <span class="s2">&quot;(void *) 0&quot;</span><span class="p">}</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">global_vars</span> <span class="o">=</span> <span class="p">{}</span>  <span class="c1"># type -&gt; [value_of_global_1, value_of_global_2...]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">structs</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">main</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">children</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">invocation_as_expr</span> <span class="o">=</span> <span class="n">collections</span><span class="o">.</span><span class="n">defaultdict</span><span class="p">(</span><span class="nb">int</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">invocation_as_stmt</span> <span class="o">=</span> <span class="n">collections</span><span class="o">.</span><span class="n">defaultdict</span><span class="p">(</span><span class="nb">int</span><span class="p">)</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">functions</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">children</span>
+
+
+<div class="viewcode-block" id="Program.stringify_parts"><a class="viewcode-back" href="../../core.html#core.ast.Program.stringify_parts">[docs]</a>    <span class="k">def</span> <span class="nf">stringify_parts</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+
+        <span class="c1"># includes</span>
+        <span class="n">includes</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;#include &lt;</span><span class="si">%s</span><span class="s2">&gt;&quot;</span> <span class="o">%</span> <span class="p">(</span><span class="n">f</span><span class="p">,)</span> <span class="k">for</span> <span class="n">f</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">includes</span><span class="p">]</span>
+        <span class="n">includes</span> <span class="o">=</span> <span class="n">NEW_LINE</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">includes</span><span class="p">)</span>
+
+        <span class="c1"># defines</span>
+        <span class="n">defines</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;#define </span><span class="si">{}</span><span class="s2"> </span><span class="si">{}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">k</span><span class="p">,</span> <span class="n">v</span> <span class="ow">or</span> <span class="s2">&quot;&quot;</span><span class="p">)</span> <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">defines</span><span class="o">.</span><span class="n">items</span><span class="p">()]</span>
+        <span class="n">defines</span> <span class="o">=</span> <span class="n">NEW_LINE</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">defines</span><span class="p">)</span>
+
+        <span class="c1"># structs</span>
+        <span class="n">structs</span> <span class="o">=</span> <span class="p">[</span><span class="n">s</span><span class="o">.</span><span class="n">prototype</span><span class="p">()</span> <span class="k">for</span> <span class="n">s</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_iterate_structs_by_dependencies</span><span class="p">()]</span>
+        <span class="n">structs</span> <span class="o">=</span> <span class="n">NEW_LINE</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">structs</span><span class="p">)</span>
+
+        <span class="c1"># prototypes</span>
+        <span class="n">prototypes</span> <span class="o">=</span> <span class="p">[</span><span class="n">f</span><span class="o">.</span><span class="n">prototype</span><span class="p">()</span> <span class="k">for</span> <span class="n">f</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">functions</span><span class="p">]</span>
+        <span class="n">prototypes</span> <span class="o">=</span> <span class="n">NEW_LINE</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">prototypes</span><span class="p">)</span>
+
+        <span class="c1"># global variables</span>
+        <span class="n">global_vars</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">for</span> <span class="n">values</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">global_vars</span><span class="o">.</span><span class="n">values</span><span class="p">():</span>
+            <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">values</span><span class="p">)):</span>
+                <span class="n">c_type</span><span class="p">,</span> <span class="n">value</span> <span class="o">=</span> <span class="n">values</span><span class="p">[</span><span class="n">i</span><span class="p">]</span>
+                <span class="n">declaration</span> <span class="o">=</span> <span class="p">[</span><span class="n">c_type</span><span class="o">.</span><span class="n">__declaration__</span><span class="p">(</span><span class="n">global_variable</span><span class="p">(</span><span class="n">c_type</span><span class="p">,</span> <span class="n">i</span> <span class="o">+</span> <span class="mi">1</span><span class="p">))]</span>
+                <span class="k">if</span> <span class="n">value</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+                    <span class="n">declaration</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s2">&quot; = &quot;</span><span class="p">)</span>
+                    <span class="n">declaration</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">literal_to_str</span><span class="p">(</span><span class="n">value</span><span class="p">))</span>
+                <span class="n">declaration</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s2">&quot;;&quot;</span><span class="p">)</span>
+                <span class="n">declaration</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">NEW_LINE</span><span class="p">)</span>
+                <span class="n">global_vars</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s2">&quot;&quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">declaration</span><span class="p">))</span>
+        <span class="n">global_vars</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">global_vars</span><span class="p">)</span>
+
+        <span class="c1"># functions</span>
+        <span class="n">functions</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">func</span><span class="o">.</span><span class="n">to_str</span><span class="p">()</span> <span class="k">for</span> <span class="n">func</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">functions</span><span class="p">)</span>
+
+        <span class="c1"># main function</span>
+        <span class="n">main</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">main</span><span class="o">.</span><span class="n">to_str</span><span class="p">()</span>
+
+        <span class="k">return</span> <span class="n">includes</span><span class="p">,</span> <span class="n">defines</span><span class="p">,</span> <span class="n">structs</span><span class="p">,</span> <span class="n">prototypes</span><span class="p">,</span> <span class="n">global_vars</span><span class="p">,</span> <span class="n">functions</span><span class="p">,</span> <span class="n">main</span></div>
+
+<div class="viewcode-block" id="Program.to_str"><a class="viewcode-back" href="../../core.html#core.ast.Program.to_str">[docs]</a>    <span class="k">def</span> <span class="nf">to_str</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">indent</span><span class="p">:</span> <span class="nb">int</span><span class="o">=</span><span class="mi">0</span><span class="p">):</span>
+        <span class="n">includes</span><span class="p">,</span> <span class="n">defines</span><span class="p">,</span> <span class="n">structs</span><span class="p">,</span> <span class="n">prototypes</span><span class="p">,</span> <span class="n">global_vars</span><span class="p">,</span> <span class="n">functions</span><span class="p">,</span> <span class="n">main</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">stringify_parts</span><span class="p">()</span>
+
+        <span class="k">return</span> <span class="s2">&quot;&quot;</span><span class="o">.</span><span class="n">join</span><span class="p">([</span>
+            <span class="s2">&quot;/* INCLUDES */&quot;</span><span class="p">,</span> <span class="n">NEW_LINE</span><span class="p">,</span> <span class="n">NEW_LINE</span><span class="p">,</span>
+            <span class="n">includes</span><span class="p">,</span> <span class="n">NEW_LINE</span><span class="p">,</span> <span class="n">NEW_LINE</span><span class="p">,</span> <span class="n">NEW_LINE</span><span class="p">,</span> <span class="n">NEW_LINE</span><span class="p">,</span>
+            <span class="s2">&quot;/* DEFINES */&quot;</span><span class="p">,</span> <span class="n">NEW_LINE</span><span class="p">,</span> <span class="n">NEW_LINE</span><span class="p">,</span>
+            <span class="n">defines</span><span class="p">,</span> <span class="n">NEW_LINE</span><span class="p">,</span> <span class="n">NEW_LINE</span><span class="p">,</span> <span class="n">NEW_LINE</span><span class="p">,</span> <span class="n">NEW_LINE</span><span class="p">,</span>
+            <span class="s2">&quot;/* STRUCTS */&quot;</span><span class="p">,</span> <span class="n">NEW_LINE</span><span class="p">,</span> <span class="n">NEW_LINE</span><span class="p">,</span>
+            <span class="n">structs</span><span class="p">,</span> <span class="n">NEW_LINE</span><span class="p">,</span> <span class="n">NEW_LINE</span><span class="p">,</span> <span class="n">NEW_LINE</span><span class="p">,</span> <span class="n">NEW_LINE</span><span class="p">,</span>
+            <span class="s2">&quot;/* PROTOTYPES */&quot;</span><span class="p">,</span> <span class="n">NEW_LINE</span><span class="p">,</span> <span class="n">NEW_LINE</span><span class="p">,</span>
+            <span class="n">prototypes</span><span class="p">,</span> <span class="n">NEW_LINE</span><span class="p">,</span> <span class="n">NEW_LINE</span><span class="p">,</span> <span class="n">NEW_LINE</span><span class="p">,</span> <span class="n">NEW_LINE</span><span class="p">,</span>
+            <span class="s2">&quot;/* GLOBAL VARS */&quot;</span><span class="p">,</span> <span class="n">NEW_LINE</span><span class="p">,</span> <span class="n">NEW_LINE</span><span class="p">,</span>
+            <span class="n">global_vars</span><span class="p">,</span> <span class="n">NEW_LINE</span><span class="p">,</span> <span class="n">NEW_LINE</span><span class="p">,</span> <span class="n">NEW_LINE</span><span class="p">,</span> <span class="n">NEW_LINE</span><span class="p">,</span>
+            <span class="s2">&quot;/* FUNCTIONS */&quot;</span><span class="p">,</span> <span class="n">NEW_LINE</span><span class="p">,</span> <span class="n">NEW_LINE</span><span class="p">,</span>
+            <span class="n">functions</span><span class="p">,</span> <span class="n">NEW_LINE</span><span class="p">,</span> <span class="n">NEW_LINE</span><span class="p">,</span> <span class="n">NEW_LINE</span><span class="p">,</span> <span class="n">NEW_LINE</span><span class="p">,</span>
+            <span class="s2">&quot;/* MAIN */&quot;</span><span class="p">,</span> <span class="n">NEW_LINE</span><span class="p">,</span> <span class="n">NEW_LINE</span><span class="p">,</span>
+            <span class="n">main</span><span class="p">,</span> <span class="n">NEW_LINE</span><span class="p">,</span>
+        <span class="p">])</span></div>
+
+    <span class="k">def</span> <span class="nf">_iterate_structs_by_dependencies</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="c1"># Compose dependencies dict</span>
+        <span class="n">index</span> <span class="o">=</span> <span class="p">{</span><span class="n">s</span><span class="o">.</span><span class="n">name</span><span class="p">:</span> <span class="n">s</span> <span class="k">for</span> <span class="n">s</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">structs</span><span class="p">}</span>
+        <span class="n">dependencies</span> <span class="o">=</span> <span class="p">{</span><span class="n">s</span><span class="o">.</span><span class="n">name</span><span class="p">:</span> <span class="nb">set</span><span class="p">()</span> <span class="k">for</span> <span class="n">s</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">structs</span><span class="p">}</span>
+        <span class="k">for</span> <span class="n">struct</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">structs</span><span class="p">:</span>
+            <span class="k">for</span> <span class="n">dependency</span> <span class="ow">in</span> <span class="n">struct</span><span class="o">.</span><span class="n">struct_references</span><span class="p">:</span>
+                <span class="n">dependencies</span><span class="p">[</span><span class="n">dependency</span><span class="o">.</span><span class="n">name</span><span class="p">]</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">struct</span><span class="o">.</span><span class="n">name</span><span class="p">)</span>
+
+        <span class="c1"># Iterate</span>
+        <span class="k">while</span> <span class="nb">len</span><span class="p">(</span><span class="n">dependencies</span><span class="p">):</span>
+            <span class="c1"># Yield all structures without dependencies</span>
+            <span class="n">yielded</span> <span class="o">=</span> <span class="p">[]</span>
+            <span class="k">for</span> <span class="n">struct_name</span><span class="p">,</span> <span class="n">dependendencies_name</span> <span class="ow">in</span> <span class="n">dependencies</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+                <span class="k">if</span> <span class="ow">not</span> <span class="n">dependendencies_name</span><span class="p">:</span>
+                    <span class="k">yield</span> <span class="n">index</span><span class="p">[</span><span class="n">struct_name</span><span class="p">]</span>
+                    <span class="n">yielded</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">struct_name</span><span class="p">)</span>
+
+            <span class="c1"># Delete structs without dependencies</span>
+            <span class="k">for</span> <span class="n">struct_name</span> <span class="ow">in</span> <span class="n">yielded</span><span class="p">:</span>
+                <span class="k">del</span> <span class="n">dependencies</span><span class="p">[</span><span class="n">struct_name</span><span class="p">]</span>
+
+            <span class="c1"># Delete references to yielded structures</span>
+            <span class="k">for</span> <span class="n">struct_name</span><span class="p">,</span> <span class="n">dependendencies_name</span> <span class="ow">in</span> <span class="n">dependencies</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+                <span class="k">for</span> <span class="n">struct_name</span> <span class="ow">in</span> <span class="n">yielded</span><span class="p">:</span>
+                    <span class="k">try</span><span class="p">:</span>
+                        <span class="n">dependendencies_name</span><span class="o">.</span><span class="n">remove</span><span class="p">(</span><span class="n">struct_name</span><span class="p">)</span>
+                    <span class="k">except</span> <span class="ne">KeyError</span><span class="p">:</span>
+                        <span class="k">pass</span>
+
+    <span class="c1"># def get_functions_by_signature(self, param_types, return_type):</span>
+    <span class="c1">#     result = []</span>
+    <span class="c1">#     for function in self.functions:</span>
+    <span class="c1">#         if function.return_type != return_type:</span>
+    <span class="c1">#             continue</span>
+    <span class="c1">#         p_types = [c_type for name, c_type in function.param_types]</span>
+    <span class="c1">#         if param_types == p_types:</span>
+    <span class="c1">#             result.append(function)</span>
+    <span class="c1">#     return result</span>
+    
+<div class="viewcode-block" id="Program.get_functions_by_return_type"><a class="viewcode-back" href="../../core.html#core.ast.Program.get_functions_by_return_type">[docs]</a>    <span class="k">def</span> <span class="nf">get_functions_by_return_type</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">return_type</span><span class="p">):</span>
+        <span class="n">result</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">for</span> <span class="n">function</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">functions</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">function</span><span class="o">.</span><span class="n">return_type</span> <span class="o">==</span> <span class="n">return_type</span><span class="p">:</span>
+                <span class="n">result</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">function</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">result</span></div></div>
+
+
+<span class="c1">########### Types ##############</span>
+
+<div class="viewcode-block" id="Type"><a class="viewcode-back" href="../../core.html#core.ast.Type">[docs]</a><span class="k">class</span> <span class="nc">Type</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+
+    <span class="k">def</span> <span class="fm">__eq__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">name</span> <span class="o">==</span> <span class="n">other</span><span class="o">.</span><span class="n">name</span>
+
+<div class="viewcode-block" id="Type.to_str"><a class="viewcode-back" href="../../core.html#core.ast.Type.to_str">[docs]</a>    <span class="k">def</span> <span class="nf">to_str</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">indent</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">0</span><span class="p">):</span>
+        <span class="k">raise</span> <span class="ne">NotImplementedError</span><span class="p">(</span><span class="s2">&quot;Not Implemented&quot;</span><span class="p">)</span></div>
+
+    <span class="k">def</span> <span class="fm">__hash__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;The default hash is just the hash of name of the class.</span>
+<span class="sd">        This implementation is not valid for composite types.&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="vm">__name__</span><span class="o">.</span><span class="fm">__hash__</span><span class="p">()</span>
+
+    <span class="k">def</span> <span class="nf">__declaration__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">variable</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="k">if</span> <span class="n">variable</span><span class="p">:</span>
+            <span class="n">var_name</span> <span class="o">=</span> <span class="n">variable_to_var_name</span><span class="p">(</span><span class="n">variable</span><span class="p">)</span>
+            <span class="k">return</span> <span class="s2">&quot; &quot;</span><span class="o">.</span><span class="n">join</span><span class="p">([</span><span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="p">,</span> <span class="n">var_name</span><span class="p">])</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">name</span>
+
+    <span class="k">def</span> <span class="fm">__repr__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">name</span></div>
+
+
+<div class="viewcode-block" id="NumericType"><a class="viewcode-back" href="../../core.html#core.ast.NumericType">[docs]</a><span class="k">class</span> <span class="nc">NumericType</span><span class="p">(</span><span class="n">Type</span><span class="p">,</span> <span class="n">Singleton</span><span class="p">):</span>
+
+<div class="viewcode-block" id="NumericType.generate_literal"><a class="viewcode-back" href="../../core.html#core.ast.NumericType.generate_literal">[docs]</a>    <span class="k">def</span> <span class="nf">generate_literal</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">range</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="nb">float</span><span class="p">):</span>
+            <span class="n">value</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">random</span><span class="o">.</span><span class="n">uniform</span><span class="p">(</span><span class="o">*</span><span class="bp">self</span><span class="o">.</span><span class="n">range</span><span class="p">))</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">value</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">random</span><span class="o">.</span><span class="n">randint</span><span class="p">(</span><span class="o">*</span><span class="bp">self</span><span class="o">.</span><span class="n">range</span><span class="p">))</span>
+        <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s2">&quot;literal_suffix&quot;</span><span class="p">):</span>
+            <span class="k">return</span> <span class="n">Literal</span><span class="p">(</span><span class="n">value</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">literal_suffix</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">Literal</span><span class="p">(</span><span class="s2">&quot;&quot;</span><span class="o">.</span><span class="n">join</span><span class="p">([</span><span class="s2">&quot;/* LITERAL */ (&quot;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="p">,</span> <span class="s2">&quot;) &quot;</span><span class="p">,</span> <span class="n">value</span><span class="p">]),</span> <span class="bp">self</span><span class="p">)</span></div></div>
+
+
+<div class="viewcode-block" id="Bool"><a class="viewcode-back" href="../../core.html#core.ast.Bool">[docs]</a><span class="k">class</span> <span class="nc">Bool</span><span class="p">(</span><span class="n">Type</span><span class="p">,</span> <span class="n">Singleton</span><span class="p">):</span>
+    <span class="n">values</span> <span class="o">=</span> <span class="s2">&quot;true&quot;</span><span class="p">,</span> <span class="s2">&quot;false&quot;</span>
+    <span class="n">name</span> <span class="o">=</span> <span class="s2">&quot;bool&quot;</span>
+
+<div class="viewcode-block" id="Bool.generate_literal"><a class="viewcode-back" href="../../core.html#core.ast.Bool.generate_literal">[docs]</a>    <span class="k">def</span> <span class="nf">generate_literal</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="k">return</span> <span class="n">Literal</span><span class="p">(</span><span class="n">random</span><span class="o">.</span><span class="n">choice</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">values</span><span class="p">),</span> <span class="bp">self</span><span class="p">)</span></div></div>
+
+
+<div class="viewcode-block" id="SignedChar"><a class="viewcode-back" href="../../core.html#core.ast.SignedChar">[docs]</a><span class="k">class</span> <span class="nc">SignedChar</span><span class="p">(</span><span class="n">NumericType</span><span class="p">):</span>
+    <span class="nb">range</span> <span class="o">=</span> <span class="o">-</span><span class="mi">2</span><span class="o">**</span><span class="mi">7</span><span class="p">,</span> <span class="mi">2</span><span class="o">**</span><span class="mi">7</span><span class="o">-</span><span class="mi">1</span>
+    <span class="n">name</span> <span class="o">=</span> <span class="s2">&quot;signed char&quot;</span></div>
+
+
+<div class="viewcode-block" id="UnsignedChar"><a class="viewcode-back" href="../../core.html#core.ast.UnsignedChar">[docs]</a><span class="k">class</span> <span class="nc">UnsignedChar</span><span class="p">(</span><span class="n">NumericType</span><span class="p">):</span>
+    <span class="nb">range</span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">2</span><span class="o">**</span><span class="mi">8</span><span class="o">-</span><span class="mi">1</span>
+    <span class="n">literal_suffix</span> <span class="o">=</span> <span class="s2">&quot;U&quot;</span>
+    <span class="n">name</span> <span class="o">=</span> <span class="s2">&quot;unsigned char&quot;</span></div>
+
+
+<div class="viewcode-block" id="SignedShortInt"><a class="viewcode-back" href="../../core.html#core.ast.SignedShortInt">[docs]</a><span class="k">class</span> <span class="nc">SignedShortInt</span><span class="p">(</span><span class="n">NumericType</span><span class="p">):</span>
+    <span class="nb">range</span> <span class="o">=</span> <span class="o">-</span><span class="mi">2</span><span class="o">**</span><span class="mi">15</span><span class="p">,</span> <span class="mi">2</span><span class="o">**</span><span class="mi">15</span><span class="o">-</span><span class="mi">1</span>
+    <span class="n">name</span> <span class="o">=</span> <span class="s2">&quot;signed short int&quot;</span></div>
+
+
+<div class="viewcode-block" id="UnsignedShortInt"><a class="viewcode-back" href="../../core.html#core.ast.UnsignedShortInt">[docs]</a><span class="k">class</span> <span class="nc">UnsignedShortInt</span><span class="p">(</span><span class="n">NumericType</span><span class="p">):</span>
+    <span class="nb">range</span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">2</span><span class="o">**</span><span class="mi">16</span><span class="o">-</span><span class="mi">1</span>
+    <span class="n">literal_suffix</span> <span class="o">=</span> <span class="s2">&quot;U&quot;</span>
+    <span class="n">name</span> <span class="o">=</span> <span class="s2">&quot;unsigned short int&quot;</span></div>
+
+
+<div class="viewcode-block" id="SignedInt"><a class="viewcode-back" href="../../core.html#core.ast.SignedInt">[docs]</a><span class="k">class</span> <span class="nc">SignedInt</span><span class="p">(</span><span class="n">NumericType</span><span class="p">):</span>
+    <span class="nb">range</span> <span class="o">=</span> <span class="o">-</span><span class="mi">2</span><span class="o">**</span><span class="mi">31</span><span class="p">,</span> <span class="mi">2</span><span class="o">**</span><span class="mi">31</span><span class="o">-</span><span class="mi">1</span>
+    <span class="n">name</span> <span class="o">=</span> <span class="s2">&quot;signed int&quot;</span></div>
+
+
+<div class="viewcode-block" id="UnsignedInt"><a class="viewcode-back" href="../../core.html#core.ast.UnsignedInt">[docs]</a><span class="k">class</span> <span class="nc">UnsignedInt</span><span class="p">(</span><span class="n">NumericType</span><span class="p">):</span>
+    <span class="nb">range</span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">2</span><span class="o">**</span><span class="mi">32</span><span class="o">-</span><span class="mi">1</span>
+    <span class="n">literal_suffix</span> <span class="o">=</span> <span class="s2">&quot;U&quot;</span>
+    <span class="n">name</span> <span class="o">=</span> <span class="s2">&quot;unsigned int&quot;</span></div>
+
+
+<div class="viewcode-block" id="SignedLongInt"><a class="viewcode-back" href="../../core.html#core.ast.SignedLongInt">[docs]</a><span class="k">class</span> <span class="nc">SignedLongInt</span><span class="p">(</span><span class="n">NumericType</span><span class="p">):</span>
+    <span class="nb">range</span> <span class="o">=</span> <span class="o">-</span><span class="mi">2</span><span class="o">**</span><span class="mi">31</span><span class="p">,</span> <span class="mi">2</span><span class="o">**</span><span class="mi">31</span><span class="o">-</span><span class="mi">1</span>
+    <span class="n">literal_suffix</span> <span class="o">=</span> <span class="s2">&quot;L&quot;</span>
+    <span class="n">name</span> <span class="o">=</span> <span class="s2">&quot;signed long int&quot;</span></div>
+
+
+<div class="viewcode-block" id="UnsignedLongInt"><a class="viewcode-back" href="../../core.html#core.ast.UnsignedLongInt">[docs]</a><span class="k">class</span> <span class="nc">UnsignedLongInt</span><span class="p">(</span><span class="n">NumericType</span><span class="p">):</span>
+    <span class="nb">range</span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">2</span><span class="o">**</span><span class="mi">32</span><span class="o">-</span><span class="mi">1</span>
+    <span class="n">literal_suffix</span> <span class="o">=</span> <span class="s2">&quot;UL&quot;</span>
+    <span class="n">name</span> <span class="o">=</span> <span class="s2">&quot;unsigned long int&quot;</span></div>
+
+
+<div class="viewcode-block" id="SignedLongLongInt"><a class="viewcode-back" href="../../core.html#core.ast.SignedLongLongInt">[docs]</a><span class="k">class</span> <span class="nc">SignedLongLongInt</span><span class="p">(</span><span class="n">NumericType</span><span class="p">):</span>
+    <span class="nb">range</span> <span class="o">=</span> <span class="o">-</span><span class="mi">2</span><span class="o">**</span><span class="mi">63</span><span class="p">,</span> <span class="mi">2</span><span class="o">**</span><span class="mi">63</span><span class="o">-</span><span class="mi">1</span>
+    <span class="n">literal_suffix</span> <span class="o">=</span> <span class="s2">&quot;LL&quot;</span>
+    <span class="n">name</span> <span class="o">=</span> <span class="s2">&quot;signed long long int&quot;</span></div>
+
+
+<div class="viewcode-block" id="UnsignedLongLongInt"><a class="viewcode-back" href="../../core.html#core.ast.UnsignedLongLongInt">[docs]</a><span class="k">class</span> <span class="nc">UnsignedLongLongInt</span><span class="p">(</span><span class="n">NumericType</span><span class="p">):</span>
+    <span class="nb">range</span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">2</span><span class="o">**</span><span class="mi">64</span><span class="o">-</span><span class="mi">1</span>
+    <span class="n">literal_suffix</span> <span class="o">=</span> <span class="s2">&quot;ULL&quot;</span>
+    <span class="n">name</span> <span class="o">=</span> <span class="s2">&quot;unsigned long long int&quot;</span></div>
+
+
+<div class="viewcode-block" id="Float"><a class="viewcode-back" href="../../core.html#core.ast.Float">[docs]</a><span class="k">class</span> <span class="nc">Float</span><span class="p">(</span><span class="n">NumericType</span><span class="p">):</span>
+    <span class="nb">range</span> <span class="o">=</span> <span class="mf">1.2E-38</span><span class="p">,</span> <span class="mf">3.4E+38</span>
+    <span class="n">name</span> <span class="o">=</span> <span class="s2">&quot;float&quot;</span></div>
+
+
+<div class="viewcode-block" id="Double"><a class="viewcode-back" href="../../core.html#core.ast.Double">[docs]</a><span class="k">class</span> <span class="nc">Double</span><span class="p">(</span><span class="n">NumericType</span><span class="p">):</span>
+    <span class="nb">range</span> <span class="o">=</span> <span class="mf">2.3E-308</span><span class="p">,</span> <span class="mf">1.7E+308</span>
+    <span class="n">name</span> <span class="o">=</span> <span class="s2">&quot;double&quot;</span></div>
+
+
+<div class="viewcode-block" id="LongDouble"><a class="viewcode-back" href="../../core.html#core.ast.LongDouble">[docs]</a><span class="k">class</span> <span class="nc">LongDouble</span><span class="p">(</span><span class="n">NumericType</span><span class="p">):</span>
+    <span class="nb">range</span> <span class="o">=</span> <span class="mf">2.3E-308</span><span class="p">,</span> <span class="mf">1.7E+308</span>
+    <span class="n">literal_suffix</span> <span class="o">=</span> <span class="s2">&quot;L&quot;</span>
+    <span class="n">name</span> <span class="o">=</span> <span class="s2">&quot;long double&quot;</span></div>
+
+
+<div class="viewcode-block" id="structs_references_graph"><a class="viewcode-back" href="../../core.html#core.ast.structs_references_graph">[docs]</a><span class="k">def</span> <span class="nf">structs_references_graph</span><span class="p">(</span><span class="n">structs</span><span class="p">):</span>
+    <span class="kn">from</span> <span class="nn">debug</span> <span class="kn">import</span> <span class="n">graph</span>
+    <span class="n">references</span> <span class="o">=</span> <span class="n">collections</span><span class="o">.</span><span class="n">defaultdict</span><span class="p">(</span><span class="nb">list</span><span class="p">)</span>
+    <span class="k">for</span> <span class="n">s</span> <span class="ow">in</span> <span class="n">structs</span><span class="p">:</span>
+        <span class="k">for</span> <span class="n">f</span><span class="p">,</span> <span class="n">t</span> <span class="ow">in</span> <span class="n">s</span><span class="o">.</span><span class="n">fields</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">t</span><span class="o">.</span><span class="n">name</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s2">&quot;struct&quot;</span><span class="p">):</span>
+                <span class="c1"># references[s].append((f, t, False))</span>
+                <span class="n">references</span><span class="p">[</span><span class="n">s</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">t</span><span class="p">)</span>
+            <span class="k">elif</span> <span class="n">t</span><span class="o">.</span><span class="n">name</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s2">&quot;array&quot;</span><span class="p">)</span> <span class="ow">and</span> <span class="n">t</span><span class="o">.</span><span class="n">type</span><span class="o">.</span><span class="n">name</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s2">&quot;struct&quot;</span><span class="p">):</span>
+                <span class="c1"># references[s].append((f, t.type, True))</span>
+                <span class="n">references</span><span class="p">[</span><span class="n">s</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">t</span><span class="o">.</span><span class="n">type</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">graph</span><span class="o">.</span><span class="n">Graph</span><span class="p">(</span><span class="n">references</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="reference_paths_to_struct"><a class="viewcode-back" href="../../core.html#core.ast.reference_paths_to_struct">[docs]</a><span class="k">def</span> <span class="nf">reference_paths_to_struct</span><span class="p">(</span><span class="n">struct</span><span class="p">,</span> <span class="n">structs</span><span class="p">):</span>
+    <span class="n">g</span> <span class="o">=</span> <span class="n">structs_references_graph</span><span class="p">(</span><span class="n">structs</span><span class="p">)</span>
+    <span class="n">paths</span> <span class="o">=</span> <span class="p">[</span><span class="n">path</span> <span class="k">for</span> <span class="n">s</span> <span class="ow">in</span> <span class="n">structs</span> <span class="k">for</span> <span class="n">path</span> <span class="ow">in</span> <span class="n">g</span><span class="o">.</span><span class="n">find_all_paths</span><span class="p">(</span><span class="n">s</span><span class="p">,</span> <span class="n">struct</span><span class="p">)]</span>
+    <span class="k">return</span> <span class="n">paths</span></div>
+
+
+<div class="viewcode-block" id="Struct"><a class="viewcode-back" href="../../core.html#core.ast.Struct">[docs]</a><span class="k">class</span> <span class="nc">Struct</span><span class="p">(</span><span class="n">Type</span><span class="p">):</span>
+
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="o">*</span><span class="n">fields</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_name</span> <span class="o">=</span> <span class="n">name</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">fields</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">blacklisted</span> <span class="o">=</span> <span class="nb">set</span><span class="p">([</span><span class="bp">self</span><span class="p">])</span>
+        <span class="k">for</span> <span class="n">f</span><span class="p">,</span> <span class="n">t</span> <span class="ow">in</span> <span class="n">fields</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">add_field</span><span class="p">(</span><span class="n">f</span><span class="p">,</span> <span class="n">t</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="fm">__hash__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_name</span><span class="o">.</span><span class="fm">__hash__</span><span class="p">()</span>
+
+<div class="viewcode-block" id="Struct.add_field"><a class="viewcode-back" href="../../core.html#core.ast.Struct.add_field">[docs]</a>    <span class="k">def</span> <span class="nf">add_field</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">field</span><span class="p">,</span> <span class="n">_type</span><span class="p">):</span>
+        <span class="c1"># Check not circular reference</span>
+        <span class="k">assert</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">check_circular_reference</span><span class="p">(</span><span class="n">_type</span><span class="p">)</span>
+        <span class="c1"># Blacklist the current type and the previous ones</span>
+        <span class="k">if</span> <span class="n">_type</span><span class="o">.</span><span class="n">name</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s2">&quot;struct&quot;</span><span class="p">):</span>
+            <span class="n">_type</span><span class="o">.</span><span class="n">blacklisted</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
+        <span class="k">elif</span> <span class="n">_type</span><span class="o">.</span><span class="n">name</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s2">&quot;array&quot;</span><span class="p">)</span> <span class="ow">and</span> <span class="n">_type</span><span class="o">.</span><span class="n">type</span><span class="o">.</span><span class="n">name</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s2">&quot;struct&quot;</span><span class="p">):</span>
+            <span class="n">_type</span><span class="o">.</span><span class="n">type</span><span class="o">.</span><span class="n">blacklisted</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
+        <span class="c1"># Append the field</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">fields</span><span class="o">.</span><span class="n">append</span><span class="p">([</span><span class="n">field</span><span class="p">,</span> <span class="n">_type</span><span class="p">])</span></div>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">struct_references</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="p">[</span><span class="n">t</span> <span class="k">for</span> <span class="n">t</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">blacklisted</span> <span class="k">if</span> <span class="n">t</span> <span class="o">!=</span> <span class="bp">self</span><span class="p">]</span>
+
+<div class="viewcode-block" id="Struct.check_circular_reference"><a class="viewcode-back" href="../../core.html#core.ast.Struct.check_circular_reference">[docs]</a>    <span class="k">def</span> <span class="nf">check_circular_reference</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">_type</span><span class="p">):</span>
+        <span class="k">if</span> <span class="n">_type</span><span class="o">.</span><span class="n">name</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s2">&quot;array&quot;</span><span class="p">)</span> <span class="ow">and</span> <span class="n">_type</span><span class="o">.</span><span class="n">type</span><span class="o">.</span><span class="n">name</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s2">&quot;struct&quot;</span><span class="p">):</span>
+            <span class="n">_type</span> <span class="o">=</span> <span class="n">_type</span><span class="o">.</span><span class="n">type</span>
+        <span class="k">if</span> <span class="n">_type</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">blacklisted</span><span class="p">:</span>
+            <span class="k">return</span> <span class="kc">True</span>
+        <span class="k">return</span> <span class="nb">any</span><span class="p">(</span><span class="n">t</span><span class="o">.</span><span class="n">check_circular_reference</span><span class="p">(</span><span class="n">_type</span><span class="p">)</span> <span class="k">for</span> <span class="n">t</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">blacklisted</span> <span class="k">if</span> <span class="n">t</span> <span class="o">!=</span> <span class="bp">self</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="Struct.get_type_by_field"><a class="viewcode-back" href="../../core.html#core.ast.Struct.get_type_by_field">[docs]</a>    <span class="k">def</span> <span class="nf">get_type_by_field</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">field</span><span class="p">):</span>
+        <span class="k">for</span> <span class="n">f</span><span class="p">,</span> <span class="n">t</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">fields</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">f</span> <span class="o">==</span> <span class="n">field</span><span class="p">:</span>
+                <span class="k">return</span> <span class="n">t</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Unable to find field &#39;</span><span class="si">{}</span><span class="s2">&#39; in &#39;</span><span class="si">{}</span><span class="s2">&#39;&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">field</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="p">))</span></div>
+
+<div class="viewcode-block" id="Struct.get_field_by_type"><a class="viewcode-back" href="../../core.html#core.ast.Struct.get_field_by_type">[docs]</a>    <span class="k">def</span> <span class="nf">get_field_by_type</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">_type</span><span class="p">):</span>
+        <span class="k">for</span> <span class="n">f</span><span class="p">,</span> <span class="n">t</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">fields</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">t</span> <span class="o">==</span> <span class="n">_type</span><span class="p">:</span>
+                <span class="k">return</span> <span class="n">f</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Unable to find type &#39;</span><span class="si">{}</span><span class="s2">&#39; in &#39;</span><span class="si">{}</span><span class="s2">&#39;&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">_type</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="p">))</span></div>
+
+<div class="viewcode-block" id="Struct.has_type"><a class="viewcode-back" href="../../core.html#core.ast.Struct.has_type">[docs]</a>    <span class="k">def</span> <span class="nf">has_type</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">_type</span><span class="p">):</span>
+        <span class="k">return</span> <span class="nb">any</span><span class="p">(</span><span class="n">_type</span> <span class="o">==</span> <span class="n">t</span> <span class="k">for</span> <span class="n">_</span><span class="p">,</span> <span class="n">t</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">fields</span><span class="p">)</span></div>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">name</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="s2">&quot;struct &quot;</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">_name</span>
+
+    <span class="k">def</span> <span class="nf">__declaration__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">variable</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="k">return</span> <span class="s2">&quot;struct </span><span class="si">{}</span><span class="s2"> </span><span class="si">{}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_name</span><span class="p">,</span>
+            <span class="s2">&quot; &quot;</span> <span class="o">+</span> <span class="n">variable_to_var_name</span><span class="p">(</span><span class="n">variable</span><span class="p">)</span>
+        <span class="p">)</span>
+
+<div class="viewcode-block" id="Struct.generate_literal"><a class="viewcode-back" href="../../core.html#core.ast.Struct.generate_literal">[docs]</a>    <span class="k">def</span> <span class="nf">generate_literal</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">from_declaration</span><span class="p">):</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">from_declaration</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;The creation of literals is only allowed in var declarations&quot;</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">Literal</span><span class="p">(</span><span class="s2">&quot;{{ </span><span class="si">{}</span><span class="s2"> }}&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
+            <span class="s2">&quot;, &quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="s2">&quot;.</span><span class="si">{}</span><span class="s2"> = </span><span class="si">{}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">n</span><span class="p">,</span> <span class="n">t</span><span class="o">.</span><span class="n">generate_literal</span><span class="p">(</span><span class="n">from_declaration</span><span class="o">=</span><span class="n">from_declaration</span><span class="p">)</span><span class="o">.</span><span class="n">to_str</span><span class="p">())</span>
+                      <span class="k">for</span> <span class="n">n</span><span class="p">,</span> <span class="n">t</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">fields</span><span class="p">)</span>
+        <span class="p">),</span> <span class="bp">self</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="Struct.prototype"><a class="viewcode-back" href="../../core.html#core.ast.Struct.prototype">[docs]</a>    <span class="k">def</span> <span class="nf">prototype</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="s2">&quot;struct </span><span class="si">{}</span><span class="s2"> {{</span><span class="se">\n</span><span class="s2">    </span><span class="si">{}</span><span class="se">\n</span><span class="s2">}};&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_name</span><span class="p">,</span>
+            <span class="s2">&quot;</span><span class="se">\n</span><span class="s2">    &quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">t</span><span class="o">.</span><span class="n">__declaration__</span><span class="p">(</span><span class="n">variable</span><span class="o">=</span><span class="n">n</span><span class="p">)</span> <span class="o">+</span> <span class="s2">&quot;;&quot;</span> <span class="k">for</span> <span class="n">n</span><span class="p">,</span> <span class="n">t</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">fields</span><span class="p">),</span>
+        <span class="p">)</span></div></div>
+
+
+<div class="viewcode-block" id="generate_string_literal"><a class="viewcode-back" href="../../core.html#core.ast.generate_string_literal">[docs]</a><span class="k">def</span> <span class="nf">generate_string_literal</span><span class="p">(</span><span class="n">size</span><span class="p">,</span> <span class="n">from_delcaration</span><span class="p">,</span> <span class="nb">type</span><span class="p">):</span>
+    <span class="n">parts</span> <span class="o">=</span> <span class="s1">&#39;&quot;&#39;</span> <span class="o">+</span> <span class="s2">&quot;&quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">random</span><span class="o">.</span><span class="n">choice</span><span class="p">(</span><span class="n">string</span><span class="o">.</span><span class="n">ascii_letters</span> <span class="o">+</span> <span class="n">string</span><span class="o">.</span><span class="n">digits</span><span class="p">)</span> <span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">size</span><span class="p">))</span> <span class="o">+</span> <span class="s1">&#39;&quot;&#39;</span>
+    <span class="k">return</span> <span class="n">Literal</span><span class="p">(</span><span class="s2">&quot;&quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">parts</span><span class="p">),</span> <span class="nb">type</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="Pointer"><a class="viewcode-back" href="../../core.html#core.ast.Pointer">[docs]</a><span class="k">class</span> <span class="nc">Pointer</span><span class="p">(</span><span class="n">Type</span><span class="p">):</span>
+
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="nb">type</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">type</span> <span class="o">=</span> <span class="nb">type</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">name</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="s2">&quot;pointer &quot;</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">type</span><span class="o">.</span><span class="n">name</span>
+
+
+    <span class="k">def</span> <span class="nf">__declaration__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">variable</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">from_return_in_func_decl</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">forze_parenth_in_ptr_to_array</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="n">var_name</span> <span class="o">=</span> <span class="n">variable_to_var_name</span><span class="p">(</span><span class="n">variable</span><span class="p">)</span>
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">type</span><span class="p">,</span> <span class="n">Array</span><span class="p">)</span> <span class="ow">and</span> <span class="p">(</span><span class="ow">not</span> <span class="n">re</span><span class="o">.</span><span class="n">match</span><span class="p">(</span><span class="sa">r</span><span class="s2">&quot;^[][()* ]*$&quot;</span><span class="p">,</span> <span class="n">var_name</span><span class="p">)</span> <span class="ow">or</span> <span class="n">forze_parenth_in_ptr_to_array</span><span class="p">):</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">type</span><span class="o">.</span><span class="n">__declaration__</span><span class="p">(</span><span class="s2">&quot;(*</span><span class="si">{}</span><span class="s2">)&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">var_name</span><span class="p">),</span> <span class="n">from_return_in_func_decl</span><span class="o">=</span><span class="n">from_return_in_func_decl</span><span class="p">)</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">type</span><span class="o">.</span><span class="n">__declaration__</span><span class="p">(</span><span class="s2">&quot;*</span><span class="si">{}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">var_name</span><span class="p">),</span> <span class="n">from_return_in_func_decl</span><span class="o">=</span><span class="n">from_return_in_func_decl</span><span class="p">)</span>
+
+<div class="viewcode-block" id="Pointer.generate_literal"><a class="viewcode-back" href="../../core.html#core.ast.Pointer.generate_literal">[docs]</a>    <span class="k">def</span> <span class="nf">generate_literal</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">from_declaration</span><span class="p">):</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">from_declaration</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;The creation of literals is only allowed in var declarations&quot;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">type</span><span class="p">,</span> <span class="p">(</span><span class="n">SignedChar</span><span class="p">,</span> <span class="n">UnsignedChar</span><span class="p">)):</span>
+            <span class="k">return</span> <span class="n">generate_string_literal</span><span class="p">(</span><span class="n">random</span><span class="o">.</span><span class="n">randint</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">32</span><span class="p">),</span> <span class="n">from_declaration</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">Literal</span><span class="p">(</span><span class="s2">&quot;NULL&quot;</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span></div>
+
+    <span class="k">def</span> <span class="fm">__hash__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="o">.</span><span class="fm">__hash__</span><span class="p">()</span></div>
+
+<div class="viewcode-block" id="Array"><a class="viewcode-back" href="../../core.html#core.ast.Array">[docs]</a><span class="k">class</span> <span class="nc">Array</span><span class="p">(</span><span class="n">Pointer</span><span class="p">):</span>
+
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">_type</span><span class="p">,</span> <span class="n">size</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">pointer_literal</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">pointer_declaration</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">type</span> <span class="o">=</span> <span class="n">_type</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">size</span> <span class="o">=</span> <span class="n">size</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_pointer_literal</span> <span class="o">=</span> <span class="n">pointer_literal</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_pointer_declaration</span> <span class="o">=</span> <span class="n">pointer_declaration</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">name</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="s2">&quot;array &quot;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">size</span><span class="p">)</span> <span class="o">+</span> <span class="s2">&quot; &quot;</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">type</span><span class="o">.</span><span class="n">name</span>
+
+    <span class="k">def</span> <span class="nf">__declaration__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">variable</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">from_return_in_func_decl</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="n">from_return_in_func_decl</span> <span class="o">=</span> <span class="n">from_return_in_func_decl</span> <span class="ow">or</span> <span class="bp">self</span><span class="o">.</span><span class="n">_pointer_declaration</span>
+
+        <span class="c1"># It a function is returning an array, represent it as a pointer</span>
+        <span class="k">if</span> <span class="n">from_return_in_func_decl</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">Pointer</span><span class="o">.</span><span class="n">__declaration__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">variable</span><span class="p">,</span> <span class="n">from_return_in_func_decl</span><span class="o">=</span><span class="n">from_return_in_func_decl</span><span class="p">)</span>
+
+        <span class="n">var_name</span> <span class="o">=</span> <span class="n">variable_to_var_name</span><span class="p">(</span><span class="n">variable</span><span class="p">)</span> <span class="o">+</span> <span class="s2">&quot;[</span><span class="si">{}</span><span class="s2">]&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">size</span> <span class="ow">or</span> <span class="s2">&quot;&quot;</span><span class="p">)</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">type</span><span class="o">.</span><span class="n">__declaration__</span><span class="p">(</span><span class="n">var_name</span><span class="p">,</span> <span class="n">from_return_in_func_decl</span><span class="o">=</span><span class="n">from_return_in_func_decl</span><span class="p">)</span>
+
+
+<div class="viewcode-block" id="Array.generate_literal"><a class="viewcode-back" href="../../core.html#core.ast.Array.generate_literal">[docs]</a>    <span class="k">def</span> <span class="nf">generate_literal</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">from_declaration</span><span class="p">,</span> <span class="n">size</span><span class="o">=</span><span class="mi">0</span><span class="p">):</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_pointer_literal</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">Pointer</span><span class="o">.</span><span class="n">generate_literal</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">from_declaration</span><span class="p">)</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">from_declaration</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;The creation of literals is only allowed in var declarations&quot;</span><span class="p">)</span>
+        <span class="n">size</span> <span class="o">=</span> <span class="n">size</span> <span class="ow">or</span> <span class="bp">self</span><span class="o">.</span><span class="n">size</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">size</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Must provide a size of the array, in generate_literal or the Array constructor&quot;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">type</span><span class="p">,</span> <span class="p">(</span><span class="n">SignedChar</span><span class="p">,</span> <span class="n">UnsignedChar</span><span class="p">)):</span>
+            <span class="k">return</span> <span class="n">generate_string_literal</span><span class="p">(</span><span class="n">size</span><span class="p">,</span> <span class="n">from_declaration</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">Literal</span><span class="p">(</span><span class="s2">&quot;{{ </span><span class="si">{}</span><span class="s2"> }}&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
+            <span class="s2">&quot;, &quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">type</span><span class="o">.</span><span class="n">generate_literal</span><span class="p">(</span><span class="n">from_declaration</span><span class="o">=</span><span class="n">from_declaration</span><span class="p">)</span><span class="o">.</span><span class="n">to_str</span><span class="p">()</span> <span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">size</span><span class="p">))</span>
+        <span class="p">),</span> <span class="bp">self</span><span class="p">)</span></div>
+
+    <span class="k">def</span> <span class="fm">__hash__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="o">.</span><span class="fm">__hash__</span><span class="p">()</span></div>
+
+
+<div class="viewcode-block" id="Void"><a class="viewcode-back" href="../../core.html#core.ast.Void">[docs]</a><span class="k">class</span> <span class="nc">Void</span><span class="p">(</span><span class="n">Type</span><span class="p">,</span> <span class="n">Singleton</span><span class="p">):</span>
+    <span class="n">name</span> <span class="o">=</span> <span class="s2">&quot;void&quot;</span>
+
+    <span class="k">def</span> <span class="fm">__hash__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="o">.</span><span class="fm">__hash__</span><span class="p">()</span></div>
+
+<span class="c1">########### Enumerations #########</span>
+
+<div class="viewcode-block" id="FuncProc"><a class="viewcode-back" href="../../core.html#core.ast.FuncProc">[docs]</a><span class="k">class</span> <span class="nc">FuncProc</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+    <span class="n">Func</span><span class="p">,</span> <span class="n">Proc</span> <span class="o">=</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">2</span></div>
+
+<span class="c1">########## Helper functions ##############</span>
+
+<div class="viewcode-block" id="get_operators"><a class="viewcode-back" href="../../core.html#core.ast.get_operators">[docs]</a><span class="k">def</span> <span class="nf">get_operators</span><span class="p">(</span><span class="n">c_type</span><span class="p">,</span> <span class="n">_type</span><span class="p">):</span>
+    <span class="kn">from</span> <span class="nn">core</span> <span class="kn">import</span> <span class="n">utils</span><span class="p">,</span> <span class="n">operators</span>
+    <span class="n">operator_type</span> <span class="o">=</span> <span class="s2">&quot;</span><span class="si">{}</span><span class="s2">_</span><span class="si">{}</span><span class="s2">_operators&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
+        <span class="n">utils</span><span class="o">.</span><span class="n">camel_case_to_snake_case</span><span class="p">(</span><span class="n">c_type</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="vm">__name__</span><span class="p">),</span>
+        <span class="n">_type</span>
+    <span class="p">)</span>
+    <span class="k">return</span> <span class="n">operators</span><span class="o">.</span><span class="vm">__dict__</span><span class="p">[</span><span class="n">operator_type</span><span class="p">]</span></div>
+
+
+<div class="viewcode-block" id="global_variable"><a class="viewcode-back" href="../../core.html#core.ast.global_variable">[docs]</a><span class="k">def</span> <span class="nf">global_variable</span><span class="p">(</span><span class="n">c_type</span><span class="p">,</span> <span class="n">number</span><span class="p">):</span>
+    <span class="k">return</span> <span class="n">Variable</span><span class="p">(</span><span class="s2">&quot;global_&quot;</span> <span class="o">+</span> <span class="n">c_type</span><span class="o">.</span><span class="n">name</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s2">&quot; &quot;</span><span class="p">,</span> <span class="s2">&quot;_&quot;</span><span class="p">)</span> <span class="o">+</span> <span class="s2">&quot;_&quot;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">number</span><span class="p">))</span></div>
+
+
+<div class="viewcode-block" id="local_variable"><a class="viewcode-back" href="../../core.html#core.ast.local_variable">[docs]</a><span class="k">def</span> <span class="nf">local_variable</span><span class="p">(</span><span class="n">c_type</span><span class="p">,</span> <span class="n">number</span><span class="p">):</span>
+    <span class="k">return</span> <span class="n">Variable</span><span class="p">(</span><span class="s2">&quot;local_&quot;</span> <span class="o">+</span> <span class="n">c_type</span><span class="o">.</span><span class="n">name</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s2">&quot; &quot;</span><span class="p">,</span> <span class="s2">&quot;_&quot;</span><span class="p">)</span> <span class="o">+</span> <span class="s2">&quot;_&quot;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">number</span><span class="p">))</span></div>
+
+
+<div class="viewcode-block" id="param"><a class="viewcode-back" href="../../core.html#core.ast.param">[docs]</a><span class="k">def</span> <span class="nf">param</span><span class="p">(</span><span class="n">number</span><span class="p">):</span>
+    <span class="k">return</span> <span class="n">Variable</span><span class="p">(</span><span class="s2">&quot;param_&quot;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">number</span><span class="p">))</span></div>
+
+
+<div class="viewcode-block" id="name_struct_field"><a class="viewcode-back" href="../../core.html#core.ast.name_struct_field">[docs]</a><span class="k">def</span> <span class="nf">name_struct_field</span><span class="p">(</span><span class="n">c_type</span><span class="p">,</span> <span class="n">number</span><span class="p">):</span>
+    <span class="k">return</span> <span class="n">c_type</span><span class="o">.</span><span class="n">name</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s2">&quot; &quot;</span><span class="p">,</span> <span class="s2">&quot;_&quot;</span><span class="p">)</span> <span class="o">+</span> <span class="s2">&quot;_&quot;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">number</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="variable_to_var_name"><a class="viewcode-back" href="../../core.html#core.ast.variable_to_var_name">[docs]</a><span class="k">def</span> <span class="nf">variable_to_var_name</span><span class="p">(</span><span class="n">variable</span><span class="p">:</span> <span class="nb">object</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+    <span class="sd">&quot;&quot;&quot;Variable may be a Variable object or just a string; it returns its name as string&quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">variable</span><span class="p">:</span>
+        <span class="k">return</span> <span class="s2">&quot;&quot;</span>
+    <span class="k">return</span> <span class="n">variable</span><span class="o">.</span><span class="n">to_str</span><span class="p">()</span> <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">variable</span><span class="p">,</span> <span class="n">Variable</span><span class="p">)</span> <span class="k">else</span> <span class="nb">str</span><span class="p">(</span><span class="n">variable</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="literal_to_str"><a class="viewcode-back" href="../../core.html#core.ast.literal_to_str">[docs]</a><span class="k">def</span> <span class="nf">literal_to_str</span><span class="p">(</span><span class="n">literal</span><span class="p">:</span> <span class="nb">object</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+    <span class="sd">&quot;&quot;&quot;Variable may be a Variable object or just a string; it returns its name as string&quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">literal</span><span class="p">:</span>
+        <span class="k">return</span> <span class="s2">&quot;&quot;</span>
+    <span class="k">return</span> <span class="n">literal</span><span class="o">.</span><span class="n">to_str</span><span class="p">()</span> <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">literal</span><span class="p">,</span> <span class="n">Literal</span><span class="p">)</span> <span class="k">else</span> <span class="nb">str</span><span class="p">(</span><span class="n">literal</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="expression_to_str"><a class="viewcode-back" href="../../core.html#core.ast.expression_to_str">[docs]</a><span class="k">def</span> <span class="nf">expression_to_str</span><span class="p">(</span><span class="n">expression</span><span class="p">:</span> <span class="nb">object</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+    <span class="sd">&quot;&quot;&quot;Converts one expression (it could be an AST node) to a string&quot;&quot;&quot;</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">expression</span><span class="o">.</span><span class="n">to_str</span><span class="p">()</span>
+    <span class="k">except</span><span class="p">:</span>
+        <span class="k">return</span> <span class="nb">str</span><span class="p">(</span><span class="n">expression</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="is_compound_statement"><a class="viewcode-back" href="../../core.html#core.ast.is_compound_statement">[docs]</a><span class="k">def</span> <span class="nf">is_compound_statement</span><span class="p">(</span><span class="n">statement</span><span class="p">:</span> <span class="n">ASTNode</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
+    <span class="sd">&quot;&quot;&quot;Returns if an ASTNode is a coumpund statement&quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="nb">type</span><span class="p">(</span><span class="n">statement</span><span class="p">)</span> <span class="ow">in</span> <span class="p">[</span><span class="n">Block</span><span class="p">,</span> <span class="n">If</span><span class="p">,</span> <span class="n">Switch</span><span class="p">,</span> <span class="n">Do</span><span class="p">,</span> <span class="n">While</span><span class="p">,</span> <span class="n">For</span><span class="p">]</span></div>
+
+
+<div class="viewcode-block" id="indent_str"><a class="viewcode-back" href="../../core.html#core.ast.indent_str">[docs]</a><span class="k">def</span> <span class="nf">indent_str</span><span class="p">(</span><span class="n">indent_number</span><span class="p">:</span> <span class="nb">int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+    <span class="sd">&quot;&quot;&quot;Given a number of indentation, returns the string to be used as prefix for indentation&quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="s2">&quot;</span><span class="se">\t</span><span class="s2">&quot;</span> <span class="o">*</span> <span class="n">indent_number</span></div>
+
+
+<div class="viewcode-block" id="statements_to_str"><a class="viewcode-back" href="../../core.html#core.ast.statements_to_str">[docs]</a><span class="k">def</span> <span class="nf">statements_to_str</span><span class="p">(</span><span class="n">statements</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">ASTNode</span><span class="p">],</span> <span class="n">indent</span><span class="p">:</span> <span class="nb">int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+    <span class="sd">&quot;&quot;&quot;Takes a list of statements and returns a string with their C representation&quot;&quot;&quot;</span>
+    <span class="n">stmt_str_list</span> <span class="o">=</span> <span class="nb">list</span><span class="p">()</span>
+    <span class="k">for</span> <span class="n">stmt</span> <span class="ow">in</span> <span class="n">statements</span><span class="p">:</span>
+        <span class="n">stmt_str</span> <span class="o">=</span> <span class="n">stmt</span><span class="o">.</span><span class="n">to_str</span><span class="p">(</span><span class="n">indent</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">is_compound_statement</span><span class="p">(</span><span class="n">stmt</span><span class="p">)</span> <span class="ow">and</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">stmt</span><span class="p">,</span> <span class="n">Label</span><span class="p">):</span>
+            <span class="n">stmt_str</span> <span class="o">+=</span> <span class="s2">&quot;;&quot;</span> <span class="o">+</span> <span class="n">NEW_LINE</span>
+        <span class="n">stmt_str_list</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">stmt_str</span><span class="p">)</span>
+    <span class="k">return</span> <span class="s2">&quot;&quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">stmt_str_list</span><span class="p">)</span></div>
+
+
+
+<span class="c1">########## Constants ###############</span>
+
+<span class="n">NEW_LINE</span> <span class="o">=</span> <span class="s2">&quot;</span><span class="se">\n</span><span class="s2">&quot;</span>
+</pre></div>
+
+           </div>
+           
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &#169; Copyright 2021, Francisco Ortin and Javier Escalada.
+
+    </p>
+  </div>
+    
+    
+    
+    Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    
+    provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>

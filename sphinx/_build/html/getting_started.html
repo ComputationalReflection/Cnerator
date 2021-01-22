@@ -1,0 +1,277 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" />
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  
+  <title>Getting started &mdash; Cnerator latest documentation</title>
+  
+
+  
+  <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+
+  
+  
+
+  
+  
+
+  
+
+  
+  <!--[if lt IE 9]>
+    <script src="_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
+        <script src="_static/jquery.js"></script>
+        <script src="_static/underscore.js"></script>
+        <script src="_static/doctools.js"></script>
+    
+    <script type="text/javascript" src="_static/js/theme.js"></script>
+
+    
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="User manual" href="user_manual.html" />
+    <link rel="prev" title="Welcome to Cnerator’s documentation!" href="index.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="index.html" class="icon icon-home"> Cnerator
+          
+
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                latest
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <ul class="current">
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Getting started</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#installation">Installation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#usage">Usage</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="user_manual.html">User manual</a></li>
+<li class="toctree-l1"><a class="reference internal" href="modules.html">Cnerator API</a></li>
+</ul>
+
+            
+          
+        </div>
+        
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">Cnerator</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="index.html" class="icon icon-home"></a> &raquo;</li>
+        
+      <li>Getting started</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="getting-started">
+<h1>Getting started<a class="headerlink" href="#getting-started" title="Permalink to this headline">¶</a></h1>
+<p><a class="reference external" href="https://github.com/ComputationalReflection/Cnerator">Cnerator</a> is a C source code generation tool.
+It can be used to generate large amounts of
+<a class="reference external" href="https://www.iso.org/standard/74528.html">standard ANSI/ISO C source code</a>, ready to be compiled
+by any standard language implementation.
+<a class="reference external" href="https://github.com/ComputationalReflection/Cnerator">Cnerator</a> is highly customizable
+to generate all the syntactic constructs of the C language, necessary to build
+accurate predictive models with machine learning algorithms.</p>
+<div class="section" id="installation">
+<h2>Installation<a class="headerlink" href="#installation" title="Permalink to this headline">¶</a></h2>
+<p>You need a Python 3.7+ standard implementation.
+The only additional package to install is <code class="docutils literal notranslate"><span class="pre">singledispatch</span></code>:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>pip install singledispatch
+</pre></div>
+</div>
+</div>
+<div class="section" id="usage">
+<h2>Usage<a class="headerlink" href="#usage" title="Permalink to this headline">¶</a></h2>
+<p>Then, you may just run <a class="reference external" href="https://github.com/ComputationalReflection/Cnerator">Cnerator</a>
+with no arguments to generate a random C program in the <code class="docutils literal notranslate"><span class="pre">out</span></code> directory:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>python cnerator.py
+</pre></div>
+</div>
+<p>There are plenty of options to customize <a class="reference external" href="https://github.com/ComputationalReflection/Cnerator">Cnerator</a>.
+To specify the probability of a particular language
+construct, you can use the <code class="docutils literal notranslate"><span class="pre">-p</span></code> or <code class="docutils literal notranslate"><span class="pre">--probs</span></code> option.
+The following command sets to 20% the probability of
+generating a function invocation when a new expression is required:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>python cnerator.py -p <span class="s2">&quot;call_prob = {True: 0.2, False: 0.8}&quot;</span>
+</pre></div>
+</div>
+<p>If more sophisticated probabilities are required, you can specify them in a JSON file and pass it as
+a parameter (see the [documentation](documentation#probability-specification-files) to know the JSON file format).
+The following line passes an example JSON file in the <code class="docutils literal notranslate"><span class="pre">json/probabilities</span></code> folder where
+different probability distributions are specified for some syntactic constructs:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>python cnerator.py -P json/probabilities/example_probs.json
+</pre></div>
+</div>
+<p><a class="reference external" href="https://github.com/ComputationalReflection/Cnerator">Cnerator</a> also provides allows
+the user to control the number and characteristics of
+all the functions to be generated. A JSON file is used for that purpose
+(see the [documentation](documentation#function-generation-files)).
+The following command makes <a class="reference external" href="https://github.com/ComputationalReflection/Cnerator">Cnerator</a>
+generate one function for each high-level return
+type in the C programming language:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>python cnerator.py -f json/functions/1-function-each-type.json
+</pre></div>
+</div>
+<p>Sometimes, the user needs the output program to fulfill some requirements not guaranteed by the
+stochastic generation process.
+To this aim, <a class="reference external" href="https://github.com/ComputationalReflection/Cnerator">Cnerator</a> allows
+the specification of an ordered collection of Python
+post-process specification files (see the [documentation](documentation#post-processing-specification-files)).
+These post-processing files can modify the generated code to satisfy those requirements.
+The following execution generates a random program and then executes two visitors:
+one to rename <code class="docutils literal notranslate"><span class="pre">func</span></code> functions to <code class="docutils literal notranslate"><span class="pre">proc</span></code> (and their invocations) when they return <code class="docutils literal notranslate"><span class="pre">void</span></code>;
+and another one to add a <code class="docutils literal notranslate"><span class="pre">__RETURN__</span></code> label before each return statement:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>python cnerator.py -V visitors.func_to_proc:visitors.return_instrumentation
+</pre></div>
+</div>
+<p>To see all the options, just run the <code class="docutils literal notranslate"><span class="pre">-h</span></code> or <code class="docutils literal notranslate"><span class="pre">--help</span></code> options.</p>
+</div>
+</div>
+
+
+           </div>
+           
+          </div>
+          <footer>
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+        <a href="user_manual.html" class="btn btn-neutral float-right" title="User manual" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+        <a href="index.html" class="btn btn-neutral float-left" title="Welcome to Cnerator’s documentation!" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &#169; Copyright 2021, Francisco Ortin and Javier Escalada.
+
+    </p>
+  </div>
+    
+    
+    
+    Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    
+    provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>

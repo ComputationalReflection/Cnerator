@@ -1,0 +1,329 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" />
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  
+  <title>params package &mdash; Cnerator latest documentation</title>
+  
+
+  
+  <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+
+  
+  
+
+  
+  
+
+  
+
+  
+  <!--[if lt IE 9]>
+    <script src="_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
+        <script src="_static/jquery.js"></script>
+        <script src="_static/underscore.js"></script>
+        <script src="_static/doctools.js"></script>
+    
+    <script type="text/javascript" src="_static/js/theme.js"></script>
+
+    
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="run package" href="run.html" />
+    <link rel="prev" title="debug package" href="debug.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="index.html" class="icon icon-home"> Cnerator
+          
+
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                latest
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="getting_started.html">Getting started</a></li>
+<li class="toctree-l1"><a class="reference internal" href="user_manual.html">User manual</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="modules.html">Cnerator API</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="cnerator.html">Cnerator module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="core.html">core package</a></li>
+<li class="toctree-l2"><a class="reference internal" href="debug.html">debug package</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="#">params package</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#submodules">Submodules</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#module-params.epilog">params.epilog module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#module-params.json_probs">params.json_probs module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#module-params.parameters">params.parameters module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#module-params.writter">params.writter module</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="run.html">run package</a></li>
+<li class="toctree-l2"><a class="reference internal" href="visitors.html">visitors package</a></li>
+</ul>
+</li>
+</ul>
+
+            
+          
+        </div>
+        
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">Cnerator</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="index.html" class="icon icon-home"></a> &raquo;</li>
+        
+          <li><a href="modules.html">Cnerator API</a> &raquo;</li>
+        
+      <li>params package</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="module-params">
+<span id="params-package"></span><h1>params package<a class="headerlink" href="#module-params" title="Permalink to this headline">¶</a></h1>
+<p>Package that provides all the functionality to parse and process the command line arguments of Cnerator.
+To see all the parameters, run Cnerator with <code class="docutils literal notranslate"><span class="pre">-h</span></code> or <code class="docutils literal notranslate"><span class="pre">--help</span></code> parameters.</p>
+<div class="section" id="submodules">
+<h2>Submodules<a class="headerlink" href="#submodules" title="Permalink to this headline">¶</a></h2>
+</div>
+<div class="section" id="module-params.epilog">
+<span id="params-epilog-module"></span><h2>params.epilog module<a class="headerlink" href="#module-params.epilog" title="Permalink to this headline">¶</a></h2>
+<p>This module is aimed at building the epilog of the help message.
+Such message shows the different syntactic constructs provided by Cnerator.</p>
+<dl class="py function">
+<dt id="params.epilog.build_epilog">
+<code class="sig-prename descclassname">params.epilog.</code><code class="sig-name descname">build_epilog</code><span class="sig-paren">(</span><span class="sig-paren">)</span> &#x2192; str<a class="reference internal" href="_modules/params/epilog.html#build_epilog"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#params.epilog.build_epilog" title="Permalink to this definition">¶</a></dt>
+<dd><p>Builds the epilog of the help message</p>
+</dd></dl>
+
+</div>
+<div class="section" id="module-params.json_probs">
+<span id="params-json-probs-module"></span><h2>params.json_probs module<a class="headerlink" href="#module-params.json_probs" title="Permalink to this headline">¶</a></h2>
+<p>This module is aimed at processing input json files specifying the probabilities of the syntactic constructs to
+be created by Cnerator (command line option -P). See json/probabilities for particular examples.</p>
+<dl class="py function">
+<dt id="params.json_probs.parse_probabilities_specification_json_file">
+<code class="sig-prename descclassname">params.json_probs.</code><code class="sig-name descname">parse_probabilities_specification_json_file</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">file_name</span><span class="p">:</span> <span class="n">str</span></em><span class="sig-paren">)</span> &#x2192; Dict<span class="p">[</span>str<span class="p">, </span>dict<span class="p">]</span><a class="reference internal" href="_modules/params/json_probs.html#parse_probabilities_specification_json_file"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#params.json_probs.parse_probabilities_specification_json_file" title="Permalink to this definition">¶</a></dt>
+<dd><p>Parses a json file with probabilities specifications and returns a valid representation</p>
+</dd></dl>
+
+</div>
+<div class="section" id="module-params.parameters">
+<span id="params-parameters-module"></span><h2>params.parameters module<a class="headerlink" href="#module-params.parameters" title="Permalink to this headline">¶</a></h2>
+<p>Module where the command line arguments are parsed.</p>
+<dl class="py function">
+<dt id="params.parameters.get_app_args">
+<code class="sig-prename descclassname">params.parameters.</code><code class="sig-name descname">get_app_args</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/params/parameters.html#get_app_args"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#params.parameters.get_app_args" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py function">
+<dt id="params.parameters.get_modules_to_import">
+<code class="sig-prename descclassname">params.parameters.</code><code class="sig-name descname">get_modules_to_import</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">vst_param</span><span class="p">:</span> <span class="n">str</span></em><span class="sig-paren">)</span> &#x2192; List<a class="reference internal" href="_modules/params/parameters.html#get_modules_to_import"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#params.parameters.get_modules_to_import" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns the list of visitors to import, given the args.visitors option</p>
+</dd></dl>
+
+<dl class="py function">
+<dt id="params.parameters.get_probs_to_override">
+<code class="sig-prename descclassname">params.parameters.</code><code class="sig-name descname">get_probs_to_override</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">probs_param</span><span class="p">:</span> <span class="n">str</span></em><span class="sig-paren">)</span> &#x2192; Optional<span class="p">[</span>Dict<span class="p">[</span>str<span class="p">, </span>dict<span class="p">]</span><span class="p">]</span><a class="reference internal" href="_modules/params/parameters.html#get_probs_to_override"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#params.parameters.get_probs_to_override" title="Permalink to this definition">¶</a></dt>
+<dd><p>Parses the args.probs parameter and returns the dictionary with their values</p>
+</dd></dl>
+
+<dl class="py function">
+<dt id="params.parameters.parse_args">
+<code class="sig-prename descclassname">params.parameters.</code><code class="sig-name descname">parse_args</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/params/parameters.html#parse_args"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#params.parameters.parse_args" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py function">
+<dt id="params.parameters.parse_function_specification_json_file">
+<code class="sig-prename descclassname">params.parameters.</code><code class="sig-name descname">parse_function_specification_json_file</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">file_name</span><span class="p">:</span> <span class="n">str</span></em><span class="sig-paren">)</span> &#x2192; Dict<span class="p">[</span>str<span class="p">, </span>Dict<span class="p">]</span><a class="reference internal" href="_modules/params/parameters.html#parse_function_specification_json_file"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#params.parameters.parse_function_specification_json_file" title="Permalink to this definition">¶</a></dt>
+<dd><p>Parses a json file with function specifications and returns a valid representation</p>
+</dd></dl>
+
+<dl class="py function">
+<dt id="params.parameters.parse_probabilities_specification_json_file">
+<code class="sig-prename descclassname">params.parameters.</code><code class="sig-name descname">parse_probabilities_specification_json_file</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">file_name</span><span class="p">:</span> <span class="n">str</span></em><span class="sig-paren">)</span> &#x2192; Optional<span class="p">[</span>Dict<span class="p">[</span>str<span class="p">, </span>dict<span class="p">]</span><span class="p">]</span><a class="reference internal" href="_modules/params/parameters.html#parse_probabilities_specification_json_file"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#params.parameters.parse_probabilities_specification_json_file" title="Permalink to this definition">¶</a></dt>
+<dd><p>Parses a json file with probabilities specifications and returns a valid representation</p>
+</dd></dl>
+
+</div>
+<div class="section" id="module-params.writter">
+<span id="params-writter-module"></span><h2>params.writter module<a class="headerlink" href="#module-params.writter" title="Permalink to this headline">¶</a></h2>
+<p>This modulete takes the program representation (AST) and writes it into the different
+compilation units specified by the user through the <code class="docutils literal notranslate"><span class="pre">-n</span></code> or <code class="docutils literal notranslate"><span class="pre">-nfiles</span></code> options.</p>
+<dl class="py function">
+<dt id="params.writter.replace_code">
+<code class="sig-prename descclassname">params.writter.</code><code class="sig-name descname">replace_code</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">code</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/params/writter.html#replace_code"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#params.writter.replace_code" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py function">
+<dt id="params.writter.split_in_similar_parts">
+<code class="sig-prename descclassname">params.writter.</code><code class="sig-name descname">split_in_similar_parts</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">seq</span></em>, <em class="sig-param"><span class="n">amount</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/params/writter.html#split_in_similar_parts"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#params.writter.split_in_similar_parts" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py function">
+<dt id="params.writter.write_in_files">
+<code class="sig-prename descclassname">params.writter.</code><code class="sig-name descname">write_in_files</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">program</span></em>, <em class="sig-param"><span class="n">args</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/params/writter.html#write_in_files"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#params.writter.write_in_files" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py function">
+<dt id="params.writter.write_in_multiple_files">
+<code class="sig-prename descclassname">params.writter.</code><code class="sig-name descname">write_in_multiple_files</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">program</span></em>, <em class="sig-param"><span class="n">args</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/params/writter.html#write_in_multiple_files"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#params.writter.write_in_multiple_files" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py function">
+<dt id="params.writter.write_in_multiple_headers">
+<code class="sig-prename descclassname">params.writter.</code><code class="sig-name descname">write_in_multiple_headers</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">program</span></em>, <em class="sig-param"><span class="n">args</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/params/writter.html#write_in_multiple_headers"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#params.writter.write_in_multiple_headers" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py function">
+<dt id="params.writter.write_in_one_file">
+<code class="sig-prename descclassname">params.writter.</code><code class="sig-name descname">write_in_one_file</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">program</span></em>, <em class="sig-param"><span class="n">args</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/params/writter.html#write_in_one_file"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#params.writter.write_in_one_file" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</div>
+</div>
+
+
+           </div>
+           
+          </div>
+          <footer>
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+        <a href="run.html" class="btn btn-neutral float-right" title="run package" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+        <a href="debug.html" class="btn btn-neutral float-left" title="debug package" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &#169; Copyright 2021, Francisco Ortin and Javier Escalada.
+
+    </p>
+  </div>
+    
+    
+    
+    Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    
+    provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>

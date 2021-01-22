@@ -1,0 +1,14 @@
+{
+  "function_returning_void": {
+    "total": 1,
+    "condition": "lambda f: isinstance(f.return_type, ast.Void)"
+  },
+  "function_returning_bool": {
+    "total": 1,
+    "condition": "lambda f: isinstance(f.return_type, ast.Bool)"
+  },
+  "function_with_if_else": {
+    "total": 1,
+    "condition": "lambda f: any(stmt for stmt in f.children if isinstance(stmt, ast.If) and any(stmt.else_statements))"
+  }
+}

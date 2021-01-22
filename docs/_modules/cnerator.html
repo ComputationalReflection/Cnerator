@@ -1,0 +1,282 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" />
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  
+  <title>cnerator &mdash; Cnerator latest documentation</title>
+  
+
+  
+  <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+
+  
+  
+
+  
+  
+
+  
+
+  
+  <!--[if lt IE 9]>
+    <script src="../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
+        <script src="../_static/jquery.js"></script>
+        <script src="../_static/underscore.js"></script>
+        <script src="../_static/doctools.js"></script>
+    
+    <script type="text/javascript" src="../_static/js/theme.js"></script>
+
+    
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="../index.html" class="icon icon-home"> Cnerator
+          
+
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                latest
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <ul>
+<li class="toctree-l1"><a class="reference internal" href="../getting_started.html">Getting started</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../user_manual.html">User manual</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../modules.html">Cnerator API</a></li>
+</ul>
+
+            
+          
+        </div>
+        
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">Cnerator</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../index.html" class="icon icon-home"></a> &raquo;</li>
+        
+          <li><a href="index.html">Module code</a> &raquo;</li>
+        
+      <li>cnerator</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <h1>Source code for cnerator</h1><div class="highlight"><pre>
+<span></span><span class="ch">#!/usr/bin/env python</span>
+<span class="c1"># -*- coding: utf-8 -*-</span>
+
+<span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">This is the entry point to the Cnerator source code generation tool.</span>
+<span class="sd">The main function runs Cnerator.</span>
+<span class="sd">To see the different arguments provided, run Cnerator with either ``-h`` or ``--help`` command line arguments.</span>
+<span class="sd">&quot;&quot;&quot;</span>
+
+<span class="kn">from</span> <span class="nn">__future__</span> <span class="kn">import</span> <span class="n">print_function</span>
+
+<span class="kn">import</span> <span class="nn">os</span>
+<span class="kn">import</span> <span class="nn">sys</span>
+
+<span class="kn">from</span> <span class="nn">debug</span> <span class="kn">import</span> <span class="n">call_inspector</span><span class="p">,</span> <span class="n">structure_inspector</span>
+<span class="kn">from</span> <span class="nn">params</span> <span class="kn">import</span> <span class="n">parameters</span>
+<span class="kn">from</span> <span class="nn">params.parameters</span> <span class="kn">import</span> <span class="n">parse_args</span><span class="p">,</span> <span class="n">get_modules_to_import</span><span class="p">,</span> <span class="n">get_probs_to_override</span>
+<span class="kn">from</span> <span class="nn">params.writter</span> <span class="kn">import</span> <span class="n">write_in_files</span>
+<span class="kn">from</span> <span class="nn">params</span> <span class="kn">import</span> <span class="n">json_probs</span>
+<span class="kn">import</span> <span class="nn">core</span>
+
+
+<div class="viewcode-block" id="run"><a class="viewcode-back" href="../cnerator.html#cnerator.run">[docs]</a><span class="k">def</span> <span class="nf">run</span><span class="p">(</span><span class="n">args</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    This function runs Cnerator, receiving the command line arguments.</span>
+
+<span class="sd">    :param args: The command line arguments returned by ``argparse.ArgumentParser.parse_args``.</span>
+<span class="sd">    :return: None.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="c1"># Set the recursion limit</span>
+    <span class="n">sys</span><span class="o">.</span><span class="n">setrecursionlimit</span><span class="p">(</span><span class="n">args</span><span class="o">.</span><span class="n">recursion</span><span class="p">)</span>
+
+    <span class="c1"># Get the probabilities from the command line arguments and modify the default ones</span>
+    <span class="n">core</span><span class="o">.</span><span class="n">probs</span><span class="o">.</span><span class="n">set_probabilities</span><span class="p">(</span><span class="n">get_probs_to_override</span><span class="p">(</span><span class="n">args</span><span class="o">.</span><span class="n">probs</span><span class="p">))</span>
+    <span class="k">if</span> <span class="n">args</span><span class="o">.</span><span class="n">probsfile</span><span class="p">:</span>
+        <span class="kn">from</span> <span class="nn">core</span> <span class="kn">import</span> <span class="n">probs</span>
+        <span class="n">probabilities</span> <span class="o">=</span> <span class="n">json_probs</span><span class="o">.</span><span class="n">parse_probabilities_specification_json_file</span><span class="p">(</span><span class="n">args</span><span class="o">.</span><span class="n">probsfile</span><span class="p">)</span>
+        <span class="n">probs</span><span class="o">.</span><span class="n">set_probabilities</span><span class="p">(</span><span class="n">probabilities</span><span class="p">)</span>
+
+    <span class="c1"># Process the json file to create functions, or generates a program using the probabilities defined</span>
+    <span class="k">if</span> <span class="n">args</span><span class="o">.</span><span class="n">functions</span><span class="p">:</span>  <span class="c1"># if a json file was passed, it defines the functions to be generated</span>
+        <span class="n">dictionary</span> <span class="o">=</span> <span class="n">parameters</span><span class="o">.</span><span class="n">parse_function_specification_json_file</span><span class="p">(</span><span class="n">args</span><span class="o">.</span><span class="n">functions</span><span class="p">)</span>
+        <span class="n">program</span> <span class="o">=</span> <span class="n">core</span><span class="o">.</span><span class="n">generators</span><span class="o">.</span><span class="n">generate_program_with_function_distribution</span><span class="p">(</span><span class="n">dictionary</span><span class="p">,</span> <span class="n">args</span><span class="p">,</span> <span class="n">remove_unwanted_functions</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>  <span class="c1"># otherwise, a random program is generated, considering the specified probabilities</span>
+        <span class="n">program</span> <span class="o">=</span> <span class="n">core</span><span class="o">.</span><span class="n">generators</span><span class="o">.</span><span class="n">generate_program</span><span class="p">()</span>
+
+    <span class="c1"># Load all the visitor modules and run them, in the same order as specified by the user</span>
+    <span class="n">modules</span> <span class="o">=</span> <span class="n">get_modules_to_import</span><span class="p">(</span><span class="n">args</span><span class="o">.</span><span class="n">visitors</span><span class="p">)</span>
+    <span class="k">for</span> <span class="n">module</span> <span class="ow">in</span> <span class="n">modules</span><span class="p">:</span>
+        <span class="n">module</span><span class="o">.</span><span class="n">visit</span><span class="p">(</span><span class="n">program</span><span class="p">)</span>
+
+    <span class="c1"># Create output directory</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">isdir</span><span class="p">(</span><span class="n">args</span><span class="o">.</span><span class="n">output_dir</span><span class="p">):</span>
+        <span class="n">os</span><span class="o">.</span><span class="n">mkdir</span><span class="p">(</span><span class="n">args</span><span class="o">.</span><span class="n">output_dir</span><span class="p">)</span>
+
+    <span class="c1"># Write code to files</span>
+    <span class="n">write_in_files</span><span class="p">(</span><span class="n">program</span><span class="p">,</span> <span class="n">args</span><span class="p">)</span>
+
+    <span class="c1"># Write debug graph information</span>
+    <span class="k">if</span> <span class="n">args</span><span class="o">.</span><span class="n">debug</span><span class="p">:</span>
+        <span class="c1"># Write structure graph</span>
+        <span class="n">structure_inspector</span><span class="o">.</span><span class="n">write_graph</span><span class="p">(</span><span class="n">program</span><span class="p">,</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">args</span><span class="o">.</span><span class="n">output_dir</span><span class="p">,</span> <span class="n">args</span><span class="o">.</span><span class="n">output</span> <span class="o">+</span> <span class="s2">&quot;.structure.dot&quot;</span><span class="p">))</span>
+        <span class="c1"># Write call graph</span>
+        <span class="n">call_inspector</span><span class="o">.</span><span class="n">write_graph</span><span class="p">(</span><span class="n">program</span><span class="p">,</span> <span class="kc">True</span><span class="p">,</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">args</span><span class="o">.</span><span class="n">output_dir</span><span class="p">,</span> <span class="n">args</span><span class="o">.</span><span class="n">output</span> <span class="o">+</span> <span class="s2">&quot;.call.dot&quot;</span><span class="p">))</span>
+        <span class="n">call_inspector</span><span class="o">.</span><span class="n">write_graph</span><span class="p">(</span><span class="n">program</span><span class="p">,</span> <span class="kc">False</span><span class="p">,</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">args</span><span class="o">.</span><span class="n">output_dir</span><span class="p">,</span> <span class="n">args</span><span class="o">.</span><span class="n">output</span> <span class="o">+</span> <span class="s2">&quot;.call_light.dot&quot;</span><span class="p">))</span></div>
+
+
+<div class="viewcode-block" id="main"><a class="viewcode-back" href="../cnerator.html#cnerator.main">[docs]</a><span class="k">def</span> <span class="nf">main</span><span class="p">():</span>
+    <span class="sd">&quot;&quot;&quot;Main function.</span>
+<span class="sd">    To see the different arguments provided, run Cnerator with either ``-h`` or ``--help`` command line arguments.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">exit</span><span class="p">(</span><span class="n">run</span><span class="p">(</span><span class="n">parse_args</span><span class="p">()))</span></div>
+
+
+<span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s2">&quot;__main__&quot;</span><span class="p">:</span>
+    <span class="n">main</span><span class="p">()</span>
+
+
+</pre></div>
+
+           </div>
+           
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &#169; Copyright 2021, Francisco Ortin and Javier Escalada.
+
+    </p>
+  </div>
+    
+    
+    
+    Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    
+    provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>

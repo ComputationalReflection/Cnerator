@@ -1,0 +1,1346 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" />
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  
+  <title>core package &mdash; Cnerator latest documentation</title>
+  
+
+  
+  <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+
+  
+  
+
+  
+  
+
+  
+
+  
+  <!--[if lt IE 9]>
+    <script src="_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
+        <script src="_static/jquery.js"></script>
+        <script src="_static/underscore.js"></script>
+        <script src="_static/doctools.js"></script>
+    
+    <script type="text/javascript" src="_static/js/theme.js"></script>
+
+    
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="debug package" href="debug.html" />
+    <link rel="prev" title="Cnerator module" href="cnerator.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="index.html" class="icon icon-home"> Cnerator
+          
+
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                latest
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="getting_started.html">Getting started</a></li>
+<li class="toctree-l1"><a class="reference internal" href="user_manual.html">User manual</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="modules.html">Cnerator API</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="cnerator.html">Cnerator module</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="#">core package</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#submodules">Submodules</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#module-core.ast">core.ast module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#module-core.generators">core.generators module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#module-core.operators">core.operators module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#module-core.operators_types">core.operators_types module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#module-core.probs">core.probs module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#module-core.probs_helper">core.probs_helper module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#module-core.type_inference">core.type_inference module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#module-core.utils">core.utils module</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="debug.html">debug package</a></li>
+<li class="toctree-l2"><a class="reference internal" href="params.html">params package</a></li>
+<li class="toctree-l2"><a class="reference internal" href="run.html">run package</a></li>
+<li class="toctree-l2"><a class="reference internal" href="visitors.html">visitors package</a></li>
+</ul>
+</li>
+</ul>
+
+            
+          
+        </div>
+        
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">Cnerator</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="index.html" class="icon icon-home"></a> &raquo;</li>
+        
+          <li><a href="modules.html">Cnerator API</a> &raquo;</li>
+        
+      <li>core package</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="module-core">
+<span id="core-package"></span><h1>core package<a class="headerlink" href="#module-core" title="Permalink to this headline">¶</a></h1>
+<p>This is the most important package in Cnerator, which provides the core functionality.
+In this package, you can find the Abstract Syntax Tree (AST) program representation,
+the generators of each syntactic construct, type inference routines, probability specifications and
+different utilities provided by the system.</p>
+<div class="section" id="submodules">
+<h2>Submodules<a class="headerlink" href="#submodules" title="Permalink to this headline">¶</a></h2>
+</div>
+<div class="section" id="module-core.ast">
+<span id="core-ast-module"></span><h2>core.ast module<a class="headerlink" href="#module-core.ast" title="Permalink to this headline">¶</a></h2>
+<p>This module holds the Abstract Syntax Tree (AST) program representation.
+Upon generation, the program is represented as an AST that is finally stored as output C source files.
+That functionality is provided by the to_str method.</p>
+<dl class="py class">
+<dt id="core.ast.ASTNode">
+<em class="property">class </em><code class="sig-prename descclassname">core.ast.</code><code class="sig-name descname">ASTNode</code><a class="reference internal" href="_modules/core/ast.html#ASTNode"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#core.ast.ASTNode" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+</dd></dl>
+
+<dl class="py class">
+<dt id="core.ast.Array">
+<em class="property">class </em><code class="sig-prename descclassname">core.ast.</code><code class="sig-name descname">Array</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">_type</span></em>, <em class="sig-param"><span class="n">size</span><span class="o">=</span><span class="default_value">0</span></em>, <em class="sig-param"><span class="n">pointer_literal</span><span class="o">=</span><span class="default_value">False</span></em>, <em class="sig-param"><span class="n">pointer_declaration</span><span class="o">=</span><span class="default_value">False</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/core/ast.html#Array"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#core.ast.Array" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#core.ast.Pointer" title="core.ast.Pointer"><code class="xref py py-class docutils literal notranslate"><span class="pre">core.ast.Pointer</span></code></a></p>
+<dl class="py method">
+<dt id="core.ast.Array.generate_literal">
+<code class="sig-name descname">generate_literal</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">from_declaration</span></em>, <em class="sig-param"><span class="n">size</span><span class="o">=</span><span class="default_value">0</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/core/ast.html#Array.generate_literal"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#core.ast.Array.generate_literal" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt id="core.ast.Array.name">
+<em class="property">property </em><code class="sig-name descname">name</code><a class="headerlink" href="#core.ast.Array.name" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt id="core.ast.ArrayAccessExpression">
+<em class="property">class </em><code class="sig-prename descclassname">core.ast.</code><code class="sig-name descname">ArrayAccessExpression</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">left</span></em>, <em class="sig-param"><span class="n">right</span></em>, <em class="sig-param"><span class="n">c_type</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/core/ast.html#ArrayAccessExpression"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#core.ast.ArrayAccessExpression" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#core.ast.BinaryASTNode" title="core.ast.BinaryASTNode"><code class="xref py py-class docutils literal notranslate"><span class="pre">core.ast.BinaryASTNode</span></code></a></p>
+<dl class="py method">
+<dt id="core.ast.ArrayAccessExpression.to_str">
+<code class="sig-name descname">to_str</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">indent</span><span class="p">:</span> <span class="n">int</span> <span class="o">=</span> <span class="default_value">0</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/core/ast.html#ArrayAccessExpression.to_str"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#core.ast.ArrayAccessExpression.to_str" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt id="core.ast.Assignment">
+<em class="property">class </em><code class="sig-prename descclassname">core.ast.</code><code class="sig-name descname">Assignment</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">left</span></em>, <em class="sig-param"><span class="n">op</span></em>, <em class="sig-param"><span class="n">right</span></em>, <em class="sig-param"><span class="n">c_type</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/core/ast.html#Assignment"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#core.ast.Assignment" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#core.ast.BinaryASTNode" title="core.ast.BinaryASTNode"><code class="xref py py-class docutils literal notranslate"><span class="pre">core.ast.BinaryASTNode</span></code></a></p>
+<dl class="py method">
+<dt id="core.ast.Assignment.to_str">
+<code class="sig-name descname">to_str</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">indent</span><span class="p">:</span> <span class="n">int</span> <span class="o">=</span> <span class="default_value">0</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/core/ast.html#Assignment.to_str"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#core.ast.Assignment.to_str" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt id="core.ast.BinaryASTNode">
+<em class="property">class </em><code class="sig-prename descclassname">core.ast.</code><code class="sig-name descname">BinaryASTNode</code><a class="reference internal" href="_modules/core/ast.html#BinaryASTNode"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#core.ast.BinaryASTNode" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#core.ast.ASTNode" title="core.ast.ASTNode"><code class="xref py py-class docutils literal notranslate"><span class="pre">core.ast.ASTNode</span></code></a></p>
+<dl class="py method">
+<dt id="core.ast.BinaryASTNode.left">
+<em class="property">property </em><code class="sig-name descname">left</code><a class="headerlink" href="#core.ast.BinaryASTNode.left" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt id="core.ast.BinaryASTNode.right">
+<em class="property">property </em><code class="sig-name descname">right</code><a class="headerlink" href="#core.ast.BinaryASTNode.right" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt id="core.ast.BinaryExpression">
+<em class="property">class </em><code class="sig-prename descclassname">core.ast.</code><code class="sig-name descname">BinaryExpression</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">left</span></em>, <em class="sig-param"><span class="n">op</span></em>, <em class="sig-param"><span class="n">right</span></em>, <em class="sig-param"><span class="n">c_type</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/core/ast.html#BinaryExpression"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#core.ast.BinaryExpression" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#core.ast.BinaryASTNode" title="core.ast.BinaryASTNode"><code class="xref py py-class docutils literal notranslate"><span class="pre">core.ast.BinaryASTNode</span></code></a></p>
+<dl class="py method">
+<dt id="core.ast.BinaryExpression.to_str">
+<code class="sig-name descname">to_str</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">indent</span><span class="p">:</span> <span class="n">int</span> <span class="o">=</span> <span class="default_value">0</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/core/ast.html#BinaryExpression.to_str"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#core.ast.BinaryExpression.to_str" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt id="core.ast.Block">
+<em class="property">class </em><code class="sig-prename descclassname">core.ast.</code><code class="sig-name descname">Block</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">statements</span><span class="p">:</span> <span class="n">list</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/core/ast.html#Block"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#core.ast.Block" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#core.ast.ASTNode" title="core.ast.ASTNode"><code class="xref py py-class docutils literal notranslate"><span class="pre">core.ast.ASTNode</span></code></a></p>
+<dl class="py method">
+<dt id="core.ast.Block.to_str">
+<code class="sig-name descname">to_str</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">indent</span><span class="p">:</span> <span class="n">int</span> <span class="o">=</span> <span class="default_value">0</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/core/ast.html#Block.to_str"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#core.ast.Block.to_str" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt id="core.ast.Bool">
+<em class="property">class </em><code class="sig-prename descclassname">core.ast.</code><code class="sig-name descname">Bool</code><span class="sig-paren">(</span><em class="sig-param"><span class="o">*</span><span class="n">args</span></em>, <em class="sig-param"><span class="o">**</span><span class="n">kwargs</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/core/ast.html#Bool"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#core.ast.Bool" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#core.ast.Type" title="core.ast.Type"><code class="xref py py-class docutils literal notranslate"><span class="pre">core.ast.Type</span></code></a>, <a class="reference internal" href="#core.ast.Singleton" title="core.ast.Singleton"><code class="xref py py-class docutils literal notranslate"><span class="pre">core.ast.Singleton</span></code></a></p>
+<dl class="py method">
+<dt id="core.ast.Bool.generate_literal">
+<code class="sig-name descname">generate_literal</code><span class="sig-paren">(</span><em class="sig-param"><span class="o">**</span><span class="n">kwargs</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/core/ast.html#Bool.generate_literal"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#core.ast.Bool.generate_literal" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt id="core.ast.Bool.name">
+<code class="sig-name descname">name</code><em class="property"> = 'bool'</em><a class="headerlink" href="#core.ast.Bool.name" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt id="core.ast.Bool.values">
+<code class="sig-name descname">values</code><em class="property"> = ('true', 'false')</em><a class="headerlink" href="#core.ast.Bool.values" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt id="core.ast.Break">
+<em class="property">class </em><code class="sig-prename descclassname">core.ast.</code><code class="sig-name descname">Break</code><a class="reference internal" href="_modules/core/ast.html#Break"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#core.ast.Break" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#core.ast.ASTNode" title="core.ast.ASTNode"><code class="xref py py-class docutils literal notranslate"><span class="pre">core.ast.ASTNode</span></code></a></p>
+<dl class="py method">
+<dt id="core.ast.Break.to_str">
+<code class="sig-name descname">to_str</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">indent</span><span class="p">:</span> <span class="n">int</span> <span class="o">=</span> <span class="default_value">0</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/core/ast.html#Break.to_str"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#core.ast.Break.to_str" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt id="core.ast.CastExpression">
+<em class="property">class </em><code class="sig-prename descclassname">core.ast.</code><code class="sig-name descname">CastExpression</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">exp</span></em>, <em class="sig-param"><span class="n">c_type</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/core/ast.html#CastExpression"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#core.ast.CastExpression" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#core.ast.UnaryExpression" title="core.ast.UnaryExpression"><code class="xref py py-class docutils literal notranslate"><span class="pre">core.ast.UnaryExpression</span></code></a></p>
+</dd></dl>
+
+<dl class="py class">
+<dt id="core.ast.Do">
+<em class="property">class </em><code class="sig-prename descclassname">core.ast.</code><code class="sig-name descname">Do</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">statements</span><span class="p">:</span> <span class="n">List<span class="p">[</span><a class="reference internal" href="#core.ast.ASTNode" title="core.ast.ASTNode">core.ast.ASTNode</a><span class="p">]</span></span></em>, <em class="sig-param"><span class="n">condition</span><span class="p">:</span> <span class="n"><a class="reference internal" href="#core.ast.ASTNode" title="core.ast.ASTNode">core.ast.ASTNode</a></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/core/ast.html#Do"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#core.ast.Do" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#core.ast.ASTNode" title="core.ast.ASTNode"><code class="xref py py-class docutils literal notranslate"><span class="pre">core.ast.ASTNode</span></code></a></p>
+<dl class="py method">
+<dt id="core.ast.Do.to_str">
+<code class="sig-name descname">to_str</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">indent</span><span class="p">:</span> <span class="n">int</span> <span class="o">=</span> <span class="default_value">0</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/core/ast.html#Do.to_str"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#core.ast.Do.to_str" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt id="core.ast.Double">
+<em class="property">class </em><code class="sig-prename descclassname">core.ast.</code><code class="sig-name descname">Double</code><span class="sig-paren">(</span><em class="sig-param"><span class="o">*</span><span class="n">args</span></em>, <em class="sig-param"><span class="o">**</span><span class="n">kwargs</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/core/ast.html#Double"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#core.ast.Double" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#core.ast.NumericType" title="core.ast.NumericType"><code class="xref py py-class docutils literal notranslate"><span class="pre">core.ast.NumericType</span></code></a></p>
+<dl class="py attribute">
+<dt id="core.ast.Double.name">
+<code class="sig-name descname">name</code><em class="property"> = 'double'</em><a class="headerlink" href="#core.ast.Double.name" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt id="core.ast.Double.range">
+<code class="sig-name descname">range</code><em class="property"> = (2.3e-308, 1.7e+308)</em><a class="headerlink" href="#core.ast.Double.range" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt id="core.ast.Float">
+<em class="property">class </em><code class="sig-prename descclassname">core.ast.</code><code class="sig-name descname">Float</code><span class="sig-paren">(</span><em class="sig-param"><span class="o">*</span><span class="n">args</span></em>, <em class="sig-param"><span class="o">**</span><span class="n">kwargs</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/core/ast.html#Float"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#core.ast.Float" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#core.ast.NumericType" title="core.ast.NumericType"><code class="xref py py-class docutils literal notranslate"><span class="pre">core.ast.NumericType</span></code></a></p>
+<dl class="py attribute">
+<dt id="core.ast.Float.name">
+<code class="sig-name descname">name</code><em class="property"> = 'float'</em><a class="headerlink" href="#core.ast.Float.name" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt id="core.ast.Float.range">
+<code class="sig-name descname">range</code><em class="property"> = (1.2e-38, 3.4e+38)</em><a class="headerlink" href="#core.ast.Float.range" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt id="core.ast.For">
+<em class="property">class </em><code class="sig-prename descclassname">core.ast.</code><code class="sig-name descname">For</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">initialization</span><span class="p">:</span> <span class="n"><a class="reference internal" href="#core.ast.ASTNode" title="core.ast.ASTNode">core.ast.ASTNode</a></span></em>, <em class="sig-param"><span class="n">condition</span><span class="p">:</span> <span class="n"><a class="reference internal" href="#core.ast.ASTNode" title="core.ast.ASTNode">core.ast.ASTNode</a></span></em>, <em class="sig-param"><span class="n">increment</span><span class="p">:</span> <span class="n"><a class="reference internal" href="#core.ast.ASTNode" title="core.ast.ASTNode">core.ast.ASTNode</a></span></em>, <em class="sig-param"><span class="n">statements</span><span class="p">:</span> <span class="n">List<span class="p">[</span><a class="reference internal" href="#core.ast.ASTNode" title="core.ast.ASTNode">core.ast.ASTNode</a><span class="p">]</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/core/ast.html#For"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#core.ast.For" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#core.ast.ASTNode" title="core.ast.ASTNode"><code class="xref py py-class docutils literal notranslate"><span class="pre">core.ast.ASTNode</span></code></a></p>
+<dl class="py method">
+<dt id="core.ast.For.to_str">
+<code class="sig-name descname">to_str</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">indent</span><span class="p">:</span> <span class="n">int</span> <span class="o">=</span> <span class="default_value">0</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/core/ast.html#For.to_str"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#core.ast.For.to_str" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt id="core.ast.FuncProc">
+<em class="property">class </em><code class="sig-prename descclassname">core.ast.</code><code class="sig-name descname">FuncProc</code><a class="reference internal" href="_modules/core/ast.html#FuncProc"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#core.ast.FuncProc" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<dl class="py attribute">
+<dt id="core.ast.FuncProc.Func">
+<code class="sig-name descname">Func</code><em class="property"> = 1</em><a class="headerlink" href="#core.ast.FuncProc.Func" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt id="core.ast.FuncProc.Proc">
+<code class="sig-name descname">Proc</code><em class="property"> = 2</em><a class="headerlink" href="#core.ast.FuncProc.Proc" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt id="core.ast.Function">
+<em class="property">class </em><code class="sig-prename descclassname">core.ast.</code><code class="sig-name descname">Function</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">name</span></em>, <em class="sig-param"><span class="n">return_type</span></em>, <em class="sig-param"><span class="n">param_types</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/core/ast.html#Function"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#core.ast.Function" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#core.ast.ASTNode" title="core.ast.ASTNode"><code class="xref py py-class docutils literal notranslate"><span class="pre">core.ast.ASTNode</span></code></a></p>
+<dl class="py method">
+<dt id="core.ast.Function.get_param_by_type">
+<code class="sig-name descname">get_param_by_type</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">c_type</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/core/ast.html#Function.get_param_by_type"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#core.ast.Function.get_param_by_type" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt id="core.ast.Function.prototype">
+<code class="sig-name descname">prototype</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/core/ast.html#Function.prototype"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#core.ast.Function.prototype" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt id="core.ast.Function.stmts">
+<em class="property">property </em><code class="sig-name descname">stmts</code><a class="headerlink" href="#core.ast.Function.stmts" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt id="core.ast.Function.to_str">
+<code class="sig-name descname">to_str</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">indent</span><span class="p">:</span> <span class="n">int</span> <span class="o">=</span> <span class="default_value">0</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/core/ast.html#Function.to_str"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#core.ast.Function.to_str" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt id="core.ast.If">
+<em class="property">class </em><code class="sig-prename descclassname">core.ast.</code><code class="sig-name descname">If</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">condition</span><span class="p">:</span> <span class="n"><a class="reference internal" href="#core.ast.ASTNode" title="core.ast.ASTNode">core.ast.ASTNode</a></span></em>, <em class="sig-param"><span class="n">if_statements</span><span class="p">:</span> <span class="n">List<span class="p">[</span><a class="reference internal" href="#core.ast.ASTNode" title="core.ast.ASTNode">core.ast.ASTNode</a><span class="p">]</span></span></em>, <em class="sig-param"><span class="n">else_statements</span><span class="p">:</span> <span class="n">List<span class="p">[</span><a class="reference internal" href="#core.ast.ASTNode" title="core.ast.ASTNode">core.ast.ASTNode</a><span class="p">]</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/core/ast.html#If"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#core.ast.If" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#core.ast.ASTNode" title="core.ast.ASTNode"><code class="xref py py-class docutils literal notranslate"><span class="pre">core.ast.ASTNode</span></code></a></p>
+<dl class="py method">
+<dt id="core.ast.If.to_str">
+<code class="sig-name descname">to_str</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">indent</span><span class="p">:</span> <span class="n">int</span> <span class="o">=</span> <span class="default_value">0</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/core/ast.html#If.to_str"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#core.ast.If.to_str" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt id="core.ast.Invocation">
+<em class="property">class </em><code class="sig-prename descclassname">core.ast.</code><code class="sig-name descname">Invocation</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">func_name</span></em>, <em class="sig-param"><span class="n">arguments</span></em>, <em class="sig-param"><span class="n">return_type</span></em>, <em class="sig-param"><span class="n">_is_stmt</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/core/ast.html#Invocation"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#core.ast.Invocation" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#core.ast.ASTNode" title="core.ast.ASTNode"><code class="xref py py-class docutils literal notranslate"><span class="pre">core.ast.ASTNode</span></code></a></p>
+<dl class="py method">
+<dt id="core.ast.Invocation.to_str">
+<code class="sig-name descname">to_str</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">indent</span><span class="p">:</span> <span class="n">int</span> <span class="o">=</span> <span class="default_value">0</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/core/ast.html#Invocation.to_str"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#core.ast.Invocation.to_str" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt id="core.ast.Label">
+<em class="property">class </em><code class="sig-prename descclassname">core.ast.</code><code class="sig-name descname">Label</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">label</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/core/ast.html#Label"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#core.ast.Label" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#core.ast.ASTNode" title="core.ast.ASTNode"><code class="xref py py-class docutils literal notranslate"><span class="pre">core.ast.ASTNode</span></code></a></p>
+<dl class="py method">
+<dt id="core.ast.Label.to_str">
+<code class="sig-name descname">to_str</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">indent</span><span class="p">:</span> <span class="n">int</span> <span class="o">=</span> <span class="default_value">0</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/core/ast.html#Label.to_str"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#core.ast.Label.to_str" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt id="core.ast.Literal">
+<em class="property">class </em><code class="sig-prename descclassname">core.ast.</code><code class="sig-name descname">Literal</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">value</span></em>, <em class="sig-param"><span class="n">type</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/core/ast.html#Literal"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#core.ast.Literal" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#core.ast.ASTNode" title="core.ast.ASTNode"><code class="xref py py-class docutils literal notranslate"><span class="pre">core.ast.ASTNode</span></code></a></p>
+<dl class="py method">
+<dt id="core.ast.Literal.to_str">
+<code class="sig-name descname">to_str</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">indent</span><span class="p">:</span> <span class="n">int</span> <span class="o">=</span> <span class="default_value">0</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/core/ast.html#Literal.to_str"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#core.ast.Literal.to_str" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt id="core.ast.LongDouble">
+<em class="property">class </em><code class="sig-prename descclassname">core.ast.</code><code class="sig-name descname">LongDouble</code><span class="sig-paren">(</span><em class="sig-param"><span class="o">*</span><span class="n">args</span></em>, <em class="sig-param"><span class="o">**</span><span class="n">kwargs</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/core/ast.html#LongDouble"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#core.ast.LongDouble" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#core.ast.NumericType" title="core.ast.NumericType"><code class="xref py py-class docutils literal notranslate"><span class="pre">core.ast.NumericType</span></code></a></p>
+<dl class="py attribute">
+<dt id="core.ast.LongDouble.literal_suffix">
+<code class="sig-name descname">literal_suffix</code><em class="property"> = 'L'</em><a class="headerlink" href="#core.ast.LongDouble.literal_suffix" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt id="core.ast.LongDouble.name">
+<code class="sig-name descname">name</code><em class="property"> = 'long double'</em><a class="headerlink" href="#core.ast.LongDouble.name" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt id="core.ast.LongDouble.range">
+<code class="sig-name descname">range</code><em class="property"> = (2.3e-308, 1.7e+308)</em><a class="headerlink" href="#core.ast.LongDouble.range" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt id="core.ast.NumericType">
+<em class="property">class </em><code class="sig-prename descclassname">core.ast.</code><code class="sig-name descname">NumericType</code><span class="sig-paren">(</span><em class="sig-param"><span class="o">*</span><span class="n">args</span></em>, <em class="sig-param"><span class="o">**</span><span class="n">kwargs</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/core/ast.html#NumericType"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#core.ast.NumericType" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#core.ast.Type" title="core.ast.Type"><code class="xref py py-class docutils literal notranslate"><span class="pre">core.ast.Type</span></code></a>, <a class="reference internal" href="#core.ast.Singleton" title="core.ast.Singleton"><code class="xref py py-class docutils literal notranslate"><span class="pre">core.ast.Singleton</span></code></a></p>
+<dl class="py method">
+<dt id="core.ast.NumericType.generate_literal">
+<code class="sig-name descname">generate_literal</code><span class="sig-paren">(</span><em class="sig-param"><span class="o">**</span><span class="n">kwargs</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/core/ast.html#NumericType.generate_literal"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#core.ast.NumericType.generate_literal" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt id="core.ast.Pointer">
+<em class="property">class </em><code class="sig-prename descclassname">core.ast.</code><code class="sig-name descname">Pointer</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">type</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/core/ast.html#Pointer"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#core.ast.Pointer" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#core.ast.Type" title="core.ast.Type"><code class="xref py py-class docutils literal notranslate"><span class="pre">core.ast.Type</span></code></a></p>
+<dl class="py method">
+<dt id="core.ast.Pointer.generate_literal">
+<code class="sig-name descname">generate_literal</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">from_declaration</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/core/ast.html#Pointer.generate_literal"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#core.ast.Pointer.generate_literal" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt id="core.ast.Pointer.name">
+<em class="property">property </em><code class="sig-name descname">name</code><a class="headerlink" href="#core.ast.Pointer.name" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt id="core.ast.Program">
+<em class="property">class </em><code class="sig-prename descclassname">core.ast.</code><code class="sig-name descname">Program</code><a class="reference internal" href="_modules/core/ast.html#Program"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#core.ast.Program" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#core.ast.ASTNode" title="core.ast.ASTNode"><code class="xref py py-class docutils literal notranslate"><span class="pre">core.ast.ASTNode</span></code></a></p>
+<dl class="py method">
+<dt id="core.ast.Program.functions">
+<em class="property">property </em><code class="sig-name descname">functions</code><a class="headerlink" href="#core.ast.Program.functions" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt id="core.ast.Program.get_functions_by_return_type">
+<code class="sig-name descname">get_functions_by_return_type</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">return_type</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/core/ast.html#Program.get_functions_by_return_type"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#core.ast.Program.get_functions_by_return_type" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt id="core.ast.Program.stringify_parts">
+<code class="sig-name descname">stringify_parts</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/core/ast.html#Program.stringify_parts"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#core.ast.Program.stringify_parts" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt id="core.ast.Program.to_str">
+<code class="sig-name descname">to_str</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">indent</span><span class="p">:</span> <span class="n">int</span> <span class="o">=</span> <span class="default_value">0</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/core/ast.html#Program.to_str"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#core.ast.Program.to_str" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt id="core.ast.Return">
+<em class="property">class </em><code class="sig-prename descclassname">core.ast.</code><code class="sig-name descname">Return</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">exp</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">c_type</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/core/ast.html#Return"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#core.ast.Return" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#core.ast.UnaryASTNode" title="core.ast.UnaryASTNode"><code class="xref py py-class docutils literal notranslate"><span class="pre">core.ast.UnaryASTNode</span></code></a></p>
+<dl class="py method">
+<dt id="core.ast.Return.to_str">
+<code class="sig-name descname">to_str</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">indent</span><span class="p">:</span> <span class="n">int</span> <span class="o">=</span> <span class="default_value">0</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/core/ast.html#Return.to_str"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#core.ast.Return.to_str" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt id="core.ast.SignedChar">
+<em class="property">class </em><code class="sig-prename descclassname">core.ast.</code><code class="sig-name descname">SignedChar</code><span class="sig-paren">(</span><em class="sig-param"><span class="o">*</span><span class="n">args</span></em>, <em class="sig-param"><span class="o">**</span><span class="n">kwargs</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/core/ast.html#SignedChar"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#core.ast.SignedChar" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#core.ast.NumericType" title="core.ast.NumericType"><code class="xref py py-class docutils literal notranslate"><span class="pre">core.ast.NumericType</span></code></a></p>
+<dl class="py attribute">
+<dt id="core.ast.SignedChar.name">
+<code class="sig-name descname">name</code><em class="property"> = 'signed char'</em><a class="headerlink" href="#core.ast.SignedChar.name" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt id="core.ast.SignedChar.range">
+<code class="sig-name descname">range</code><em class="property"> = (-128, 127)</em><a class="headerlink" href="#core.ast.SignedChar.range" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt id="core.ast.SignedInt">
+<em class="property">class </em><code class="sig-prename descclassname">core.ast.</code><code class="sig-name descname">SignedInt</code><span class="sig-paren">(</span><em class="sig-param"><span class="o">*</span><span class="n">args</span></em>, <em class="sig-param"><span class="o">**</span><span class="n">kwargs</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/core/ast.html#SignedInt"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#core.ast.SignedInt" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#core.ast.NumericType" title="core.ast.NumericType"><code class="xref py py-class docutils literal notranslate"><span class="pre">core.ast.NumericType</span></code></a></p>
+<dl class="py attribute">
+<dt id="core.ast.SignedInt.name">
+<code class="sig-name descname">name</code><em class="property"> = 'signed int'</em><a class="headerlink" href="#core.ast.SignedInt.name" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt id="core.ast.SignedInt.range">
+<code class="sig-name descname">range</code><em class="property"> = (-2147483648, 2147483647)</em><a class="headerlink" href="#core.ast.SignedInt.range" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt id="core.ast.SignedLongInt">
+<em class="property">class </em><code class="sig-prename descclassname">core.ast.</code><code class="sig-name descname">SignedLongInt</code><span class="sig-paren">(</span><em class="sig-param"><span class="o">*</span><span class="n">args</span></em>, <em class="sig-param"><span class="o">**</span><span class="n">kwargs</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/core/ast.html#SignedLongInt"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#core.ast.SignedLongInt" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#core.ast.NumericType" title="core.ast.NumericType"><code class="xref py py-class docutils literal notranslate"><span class="pre">core.ast.NumericType</span></code></a></p>
+<dl class="py attribute">
+<dt id="core.ast.SignedLongInt.literal_suffix">
+<code class="sig-name descname">literal_suffix</code><em class="property"> = 'L'</em><a class="headerlink" href="#core.ast.SignedLongInt.literal_suffix" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt id="core.ast.SignedLongInt.name">
+<code class="sig-name descname">name</code><em class="property"> = 'signed long int'</em><a class="headerlink" href="#core.ast.SignedLongInt.name" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt id="core.ast.SignedLongInt.range">
+<code class="sig-name descname">range</code><em class="property"> = (-2147483648, 2147483647)</em><a class="headerlink" href="#core.ast.SignedLongInt.range" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt id="core.ast.SignedLongLongInt">
+<em class="property">class </em><code class="sig-prename descclassname">core.ast.</code><code class="sig-name descname">SignedLongLongInt</code><span class="sig-paren">(</span><em class="sig-param"><span class="o">*</span><span class="n">args</span></em>, <em class="sig-param"><span class="o">**</span><span class="n">kwargs</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/core/ast.html#SignedLongLongInt"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#core.ast.SignedLongLongInt" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#core.ast.NumericType" title="core.ast.NumericType"><code class="xref py py-class docutils literal notranslate"><span class="pre">core.ast.NumericType</span></code></a></p>
+<dl class="py attribute">
+<dt id="core.ast.SignedLongLongInt.literal_suffix">
+<code class="sig-name descname">literal_suffix</code><em class="property"> = 'LL'</em><a class="headerlink" href="#core.ast.SignedLongLongInt.literal_suffix" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt id="core.ast.SignedLongLongInt.name">
+<code class="sig-name descname">name</code><em class="property"> = 'signed long long int'</em><a class="headerlink" href="#core.ast.SignedLongLongInt.name" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt id="core.ast.SignedLongLongInt.range">
+<code class="sig-name descname">range</code><em class="property"> = (-9223372036854775808, 9223372036854775807)</em><a class="headerlink" href="#core.ast.SignedLongLongInt.range" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt id="core.ast.SignedShortInt">
+<em class="property">class </em><code class="sig-prename descclassname">core.ast.</code><code class="sig-name descname">SignedShortInt</code><span class="sig-paren">(</span><em class="sig-param"><span class="o">*</span><span class="n">args</span></em>, <em class="sig-param"><span class="o">**</span><span class="n">kwargs</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/core/ast.html#SignedShortInt"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#core.ast.SignedShortInt" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#core.ast.NumericType" title="core.ast.NumericType"><code class="xref py py-class docutils literal notranslate"><span class="pre">core.ast.NumericType</span></code></a></p>
+<dl class="py attribute">
+<dt id="core.ast.SignedShortInt.name">
+<code class="sig-name descname">name</code><em class="property"> = 'signed short int'</em><a class="headerlink" href="#core.ast.SignedShortInt.name" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt id="core.ast.SignedShortInt.range">
+<code class="sig-name descname">range</code><em class="property"> = (-32768, 32767)</em><a class="headerlink" href="#core.ast.SignedShortInt.range" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt id="core.ast.Singleton">
+<em class="property">class </em><code class="sig-prename descclassname">core.ast.</code><code class="sig-name descname">Singleton</code><span class="sig-paren">(</span><em class="sig-param"><span class="o">*</span><span class="n">args</span></em>, <em class="sig-param"><span class="o">**</span><span class="n">kwargs</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/core/ast.html#Singleton"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#core.ast.Singleton" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+</dd></dl>
+
+<dl class="py class">
+<dt id="core.ast.Struct">
+<em class="property">class </em><code class="sig-prename descclassname">core.ast.</code><code class="sig-name descname">Struct</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">name</span></em>, <em class="sig-param"><span class="o">*</span><span class="n">fields</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/core/ast.html#Struct"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#core.ast.Struct" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#core.ast.Type" title="core.ast.Type"><code class="xref py py-class docutils literal notranslate"><span class="pre">core.ast.Type</span></code></a></p>
+<dl class="py method">
+<dt id="core.ast.Struct.add_field">
+<code class="sig-name descname">add_field</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">field</span></em>, <em class="sig-param"><span class="n">_type</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/core/ast.html#Struct.add_field"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#core.ast.Struct.add_field" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt id="core.ast.Struct.check_circular_reference">
+<code class="sig-name descname">check_circular_reference</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">_type</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/core/ast.html#Struct.check_circular_reference"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#core.ast.Struct.check_circular_reference" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt id="core.ast.Struct.generate_literal">
+<code class="sig-name descname">generate_literal</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">from_declaration</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/core/ast.html#Struct.generate_literal"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#core.ast.Struct.generate_literal" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt id="core.ast.Struct.get_field_by_type">
+<code class="sig-name descname">get_field_by_type</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">_type</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/core/ast.html#Struct.get_field_by_type"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#core.ast.Struct.get_field_by_type" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt id="core.ast.Struct.get_type_by_field">
+<code class="sig-name descname">get_type_by_field</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">field</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/core/ast.html#Struct.get_type_by_field"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#core.ast.Struct.get_type_by_field" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt id="core.ast.Struct.has_type">
+<code class="sig-name descname">has_type</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">_type</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/core/ast.html#Struct.has_type"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#core.ast.Struct.has_type" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt id="core.ast.Struct.name">
+<em class="property">property </em><code class="sig-name descname">name</code><a class="headerlink" href="#core.ast.Struct.name" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt id="core.ast.Struct.prototype">
+<code class="sig-name descname">prototype</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/core/ast.html#Struct.prototype"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#core.ast.Struct.prototype" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt id="core.ast.Struct.struct_references">
+<em class="property">property </em><code class="sig-name descname">struct_references</code><a class="headerlink" href="#core.ast.Struct.struct_references" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt id="core.ast.StructAccessExpression">
+<em class="property">class </em><code class="sig-prename descclassname">core.ast.</code><code class="sig-name descname">StructAccessExpression</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">op</span></em>, <em class="sig-param"><span class="n">exp</span></em>, <em class="sig-param"><span class="n">field</span></em>, <em class="sig-param"><span class="n">c_type</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/core/ast.html#StructAccessExpression"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#core.ast.StructAccessExpression" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#core.ast.UnaryASTNode" title="core.ast.UnaryASTNode"><code class="xref py py-class docutils literal notranslate"><span class="pre">core.ast.UnaryASTNode</span></code></a></p>
+<dl class="py method">
+<dt id="core.ast.StructAccessExpression.to_str">
+<code class="sig-name descname">to_str</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">indent</span><span class="p">:</span> <span class="n">int</span> <span class="o">=</span> <span class="default_value">0</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/core/ast.html#StructAccessExpression.to_str"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#core.ast.StructAccessExpression.to_str" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt id="core.ast.Switch">
+<em class="property">class </em><code class="sig-prename descclassname">core.ast.</code><code class="sig-name descname">Switch</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">condition</span><span class="p">:</span> <span class="n"><a class="reference internal" href="#core.ast.ASTNode" title="core.ast.ASTNode">core.ast.ASTNode</a></span></em>, <em class="sig-param"><span class="n">cases</span><span class="p">:</span> <span class="n">Dict<span class="p">[</span><a class="reference internal" href="#core.ast.Literal" title="core.ast.Literal">core.ast.Literal</a><span class="p">, </span>List<span class="p">[</span><a class="reference internal" href="#core.ast.ASTNode" title="core.ast.ASTNode">core.ast.ASTNode</a><span class="p">]</span><span class="p">]</span></span></em>, <em class="sig-param"><span class="n">default</span><span class="p">:</span> <span class="n">List<span class="p">[</span><a class="reference internal" href="#core.ast.ASTNode" title="core.ast.ASTNode">core.ast.ASTNode</a><span class="p">]</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/core/ast.html#Switch"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#core.ast.Switch" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#core.ast.ASTNode" title="core.ast.ASTNode"><code class="xref py py-class docutils literal notranslate"><span class="pre">core.ast.ASTNode</span></code></a></p>
+<dl class="py method">
+<dt id="core.ast.Switch.to_str">
+<code class="sig-name descname">to_str</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">indent</span><span class="p">:</span> <span class="n">int</span> <span class="o">=</span> <span class="default_value">0</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/core/ast.html#Switch.to_str"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#core.ast.Switch.to_str" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt id="core.ast.TernaryASTNode">
+<em class="property">class </em><code class="sig-prename descclassname">core.ast.</code><code class="sig-name descname">TernaryASTNode</code><a class="reference internal" href="_modules/core/ast.html#TernaryASTNode"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#core.ast.TernaryASTNode" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#core.ast.ASTNode" title="core.ast.ASTNode"><code class="xref py py-class docutils literal notranslate"><span class="pre">core.ast.ASTNode</span></code></a></p>
+<dl class="py method">
+<dt id="core.ast.TernaryASTNode.exp_1">
+<em class="property">property </em><code class="sig-name descname">exp_1</code><a class="headerlink" href="#core.ast.TernaryASTNode.exp_1" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt id="core.ast.TernaryASTNode.exp_2">
+<em class="property">property </em><code class="sig-name descname">exp_2</code><a class="headerlink" href="#core.ast.TernaryASTNode.exp_2" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt id="core.ast.TernaryASTNode.exp_3">
+<em class="property">property </em><code class="sig-name descname">exp_3</code><a class="headerlink" href="#core.ast.TernaryASTNode.exp_3" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt id="core.ast.TernaryExpression">
+<em class="property">class </em><code class="sig-prename descclassname">core.ast.</code><code class="sig-name descname">TernaryExpression</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">exp_1</span></em>, <em class="sig-param"><span class="n">exp_2</span></em>, <em class="sig-param"><span class="n">exp_3</span></em>, <em class="sig-param"><span class="n">op</span></em>, <em class="sig-param"><span class="n">c_type</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/core/ast.html#TernaryExpression"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#core.ast.TernaryExpression" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#core.ast.TernaryASTNode" title="core.ast.TernaryASTNode"><code class="xref py py-class docutils literal notranslate"><span class="pre">core.ast.TernaryASTNode</span></code></a></p>
+<dl class="py method">
+<dt id="core.ast.TernaryExpression.to_str">
+<code class="sig-name descname">to_str</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">indent</span><span class="p">:</span> <span class="n">int</span> <span class="o">=</span> <span class="default_value">0</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/core/ast.html#TernaryExpression.to_str"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#core.ast.TernaryExpression.to_str" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt id="core.ast.Type">
+<em class="property">class </em><code class="sig-prename descclassname">core.ast.</code><code class="sig-name descname">Type</code><a class="reference internal" href="_modules/core/ast.html#Type"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#core.ast.Type" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<dl class="py method">
+<dt id="core.ast.Type.to_str">
+<code class="sig-name descname">to_str</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">indent</span><span class="p">:</span> <span class="n">int</span> <span class="o">=</span> <span class="default_value">0</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/core/ast.html#Type.to_str"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#core.ast.Type.to_str" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt id="core.ast.UnaryASTNode">
+<em class="property">class </em><code class="sig-prename descclassname">core.ast.</code><code class="sig-name descname">UnaryASTNode</code><a class="reference internal" href="_modules/core/ast.html#UnaryASTNode"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#core.ast.UnaryASTNode" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#core.ast.ASTNode" title="core.ast.ASTNode"><code class="xref py py-class docutils literal notranslate"><span class="pre">core.ast.ASTNode</span></code></a></p>
+<dl class="py method">
+<dt id="core.ast.UnaryASTNode.exp">
+<em class="property">property </em><code class="sig-name descname">exp</code><a class="headerlink" href="#core.ast.UnaryASTNode.exp" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt id="core.ast.UnaryExpression">
+<em class="property">class </em><code class="sig-prename descclassname">core.ast.</code><code class="sig-name descname">UnaryExpression</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">op</span></em>, <em class="sig-param"><span class="n">exp</span></em>, <em class="sig-param"><span class="n">c_type</span></em>, <em class="sig-param"><span class="n">post_op</span><span class="o">=</span><span class="default_value">False</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/core/ast.html#UnaryExpression"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#core.ast.UnaryExpression" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#core.ast.UnaryASTNode" title="core.ast.UnaryASTNode"><code class="xref py py-class docutils literal notranslate"><span class="pre">core.ast.UnaryASTNode</span></code></a></p>
+<dl class="py method">
+<dt id="core.ast.UnaryExpression.to_str">
+<code class="sig-name descname">to_str</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">indent</span><span class="p">:</span> <span class="n">int</span> <span class="o">=</span> <span class="default_value">0</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/core/ast.html#UnaryExpression.to_str"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#core.ast.UnaryExpression.to_str" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt id="core.ast.UnsignedChar">
+<em class="property">class </em><code class="sig-prename descclassname">core.ast.</code><code class="sig-name descname">UnsignedChar</code><span class="sig-paren">(</span><em class="sig-param"><span class="o">*</span><span class="n">args</span></em>, <em class="sig-param"><span class="o">**</span><span class="n">kwargs</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/core/ast.html#UnsignedChar"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#core.ast.UnsignedChar" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#core.ast.NumericType" title="core.ast.NumericType"><code class="xref py py-class docutils literal notranslate"><span class="pre">core.ast.NumericType</span></code></a></p>
+<dl class="py attribute">
+<dt id="core.ast.UnsignedChar.literal_suffix">
+<code class="sig-name descname">literal_suffix</code><em class="property"> = 'U'</em><a class="headerlink" href="#core.ast.UnsignedChar.literal_suffix" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt id="core.ast.UnsignedChar.name">
+<code class="sig-name descname">name</code><em class="property"> = 'unsigned char'</em><a class="headerlink" href="#core.ast.UnsignedChar.name" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt id="core.ast.UnsignedChar.range">
+<code class="sig-name descname">range</code><em class="property"> = (0, 255)</em><a class="headerlink" href="#core.ast.UnsignedChar.range" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt id="core.ast.UnsignedInt">
+<em class="property">class </em><code class="sig-prename descclassname">core.ast.</code><code class="sig-name descname">UnsignedInt</code><span class="sig-paren">(</span><em class="sig-param"><span class="o">*</span><span class="n">args</span></em>, <em class="sig-param"><span class="o">**</span><span class="n">kwargs</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/core/ast.html#UnsignedInt"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#core.ast.UnsignedInt" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#core.ast.NumericType" title="core.ast.NumericType"><code class="xref py py-class docutils literal notranslate"><span class="pre">core.ast.NumericType</span></code></a></p>
+<dl class="py attribute">
+<dt id="core.ast.UnsignedInt.literal_suffix">
+<code class="sig-name descname">literal_suffix</code><em class="property"> = 'U'</em><a class="headerlink" href="#core.ast.UnsignedInt.literal_suffix" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt id="core.ast.UnsignedInt.name">
+<code class="sig-name descname">name</code><em class="property"> = 'unsigned int'</em><a class="headerlink" href="#core.ast.UnsignedInt.name" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt id="core.ast.UnsignedInt.range">
+<code class="sig-name descname">range</code><em class="property"> = (0, 4294967295)</em><a class="headerlink" href="#core.ast.UnsignedInt.range" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt id="core.ast.UnsignedLongInt">
+<em class="property">class </em><code class="sig-prename descclassname">core.ast.</code><code class="sig-name descname">UnsignedLongInt</code><span class="sig-paren">(</span><em class="sig-param"><span class="o">*</span><span class="n">args</span></em>, <em class="sig-param"><span class="o">**</span><span class="n">kwargs</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/core/ast.html#UnsignedLongInt"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#core.ast.UnsignedLongInt" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#core.ast.NumericType" title="core.ast.NumericType"><code class="xref py py-class docutils literal notranslate"><span class="pre">core.ast.NumericType</span></code></a></p>
+<dl class="py attribute">
+<dt id="core.ast.UnsignedLongInt.literal_suffix">
+<code class="sig-name descname">literal_suffix</code><em class="property"> = 'UL'</em><a class="headerlink" href="#core.ast.UnsignedLongInt.literal_suffix" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt id="core.ast.UnsignedLongInt.name">
+<code class="sig-name descname">name</code><em class="property"> = 'unsigned long int'</em><a class="headerlink" href="#core.ast.UnsignedLongInt.name" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt id="core.ast.UnsignedLongInt.range">
+<code class="sig-name descname">range</code><em class="property"> = (0, 4294967295)</em><a class="headerlink" href="#core.ast.UnsignedLongInt.range" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt id="core.ast.UnsignedLongLongInt">
+<em class="property">class </em><code class="sig-prename descclassname">core.ast.</code><code class="sig-name descname">UnsignedLongLongInt</code><span class="sig-paren">(</span><em class="sig-param"><span class="o">*</span><span class="n">args</span></em>, <em class="sig-param"><span class="o">**</span><span class="n">kwargs</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/core/ast.html#UnsignedLongLongInt"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#core.ast.UnsignedLongLongInt" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#core.ast.NumericType" title="core.ast.NumericType"><code class="xref py py-class docutils literal notranslate"><span class="pre">core.ast.NumericType</span></code></a></p>
+<dl class="py attribute">
+<dt id="core.ast.UnsignedLongLongInt.literal_suffix">
+<code class="sig-name descname">literal_suffix</code><em class="property"> = 'ULL'</em><a class="headerlink" href="#core.ast.UnsignedLongLongInt.literal_suffix" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt id="core.ast.UnsignedLongLongInt.name">
+<code class="sig-name descname">name</code><em class="property"> = 'unsigned long long int'</em><a class="headerlink" href="#core.ast.UnsignedLongLongInt.name" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt id="core.ast.UnsignedLongLongInt.range">
+<code class="sig-name descname">range</code><em class="property"> = (0, 18446744073709551615)</em><a class="headerlink" href="#core.ast.UnsignedLongLongInt.range" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt id="core.ast.UnsignedShortInt">
+<em class="property">class </em><code class="sig-prename descclassname">core.ast.</code><code class="sig-name descname">UnsignedShortInt</code><span class="sig-paren">(</span><em class="sig-param"><span class="o">*</span><span class="n">args</span></em>, <em class="sig-param"><span class="o">**</span><span class="n">kwargs</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/core/ast.html#UnsignedShortInt"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#core.ast.UnsignedShortInt" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#core.ast.NumericType" title="core.ast.NumericType"><code class="xref py py-class docutils literal notranslate"><span class="pre">core.ast.NumericType</span></code></a></p>
+<dl class="py attribute">
+<dt id="core.ast.UnsignedShortInt.literal_suffix">
+<code class="sig-name descname">literal_suffix</code><em class="property"> = 'U'</em><a class="headerlink" href="#core.ast.UnsignedShortInt.literal_suffix" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt id="core.ast.UnsignedShortInt.name">
+<code class="sig-name descname">name</code><em class="property"> = 'unsigned short int'</em><a class="headerlink" href="#core.ast.UnsignedShortInt.name" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt id="core.ast.UnsignedShortInt.range">
+<code class="sig-name descname">range</code><em class="property"> = (0, 65535)</em><a class="headerlink" href="#core.ast.UnsignedShortInt.range" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt id="core.ast.Variable">
+<em class="property">class </em><code class="sig-prename descclassname">core.ast.</code><code class="sig-name descname">Variable</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">value</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/core/ast.html#Variable"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#core.ast.Variable" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#core.ast.ASTNode" title="core.ast.ASTNode"><code class="xref py py-class docutils literal notranslate"><span class="pre">core.ast.ASTNode</span></code></a></p>
+<dl class="py method">
+<dt id="core.ast.Variable.to_str">
+<code class="sig-name descname">to_str</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">indent</span><span class="p">:</span> <span class="n">int</span> <span class="o">=</span> <span class="default_value">0</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/core/ast.html#Variable.to_str"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#core.ast.Variable.to_str" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt id="core.ast.Void">
+<em class="property">class </em><code class="sig-prename descclassname">core.ast.</code><code class="sig-name descname">Void</code><span class="sig-paren">(</span><em class="sig-param"><span class="o">*</span><span class="n">args</span></em>, <em class="sig-param"><span class="o">**</span><span class="n">kwargs</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/core/ast.html#Void"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#core.ast.Void" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#core.ast.Type" title="core.ast.Type"><code class="xref py py-class docutils literal notranslate"><span class="pre">core.ast.Type</span></code></a>, <a class="reference internal" href="#core.ast.Singleton" title="core.ast.Singleton"><code class="xref py py-class docutils literal notranslate"><span class="pre">core.ast.Singleton</span></code></a></p>
+<dl class="py attribute">
+<dt id="core.ast.Void.name">
+<code class="sig-name descname">name</code><em class="property"> = 'void'</em><a class="headerlink" href="#core.ast.Void.name" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt id="core.ast.While">
+<em class="property">class </em><code class="sig-prename descclassname">core.ast.</code><code class="sig-name descname">While</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">condition</span><span class="p">:</span> <span class="n"><a class="reference internal" href="#core.ast.ASTNode" title="core.ast.ASTNode">core.ast.ASTNode</a></span></em>, <em class="sig-param"><span class="n">statements</span><span class="p">:</span> <span class="n">List<span class="p">[</span><a class="reference internal" href="#core.ast.ASTNode" title="core.ast.ASTNode">core.ast.ASTNode</a><span class="p">]</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/core/ast.html#While"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#core.ast.While" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#core.ast.ASTNode" title="core.ast.ASTNode"><code class="xref py py-class docutils literal notranslate"><span class="pre">core.ast.ASTNode</span></code></a></p>
+<dl class="py method">
+<dt id="core.ast.While.to_str">
+<code class="sig-name descname">to_str</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">indent</span><span class="p">:</span> <span class="n">int</span> <span class="o">=</span> <span class="default_value">0</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/core/ast.html#While.to_str"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#core.ast.While.to_str" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py function">
+<dt id="core.ast.expression_to_str">
+<code class="sig-prename descclassname">core.ast.</code><code class="sig-name descname">expression_to_str</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">expression</span><span class="p">:</span> <span class="n">object</span></em><span class="sig-paren">)</span> &#x2192; str<a class="reference internal" href="_modules/core/ast.html#expression_to_str"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#core.ast.expression_to_str" title="Permalink to this definition">¶</a></dt>
+<dd><p>Converts one expression (it could be an AST node) to a string</p>
+</dd></dl>
+
+<dl class="py function">
+<dt id="core.ast.generate_string_literal">
+<code class="sig-prename descclassname">core.ast.</code><code class="sig-name descname">generate_string_literal</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">size</span></em>, <em class="sig-param"><span class="n">from_delcaration</span></em>, <em class="sig-param"><span class="n">type</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/core/ast.html#generate_string_literal"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#core.ast.generate_string_literal" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py function">
+<dt id="core.ast.get_operators">
+<code class="sig-prename descclassname">core.ast.</code><code class="sig-name descname">get_operators</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">c_type</span></em>, <em class="sig-param"><span class="n">_type</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/core/ast.html#get_operators"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#core.ast.get_operators" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py function">
+<dt id="core.ast.global_variable">
+<code class="sig-prename descclassname">core.ast.</code><code class="sig-name descname">global_variable</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">c_type</span></em>, <em class="sig-param"><span class="n">number</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/core/ast.html#global_variable"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#core.ast.global_variable" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py function">
+<dt id="core.ast.indent_str">
+<code class="sig-prename descclassname">core.ast.</code><code class="sig-name descname">indent_str</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">indent_number</span><span class="p">:</span> <span class="n">int</span></em><span class="sig-paren">)</span> &#x2192; str<a class="reference internal" href="_modules/core/ast.html#indent_str"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#core.ast.indent_str" title="Permalink to this definition">¶</a></dt>
+<dd><p>Given a number of indentation, returns the string to be used as prefix for indentation</p>
+</dd></dl>
+
+<dl class="py function">
+<dt id="core.ast.is_compound_statement">
+<code class="sig-prename descclassname">core.ast.</code><code class="sig-name descname">is_compound_statement</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">statement</span><span class="p">:</span> <span class="n"><a class="reference internal" href="#core.ast.ASTNode" title="core.ast.ASTNode">core.ast.ASTNode</a></span></em><span class="sig-paren">)</span> &#x2192; bool<a class="reference internal" href="_modules/core/ast.html#is_compound_statement"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#core.ast.is_compound_statement" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns if an ASTNode is a coumpund statement</p>
+</dd></dl>
+
+<dl class="py function">
+<dt id="core.ast.literal_to_str">
+<code class="sig-prename descclassname">core.ast.</code><code class="sig-name descname">literal_to_str</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">literal</span><span class="p">:</span> <span class="n">object</span></em><span class="sig-paren">)</span> &#x2192; str<a class="reference internal" href="_modules/core/ast.html#literal_to_str"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#core.ast.literal_to_str" title="Permalink to this definition">¶</a></dt>
+<dd><p>Variable may be a Variable object or just a string; it returns its name as string</p>
+</dd></dl>
+
+<dl class="py function">
+<dt id="core.ast.local_variable">
+<code class="sig-prename descclassname">core.ast.</code><code class="sig-name descname">local_variable</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">c_type</span></em>, <em class="sig-param"><span class="n">number</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/core/ast.html#local_variable"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#core.ast.local_variable" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py function">
+<dt id="core.ast.name_struct_field">
+<code class="sig-prename descclassname">core.ast.</code><code class="sig-name descname">name_struct_field</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">c_type</span></em>, <em class="sig-param"><span class="n">number</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/core/ast.html#name_struct_field"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#core.ast.name_struct_field" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py function">
+<dt id="core.ast.param">
+<code class="sig-prename descclassname">core.ast.</code><code class="sig-name descname">param</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">number</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/core/ast.html#param"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#core.ast.param" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py function">
+<dt id="core.ast.reference_paths_to_struct">
+<code class="sig-prename descclassname">core.ast.</code><code class="sig-name descname">reference_paths_to_struct</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">struct</span></em>, <em class="sig-param"><span class="n">structs</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/core/ast.html#reference_paths_to_struct"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#core.ast.reference_paths_to_struct" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py function">
+<dt id="core.ast.statements_to_str">
+<code class="sig-prename descclassname">core.ast.</code><code class="sig-name descname">statements_to_str</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">statements</span><span class="p">:</span> <span class="n">List<span class="p">[</span><a class="reference internal" href="#core.ast.ASTNode" title="core.ast.ASTNode">core.ast.ASTNode</a><span class="p">]</span></span></em>, <em class="sig-param"><span class="n">indent</span><span class="p">:</span> <span class="n">int</span></em><span class="sig-paren">)</span> &#x2192; str<a class="reference internal" href="_modules/core/ast.html#statements_to_str"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#core.ast.statements_to_str" title="Permalink to this definition">¶</a></dt>
+<dd><p>Takes a list of statements and returns a string with their C representation</p>
+</dd></dl>
+
+<dl class="py function">
+<dt id="core.ast.structs_references_graph">
+<code class="sig-prename descclassname">core.ast.</code><code class="sig-name descname">structs_references_graph</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">structs</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/core/ast.html#structs_references_graph"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#core.ast.structs_references_graph" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py function">
+<dt id="core.ast.variable_to_var_name">
+<code class="sig-prename descclassname">core.ast.</code><code class="sig-name descname">variable_to_var_name</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">variable</span><span class="p">:</span> <span class="n">object</span></em><span class="sig-paren">)</span> &#x2192; str<a class="reference internal" href="_modules/core/ast.html#variable_to_var_name"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#core.ast.variable_to_var_name" title="Permalink to this definition">¶</a></dt>
+<dd><p>Variable may be a Variable object or just a string; it returns its name as string</p>
+</dd></dl>
+
+</div>
+<div class="section" id="module-core.generators">
+<span id="core-generators-module"></span><h2>core.generators module<a class="headerlink" href="#module-core.generators" title="Permalink to this headline">¶</a></h2>
+<p>Module aimed at generating the different elements of the output C program.
+Each syntax construct is encapsulated into a <code class="docutils literal notranslate"><span class="pre">generate_</span></code> &lt;syntax construct&gt; function.
+First <code class="docutils literal notranslate"><span class="pre">generate_program</span></code> is called, which in turn calls other generators until the whole program is generated.
+The probabilities of all the syntactic constructs are considered.
+Program representation is return by each generator, represented as AST nodes.</p>
+<dl class="py function">
+<dt id="core.generators.generate_basic_exp">
+<code class="sig-prename descclassname">core.generators.</code><code class="sig-name descname">generate_basic_exp</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">program</span></em>, <em class="sig-param"><span class="n">function</span></em>, <em class="sig-param"><span class="n">c_type</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/core/generators.html#generate_basic_exp"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#core.generators.generate_basic_exp" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py function">
+<dt id="core.generators.generate_basic_lvalue">
+<code class="sig-prename descclassname">core.generators.</code><code class="sig-name descname">generate_basic_lvalue</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">program</span></em>, <em class="sig-param"><span class="n">function</span></em>, <em class="sig-param"><span class="n">c_type</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/core/generators.html#generate_basic_lvalue"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#core.generators.generate_basic_lvalue" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py function">
+<dt id="core.generators.generate_basic_stmt">
+<code class="sig-prename descclassname">core.generators.</code><code class="sig-name descname">generate_basic_stmt</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">program</span><span class="p">:</span> <span class="n"><a class="reference internal" href="#core.ast.Program" title="core.ast.Program">core.ast.Program</a></span></em>, <em class="sig-param"><span class="n">function</span><span class="p">:</span> <span class="n"><a class="reference internal" href="#core.ast.Function" title="core.ast.Function">core.ast.Function</a></span></em><span class="sig-paren">)</span> &#x2192; <a class="reference internal" href="#core.ast.ASTNode" title="core.ast.ASTNode">core.ast.ASTNode</a><a class="reference internal" href="_modules/core/generators.html#generate_basic_stmt"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#core.generators.generate_basic_stmt" title="Permalink to this definition">¶</a></dt>
+<dd><p>Generates a statement with no block inside of it</p>
+</dd></dl>
+
+<dl class="py function">
+<dt id="core.generators.generate_compound_stmt">
+<code class="sig-prename descclassname">core.generators.</code><code class="sig-name descname">generate_compound_stmt</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">program</span><span class="p">:</span> <span class="n"><a class="reference internal" href="#core.ast.Program" title="core.ast.Program">core.ast.Program</a></span></em>, <em class="sig-param"><span class="n">function</span><span class="p">:</span> <span class="n"><a class="reference internal" href="#core.ast.Function" title="core.ast.Function">core.ast.Function</a></span></em>, <em class="sig-param"><span class="n">stmt_depth</span><span class="p">:</span> <span class="n">int</span></em><span class="sig-paren">)</span> &#x2192; <a class="reference internal" href="#core.ast.ASTNode" title="core.ast.ASTNode">core.ast.ASTNode</a><a class="reference internal" href="_modules/core/generators.html#generate_compound_stmt"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#core.generators.generate_compound_stmt" title="Permalink to this definition">¶</a></dt>
+<dd><p>Generates a compound statement (with blocks inside of it), given the maximum depth for blocks</p>
+</dd></dl>
+
+<dl class="py function">
+<dt id="core.generators.generate_expression">
+<code class="sig-prename descclassname">core.generators.</code><code class="sig-name descname">generate_expression</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">program</span></em>, <em class="sig-param"><span class="n">function</span></em>, <em class="sig-param"><span class="n">exp_type</span></em>, <em class="sig-param"><span class="n">exp_depth_prob</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/core/generators.html#generate_expression"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#core.generators.generate_expression" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py function">
+<dt id="core.generators.generate_expression_arity_1">
+<code class="sig-prename descclassname">core.generators.</code><code class="sig-name descname">generate_expression_arity_1</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">program</span></em>, <em class="sig-param"><span class="n">function</span></em>, <em class="sig-param"><span class="n">exp_type</span></em>, <em class="sig-param"><span class="n">operator</span></em>, <em class="sig-param"><span class="n">default_generator_1</span></em>, <em class="sig-param"><span class="n">generator_1_depth_prob</span></em>, <em class="sig-param"><span class="o">**</span><span class="n">kwargs</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/core/generators.html#generate_expression_arity_1"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#core.generators.generate_expression_arity_1" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py function">
+<dt id="core.generators.generate_expression_arity_2">
+<code class="sig-prename descclassname">core.generators.</code><code class="sig-name descname">generate_expression_arity_2</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">program</span></em>, <em class="sig-param"><span class="n">function</span></em>, <em class="sig-param"><span class="n">exp_type</span></em>, <em class="sig-param"><span class="n">operator</span></em>, <em class="sig-param"><span class="n">default_generator_1</span></em>, <em class="sig-param"><span class="n">generator_1_depth_prob</span></em>, <em class="sig-param"><span class="n">default_generator_2</span></em>, <em class="sig-param"><span class="n">generator_2_depth_prob</span></em>, <em class="sig-param"><span class="o">**</span><span class="n">kwargs</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/core/generators.html#generate_expression_arity_2"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#core.generators.generate_expression_arity_2" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py function">
+<dt id="core.generators.generate_expression_arity_3">
+<code class="sig-prename descclassname">core.generators.</code><code class="sig-name descname">generate_expression_arity_3</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">program</span></em>, <em class="sig-param"><span class="n">function</span></em>, <em class="sig-param"><span class="n">exp_type</span></em>, <em class="sig-param"><span class="n">operator</span></em>, <em class="sig-param"><span class="n">default_generator_1</span></em>, <em class="sig-param"><span class="n">generator_1_depth_prob</span></em>, <em class="sig-param"><span class="n">default_generator_2</span></em>, <em class="sig-param"><span class="n">generator_2_depth_prob</span></em>, <em class="sig-param"><span class="n">default_generator_3</span></em>, <em class="sig-param"><span class="n">generator_3_depth_prob</span></em>, <em class="sig-param"><span class="o">**</span><span class="n">kwargs</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/core/generators.html#generate_expression_arity_3"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#core.generators.generate_expression_arity_3" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py function">
+<dt id="core.generators.generate_expression_incdec">
+<code class="sig-prename descclassname">core.generators.</code><code class="sig-name descname">generate_expression_incdec</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">program</span></em>, <em class="sig-param"><span class="n">function</span></em>, <em class="sig-param"><span class="n">exp_type</span></em>, <em class="sig-param"><span class="n">operator</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/core/generators.html#generate_expression_incdec"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#core.generators.generate_expression_incdec" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py function">
+<dt id="core.generators.generate_expression_invocation">
+<code class="sig-prename descclassname">core.generators.</code><code class="sig-name descname">generate_expression_invocation</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">program</span></em>, <em class="sig-param"><span class="n">function</span></em>, <em class="sig-param"><span class="n">return_type</span></em>, <em class="sig-param"><span class="n">exp_depth_prob</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/core/generators.html#generate_expression_invocation"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#core.generators.generate_expression_invocation" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py function">
+<dt id="core.generators.generate_function">
+<code class="sig-prename descclassname">core.generators.</code><code class="sig-name descname">generate_function</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">program</span></em>, <em class="sig-param"><span class="n">function</span></em>, <em class="sig-param"><span class="n">return_type</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/core/generators.html#generate_function"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#core.generators.generate_function" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py function">
+<dt id="core.generators.generate_function_param_types">
+<code class="sig-prename descclassname">core.generators.</code><code class="sig-name descname">generate_function_param_types</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">program</span></em>, <em class="sig-param"><span class="n">function</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/core/generators.html#generate_function_param_types"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#core.generators.generate_function_param_types" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py function">
+<dt id="core.generators.generate_global_var">
+<code class="sig-prename descclassname">core.generators.</code><code class="sig-name descname">generate_global_var</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">program</span></em>, <em class="sig-param"><span class="n">function</span></em>, <em class="sig-param"><span class="n">c_type</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/core/generators.html#generate_global_var"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#core.generators.generate_global_var" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py function">
+<dt id="core.generators.generate_literal">
+<code class="sig-prename descclassname">core.generators.</code><code class="sig-name descname">generate_literal</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">program</span></em>, <em class="sig-param"><span class="n">function</span></em>, <em class="sig-param"><span class="n">literal_type</span></em>, <em class="sig-param"><span class="n">from_declaration</span><span class="o">=</span><span class="default_value">False</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/core/generators.html#generate_literal"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#core.generators.generate_literal" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py function">
+<dt id="core.generators.generate_local_var">
+<code class="sig-prename descclassname">core.generators.</code><code class="sig-name descname">generate_local_var</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">program</span></em>, <em class="sig-param"><span class="n">function</span></em>, <em class="sig-param"><span class="n">c_type</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/core/generators.html#generate_local_var"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#core.generators.generate_local_var" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py function">
+<dt id="core.generators.generate_lvalue">
+<code class="sig-prename descclassname">core.generators.</code><code class="sig-name descname">generate_lvalue</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">program</span></em>, <em class="sig-param"><span class="n">function</span></em>, <em class="sig-param"><span class="n">exp_type</span></em>, <em class="sig-param"><span class="n">exp_depth_prob</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/core/generators.html#generate_lvalue"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#core.generators.generate_lvalue" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py function">
+<dt id="core.generators.generate_param_var">
+<code class="sig-prename descclassname">core.generators.</code><code class="sig-name descname">generate_param_var</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">program</span></em>, <em class="sig-param"><span class="n">function</span></em>, <em class="sig-param"><span class="n">c_type</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/core/generators.html#generate_param_var"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#core.generators.generate_param_var" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py function">
+<dt id="core.generators.generate_program">
+<code class="sig-prename descclassname">core.generators.</code><code class="sig-name descname">generate_program</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/core/generators.html#generate_program"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#core.generators.generate_program" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py function">
+<dt id="core.generators.generate_program_with_function_distribution">
+<code class="sig-prename descclassname">core.generators.</code><code class="sig-name descname">generate_program_with_function_distribution</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">distribution</span></em>, <em class="sig-param"><span class="n">args</span></em>, <em class="sig-param"><span class="n">remove_unwanted_functions</span><span class="o">=</span><span class="default_value">True</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/core/generators.html#generate_program_with_function_distribution"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#core.generators.generate_program_with_function_distribution" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py function">
+<dt id="core.generators.generate_stmt_assignment">
+<code class="sig-prename descclassname">core.generators.</code><code class="sig-name descname">generate_stmt_assignment</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">program</span></em>, <em class="sig-param"><span class="n">function</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/core/generators.html#generate_stmt_assignment"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#core.generators.generate_stmt_assignment" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py function">
+<dt id="core.generators.generate_stmt_augmented_assignment">
+<code class="sig-prename descclassname">core.generators.</code><code class="sig-name descname">generate_stmt_augmented_assignment</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">program</span></em>, <em class="sig-param"><span class="n">function</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/core/generators.html#generate_stmt_augmented_assignment"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#core.generators.generate_stmt_augmented_assignment" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py function">
+<dt id="core.generators.generate_stmt_block">
+<code class="sig-prename descclassname">core.generators.</code><code class="sig-name descname">generate_stmt_block</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">program</span><span class="p">:</span> <span class="n"><a class="reference internal" href="#core.ast.Program" title="core.ast.Program">core.ast.Program</a></span></em>, <em class="sig-param"><span class="n">function</span><span class="p">:</span> <span class="n"><a class="reference internal" href="#core.ast.Function" title="core.ast.Function">core.ast.Function</a></span></em>, <em class="sig-param"><span class="n">stmt_depth</span><span class="p">:</span> <span class="n">int</span></em><span class="sig-paren">)</span> &#x2192; <a class="reference internal" href="#core.ast.Block" title="core.ast.Block">core.ast.Block</a><a class="reference internal" href="_modules/core/generators.html#generate_stmt_block"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#core.generators.generate_stmt_block" title="Permalink to this definition">¶</a></dt>
+<dd><p>Generates a block statement</p>
+</dd></dl>
+
+<dl class="py function">
+<dt id="core.generators.generate_stmt_do">
+<code class="sig-prename descclassname">core.generators.</code><code class="sig-name descname">generate_stmt_do</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">program</span><span class="p">:</span> <span class="n"><a class="reference internal" href="#core.ast.Program" title="core.ast.Program">core.ast.Program</a></span></em>, <em class="sig-param"><span class="n">function</span><span class="p">:</span> <span class="n"><a class="reference internal" href="#core.ast.Function" title="core.ast.Function">core.ast.Function</a></span></em>, <em class="sig-param"><span class="n">stmt_depth</span><span class="p">:</span> <span class="n">int</span></em><span class="sig-paren">)</span> &#x2192; <a class="reference internal" href="#core.ast.Do" title="core.ast.Do">core.ast.Do</a><a class="reference internal" href="_modules/core/generators.html#generate_stmt_do"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#core.generators.generate_stmt_do" title="Permalink to this definition">¶</a></dt>
+<dd><p>Generates a do statement</p>
+</dd></dl>
+
+<dl class="py function">
+<dt id="core.generators.generate_stmt_expression_stmt">
+<code class="sig-prename descclassname">core.generators.</code><code class="sig-name descname">generate_stmt_expression_stmt</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">program</span></em>, <em class="sig-param"><span class="n">function</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/core/generators.html#generate_stmt_expression_stmt"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#core.generators.generate_stmt_expression_stmt" title="Permalink to this definition">¶</a></dt>
+<dd><p>Generates an expression statement: &lt;expression&gt; ;</p>
+</dd></dl>
+
+<dl class="py function">
+<dt id="core.generators.generate_stmt_for">
+<code class="sig-prename descclassname">core.generators.</code><code class="sig-name descname">generate_stmt_for</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">program</span><span class="p">:</span> <span class="n"><a class="reference internal" href="#core.ast.Program" title="core.ast.Program">core.ast.Program</a></span></em>, <em class="sig-param"><span class="n">function</span><span class="p">:</span> <span class="n"><a class="reference internal" href="#core.ast.Function" title="core.ast.Function">core.ast.Function</a></span></em>, <em class="sig-param"><span class="n">stmt_depth</span><span class="p">:</span> <span class="n">int</span></em><span class="sig-paren">)</span> &#x2192; <a class="reference internal" href="#core.ast.For" title="core.ast.For">core.ast.For</a><a class="reference internal" href="_modules/core/generators.html#generate_stmt_for"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#core.generators.generate_stmt_for" title="Permalink to this definition">¶</a></dt>
+<dd><p>Generates a for statement</p>
+</dd></dl>
+
+<dl class="py function">
+<dt id="core.generators.generate_stmt_func">
+<code class="sig-prename descclassname">core.generators.</code><code class="sig-name descname">generate_stmt_func</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">program</span><span class="p">:</span> <span class="n"><a class="reference internal" href="#core.ast.Program" title="core.ast.Program">core.ast.Program</a></span></em>, <em class="sig-param"><span class="n">function</span><span class="p">:</span> <span class="n"><a class="reference internal" href="#core.ast.Function" title="core.ast.Function">core.ast.Function</a></span></em>, <em class="sig-param"><span class="n">stmt_depth</span><span class="p">:</span> <span class="n">Optional<span class="p">[</span>int<span class="p">]</span></span> <span class="o">=</span> <span class="default_value">None</span></em><span class="sig-paren">)</span> &#x2192; <a class="reference internal" href="#core.ast.ASTNode" title="core.ast.ASTNode">core.ast.ASTNode</a><a class="reference internal" href="_modules/core/generators.html#generate_stmt_func"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#core.generators.generate_stmt_func" title="Permalink to this definition">¶</a></dt>
+<dd><p>Generates a statement inside a function</p>
+</dd></dl>
+
+<dl class="py function">
+<dt id="core.generators.generate_stmt_if">
+<code class="sig-prename descclassname">core.generators.</code><code class="sig-name descname">generate_stmt_if</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">program</span><span class="p">:</span> <span class="n"><a class="reference internal" href="#core.ast.Program" title="core.ast.Program">core.ast.Program</a></span></em>, <em class="sig-param"><span class="n">function</span><span class="p">:</span> <span class="n"><a class="reference internal" href="#core.ast.Function" title="core.ast.Function">core.ast.Function</a></span></em>, <em class="sig-param"><span class="n">stmt_depth</span><span class="p">:</span> <span class="n">int</span></em><span class="sig-paren">)</span> &#x2192; <a class="reference internal" href="#core.ast.If" title="core.ast.If">core.ast.If</a><a class="reference internal" href="_modules/core/generators.html#generate_stmt_if"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#core.generators.generate_stmt_if" title="Permalink to this definition">¶</a></dt>
+<dd><p>Generates an if / else statement</p>
+</dd></dl>
+
+<dl class="py function">
+<dt id="core.generators.generate_stmt_incdec">
+<code class="sig-prename descclassname">core.generators.</code><code class="sig-name descname">generate_stmt_incdec</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">program</span></em>, <em class="sig-param"><span class="n">function</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/core/generators.html#generate_stmt_incdec"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#core.generators.generate_stmt_incdec" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py function">
+<dt id="core.generators.generate_stmt_invocation">
+<code class="sig-prename descclassname">core.generators.</code><code class="sig-name descname">generate_stmt_invocation</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">program</span></em>, <em class="sig-param"><span class="n">function</span></em>, <em class="sig-param"><span class="n">invoked_func</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/core/generators.html#generate_stmt_invocation"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#core.generators.generate_stmt_invocation" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py function">
+<dt id="core.generators.generate_stmt_return">
+<code class="sig-prename descclassname">core.generators.</code><code class="sig-name descname">generate_stmt_return</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">program</span></em>, <em class="sig-param"><span class="n">function</span></em>, <em class="sig-param"><span class="n">exp</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/core/generators.html#generate_stmt_return"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#core.generators.generate_stmt_return" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py function">
+<dt id="core.generators.generate_stmt_switch">
+<code class="sig-prename descclassname">core.generators.</code><code class="sig-name descname">generate_stmt_switch</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">program</span><span class="p">:</span> <span class="n"><a class="reference internal" href="#core.ast.Program" title="core.ast.Program">core.ast.Program</a></span></em>, <em class="sig-param"><span class="n">function</span><span class="p">:</span> <span class="n"><a class="reference internal" href="#core.ast.Function" title="core.ast.Function">core.ast.Function</a></span></em>, <em class="sig-param"><span class="n">stmt_depth</span><span class="p">:</span> <span class="n">int</span></em><span class="sig-paren">)</span> &#x2192; <a class="reference internal" href="#core.ast.Switch" title="core.ast.Switch">core.ast.Switch</a><a class="reference internal" href="_modules/core/generators.html#generate_stmt_switch"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#core.generators.generate_stmt_switch" title="Permalink to this definition">¶</a></dt>
+<dd><p>Generates a switch statement</p>
+</dd></dl>
+
+<dl class="py function">
+<dt id="core.generators.generate_stmt_while">
+<code class="sig-prename descclassname">core.generators.</code><code class="sig-name descname">generate_stmt_while</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">program</span><span class="p">:</span> <span class="n"><a class="reference internal" href="#core.ast.Program" title="core.ast.Program">core.ast.Program</a></span></em>, <em class="sig-param"><span class="n">function</span><span class="p">:</span> <span class="n"><a class="reference internal" href="#core.ast.Function" title="core.ast.Function">core.ast.Function</a></span></em>, <em class="sig-param"><span class="n">stmt_depth</span><span class="p">:</span> <span class="n">int</span></em><span class="sig-paren">)</span> &#x2192; <a class="reference internal" href="#core.ast.While" title="core.ast.While">core.ast.While</a><a class="reference internal" href="_modules/core/generators.html#generate_stmt_while"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#core.generators.generate_stmt_while" title="Permalink to this definition">¶</a></dt>
+<dd><p>Generates a while statement</p>
+</dd></dl>
+
+<dl class="py function">
+<dt id="core.generators.generate_type">
+<code class="sig-prename descclassname">core.generators.</code><code class="sig-name descname">generate_type</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">program</span></em>, <em class="sig-param"><span class="n">function</span></em>, <em class="sig-param"><span class="n">new_type_cls</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">old_type_obj</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/core/generators.html#generate_type"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#core.generators.generate_type" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py function">
+<dt id="core.generators.generate_type_array">
+<code class="sig-prename descclassname">core.generators.</code><code class="sig-name descname">generate_type_array</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">program</span></em>, <em class="sig-param"><span class="n">function</span></em>, <em class="sig-param"><span class="n">old_type</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/core/generators.html#generate_type_array"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#core.generators.generate_type_array" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py function">
+<dt id="core.generators.generate_type_pointer">
+<code class="sig-prename descclassname">core.generators.</code><code class="sig-name descname">generate_type_pointer</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">program</span></em>, <em class="sig-param"><span class="n">function</span></em>, <em class="sig-param"><span class="n">old_type</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/core/generators.html#generate_type_pointer"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#core.generators.generate_type_pointer" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py function">
+<dt id="core.generators.generate_type_struct">
+<code class="sig-prename descclassname">core.generators.</code><code class="sig-name descname">generate_type_struct</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">program</span></em>, <em class="sig-param"><span class="n">function</span></em>, <em class="sig-param"><span class="n">old_type</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/core/generators.html#generate_type_struct"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#core.generators.generate_type_struct" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</div>
+<div class="section" id="module-core.operators">
+<span id="core-operators-module"></span><h2>core.operators module<a class="headerlink" href="#module-core.operators" title="Permalink to this headline">¶</a></h2>
+<p>This module defines the way expressions are built, relative to the syntax of the C operators.
+You can modify then to change the way expressions are created.
+However, do not change their names, since a naming convention is used (i.e., reflection).</p>
+</div>
+<div class="section" id="module-core.operators_types">
+<span id="core-operators-types-module"></span><h2>core.operators_types module<a class="headerlink" href="#module-core.operators_types" title="Permalink to this headline">¶</a></h2>
+<p>This module defines the types of C experessions, relative to the syntax of the C operators.
+It only contains data, no computation.
+Data are two dictionaries: <code class="docutils literal notranslate"><span class="pre">by_operands</span></code> (depending on the operator) and <code class="docutils literal notranslate"><span class="pre">by_return</span></code> (returned by an operator).</p>
+</div>
+<div class="section" id="module-core.probs">
+<span id="core-probs-module"></span><h2>core.probs module<a class="headerlink" href="#module-core.probs" title="Permalink to this headline">¶</a></h2>
+<p>This file defines the probability for creating each part of the program.
+Probability may be defined manually, or using the helper functions in probs_helper.
+They are expressed as dictionaries: {value: probability of that value}.
+The sum of the probabilities must be 1.0.
+For a fixed value, just set its probability to 1.0.
+The doc:Dict[str,str] documents all the probabilities meanings to be shown to the user.</p>
+<dl class="py function">
+<dt id="core.probs.does_this_probability_exist">
+<code class="sig-prename descclassname">core.probs.</code><code class="sig-name descname">does_this_probability_exist</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">probability_name</span><span class="p">:</span> <span class="n">str</span></em><span class="sig-paren">)</span> &#x2192; bool<a class="reference internal" href="_modules/core/probs.html#does_this_probability_exist"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#core.probs.does_this_probability_exist" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py function">
+<dt id="core.probs.set_probabilities">
+<code class="sig-prename descclassname">core.probs.</code><code class="sig-name descname">set_probabilities</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">probabilities</span><span class="p">:</span> <span class="n">Dict<span class="p">[</span>str<span class="p">, </span>dict<span class="p">]</span></span></em><span class="sig-paren">)</span> &#x2192; None<a class="reference internal" href="_modules/core/probs.html#set_probabilities"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#core.probs.set_probabilities" title="Permalink to this definition">¶</a></dt>
+<dd><p>Modifies the global variables of this module, that is the default probabilities of Cnerator</p>
+</dd></dl>
+
+</div>
+<div class="section" id="module-core.probs_helper">
+<span id="core-probs-helper-module"></span><h2>core.probs_helper module<a class="headerlink" href="#module-core.probs_helper" title="Permalink to this headline">¶</a></h2>
+<p>These functions are used to define the probability of the different syntax constructs of the C language.
+Probabilities are defined as Dict[object, float], where the key are the different values to be generated and the
+content defines the probability for each one.
+All the probabilities (contents of the dictionary) must sum 0.0.</p>
+<dl class="py function">
+<dt id="core.probs_helper.compute_equal_prob">
+<code class="sig-prename descclassname">core.probs_helper.</code><code class="sig-name descname">compute_equal_prob</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">keys</span><span class="p">:</span> <span class="n">set</span></em>, <em class="sig-param"><span class="n">base</span><span class="p">:</span> <span class="n">float</span> <span class="o">=</span> <span class="default_value">1.0</span></em><span class="sig-paren">)</span> &#x2192; Dict<span class="p">[</span>object<span class="p">, </span>float<span class="p">]</span><a class="reference internal" href="_modules/core/probs_helper.html#compute_equal_prob"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#core.probs_helper.compute_equal_prob" title="Permalink to this definition">¶</a></dt>
+<dd><p>Given a list of elements (keys) returns a dictionary with the equal probabilities for all the elements</p>
+</dd></dl>
+
+<dl class="py function">
+<dt id="core.probs_helper.compute_inverse_proportional_prob">
+<code class="sig-prename descclassname">core.probs_helper.</code><code class="sig-name descname">compute_inverse_proportional_prob</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">population</span><span class="p">:</span> <span class="n">Dict<span class="p">[</span>object<span class="p">, </span>float<span class="p">]</span></span></em>, <em class="sig-param"><span class="n">base</span><span class="p">:</span> <span class="n">float</span> <span class="o">=</span> <span class="default_value">1.0</span></em><span class="sig-paren">)</span> &#x2192; Dict<span class="p">[</span>object<span class="p">, </span>float<span class="p">]</span><a class="reference internal" href="_modules/core/probs_helper.html#compute_inverse_proportional_prob"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#core.probs_helper.compute_inverse_proportional_prob" title="Permalink to this definition">¶</a></dt>
+<dd><p>Given a dictionary of elements and their inverse proportional occurrence, returns a dictionary with its
+probability distribution. For example, {‘a’:1, ‘b’:2, c:’2’} returns {‘a’:0.5, ‘b’:0.25, ‘c’:0.25}</p>
+</dd></dl>
+
+<dl class="py function">
+<dt id="core.probs_helper.compute_normal_prob">
+<code class="sig-prename descclassname">core.probs_helper.</code><code class="sig-name descname">compute_normal_prob</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">mean</span><span class="p">:</span> <span class="n">int</span></em>, <em class="sig-param"><span class="n">stdev</span><span class="p">:</span> <span class="n">int</span></em>, <em class="sig-param"><span class="n">base</span><span class="p">:</span> <span class="n">float</span> <span class="o">=</span> <span class="default_value">1.0</span></em>, <em class="sig-param"><span class="n">number</span><span class="p">:</span> <span class="n">int</span> <span class="o">=</span> <span class="default_value">30</span></em><span class="sig-paren">)</span> &#x2192; Dict<span class="p">[</span>object<span class="p">, </span>float<span class="p">]</span><a class="reference internal" href="_modules/core/probs_helper.html#compute_normal_prob"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#core.probs_helper.compute_normal_prob" title="Permalink to this definition">¶</a></dt>
+<dd><p>Given the mean and standard deviation, returns a dictionary a normal distribution</p>
+</dd></dl>
+
+<dl class="py function">
+<dt id="core.probs_helper.compute_proportional_prob">
+<code class="sig-prename descclassname">core.probs_helper.</code><code class="sig-name descname">compute_proportional_prob</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">population</span><span class="p">:</span> <span class="n">Dict<span class="p">[</span>object<span class="p">, </span>float<span class="p">]</span></span></em>, <em class="sig-param"><span class="n">base</span><span class="p">:</span> <span class="n">float</span> <span class="o">=</span> <span class="default_value">1.0</span></em><span class="sig-paren">)</span> &#x2192; Dict<span class="p">[</span>object<span class="p">, </span>float<span class="p">]</span><a class="reference internal" href="_modules/core/probs_helper.html#compute_proportional_prob"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#core.probs_helper.compute_proportional_prob" title="Permalink to this definition">¶</a></dt>
+<dd><p>Given a dictionary of elements and their proportional occurrence, returns a dictionary with its probability
+distribution. For example, {‘a’:1, ‘b’:2, c:’1’} returns {‘a’:0.25, ‘b’:0.5, c:’0.25’}</p>
+</dd></dl>
+
+<dl class="py function">
+<dt id="core.probs_helper.random_value">
+<code class="sig-prename descclassname">core.probs_helper.</code><code class="sig-name descname">random_value</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">probabilities</span><span class="p">:</span> <span class="n">Dict<span class="p">[</span>object<span class="p">, </span>float<span class="p">]</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/core/probs_helper.html#random_value"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#core.probs_helper.random_value" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns one of the values in probabilities (key) given its probability (content)</p>
+</dd></dl>
+
+</div>
+<div class="section" id="module-core.type_inference">
+<span id="core-type-inference-module"></span><h2>core.type_inference module<a class="headerlink" href="#module-core.type_inference" title="Permalink to this headline">¶</a></h2>
+<p>Different functions to infer the type of a syntax construct.
+This module heavily depends on the data provided in the <code class="docutils literal notranslate"><span class="pre">operators_types</span></code> module.</p>
+<dl class="py function">
+<dt id="core.type_inference.infer_operands_type">
+<code class="sig-prename descclassname">core.type_inference.</code><code class="sig-name descname">infer_operands_type</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">program</span></em>, <em class="sig-param"><span class="n">function</span></em>, <em class="sig-param"><span class="n">arity</span></em>, <em class="sig-param"><span class="n">operator</span></em>, <em class="sig-param"><span class="n">ret_t</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/core/type_inference.html#infer_operands_type"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#core.type_inference.infer_operands_type" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py function">
+<dt id="core.type_inference.infer_return_type">
+<code class="sig-prename descclassname">core.type_inference.</code><code class="sig-name descname">infer_return_type</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">program</span></em>, <em class="sig-param"><span class="n">function</span></em>, <em class="sig-param"><span class="n">operator</span></em>, <em class="sig-param"><span class="o">*</span><span class="n">args_t</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/core/type_inference.html#infer_return_type"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#core.type_inference.infer_return_type" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</div>
+<div class="section" id="module-core.utils">
+<span id="core-utils-module"></span><h2>core.utils module<a class="headerlink" href="#module-core.utils" title="Permalink to this headline">¶</a></h2>
+<p>Different general-purpose functions used in the implementation of the core library.</p>
+<dl class="py function">
+<dt id="core.utils.camel_case_to_snake_case">
+<code class="sig-prename descclassname">core.utils.</code><code class="sig-name descname">camel_case_to_snake_case</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">name</span><span class="p">:</span> <span class="n">str</span></em><span class="sig-paren">)</span> &#x2192; str<a class="reference internal" href="_modules/core/utils.html#camel_case_to_snake_case"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#core.utils.camel_case_to_snake_case" title="Permalink to this definition">¶</a></dt>
+<dd><p>Converts a camel-case string into its snake-case representation</p>
+</dd></dl>
+
+<dl class="py function">
+<dt id="core.utils.print_if_verbose">
+<code class="sig-prename descclassname">core.utils.</code><code class="sig-name descname">print_if_verbose</code><span class="sig-paren">(</span><em class="sig-param"><span class="o">*</span><span class="n">args</span></em>, <em class="sig-param"><span class="n">sep</span><span class="o">=</span><span class="default_value">' '</span></em>, <em class="sig-param"><span class="n">end</span><span class="o">=</span><span class="default_value">'\n'</span></em>, <em class="sig-param"><span class="n">file</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/core/utils.html#print_if_verbose"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#core.utils.print_if_verbose" title="Permalink to this definition">¶</a></dt>
+<dd><p>Prints a message if the verbose option has been passed to the application</p>
+</dd></dl>
+
+<dl class="py function">
+<dt id="core.utils.print_to_std_error">
+<code class="sig-prename descclassname">core.utils.</code><code class="sig-name descname">print_to_std_error</code><span class="sig-paren">(</span><em class="sig-param"><span class="o">*</span><span class="n">args</span></em>, <em class="sig-param"><span class="n">sep</span><span class="o">=</span><span class="default_value">' '</span></em>, <em class="sig-param"><span class="n">end</span><span class="o">=</span><span class="default_value">'\n'</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/core/utils.html#print_to_std_error"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#core.utils.print_to_std_error" title="Permalink to this definition">¶</a></dt>
+<dd><p>This function wraps the print Python function to show something in the
+standard output error</p>
+</dd></dl>
+
+</div>
+</div>
+
+
+           </div>
+           
+          </div>
+          <footer>
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+        <a href="debug.html" class="btn btn-neutral float-right" title="debug package" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+        <a href="cnerator.html" class="btn btn-neutral float-left" title="Cnerator module" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &#169; Copyright 2021, Francisco Ortin and Javier Escalada.
+
+    </p>
+  </div>
+    
+    
+    
+    Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    
+    provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>

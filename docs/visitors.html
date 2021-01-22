@@ -1,0 +1,283 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" />
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  
+  <title>visitors package &mdash; Cnerator latest documentation</title>
+  
+
+  
+  <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+
+  
+  
+
+  
+  
+
+  
+
+  
+  <!--[if lt IE 9]>
+    <script src="_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
+        <script src="_static/jquery.js"></script>
+        <script src="_static/underscore.js"></script>
+        <script src="_static/doctools.js"></script>
+    
+    <script type="text/javascript" src="_static/js/theme.js"></script>
+
+    
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="prev" title="run package" href="run.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="index.html" class="icon icon-home"> Cnerator
+          
+
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                latest
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="getting_started.html">Getting started</a></li>
+<li class="toctree-l1"><a class="reference internal" href="user_manual.html">User manual</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="modules.html">Cnerator API</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="cnerator.html">Cnerator module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="core.html">core package</a></li>
+<li class="toctree-l2"><a class="reference internal" href="debug.html">debug package</a></li>
+<li class="toctree-l2"><a class="reference internal" href="params.html">params package</a></li>
+<li class="toctree-l2"><a class="reference internal" href="run.html">run package</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="#">visitors package</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#submodules">Submodules</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#module-visitors.fix_ptr_literal">visitors.fix_ptr_literal module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#module-visitors.func_to_proc">visitors.func_to_proc module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#module-visitors.function_subs">visitors.function_subs module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#module-visitors.return_instrumentation">visitors.return_instrumentation module</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+
+            
+          
+        </div>
+        
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">Cnerator</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="index.html" class="icon icon-home"></a> &raquo;</li>
+        
+          <li><a href="modules.html">Cnerator API</a> &raquo;</li>
+        
+      <li>visitors package</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="module-visitors">
+<span id="visitors-package"></span><h1>visitors package<a class="headerlink" href="#module-visitors" title="Permalink to this headline">¶</a></h1>
+<p>Program representations (ASTs) in Cnerator can be processed / modified before the final generation
+of C source code. In order to do that, an introspective instance of the Visitor design pattern can be provided.
+If so, the <code class="docutils literal notranslate"><span class="pre">-V</span></code> or <code class="docutils literal notranslate"><span class="pre">-Visitors</span></code> options should be passed, including and ordered collection of visitors.
+In this package you can find different Visitor implementations.</p>
+<div class="section" id="submodules">
+<h2>Submodules<a class="headerlink" href="#submodules" title="Permalink to this headline">¶</a></h2>
+</div>
+<div class="section" id="module-visitors.fix_ptr_literal">
+<span id="visitors-fix-ptr-literal-module"></span><h2>visitors.fix_ptr_literal module<a class="headerlink" href="#module-visitors.fix_ptr_literal" title="Permalink to this headline">¶</a></h2>
+<p>This visitor replaces all the pointer literals with a valid memory address.
+At code generation, pointers literals are just a 0 memory address. Here, they are replaced with memory
+addresses of global variables.</p>
+<dl class="py function">
+<dt id="visitors.fix_ptr_literal.visit">
+<code class="sig-prename descclassname">visitors.fix_ptr_literal.</code><code class="sig-name descname">visit</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">node</span></em>, <em class="sig-param"><span class="n">program</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">function</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="o">**</span><span class="n">kwargs</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/visitors/fix_ptr_literal.html#visit"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#visitors.fix_ptr_literal.visit" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</div>
+<div class="section" id="module-visitors.func_to_proc">
+<span id="visitors-func-to-proc-module"></span><h2>visitors.func_to_proc module<a class="headerlink" href="#module-visitors.func_to_proc" title="Permalink to this headline">¶</a></h2>
+<p>Example visitor that replaces the name of functions returning void.
+Its name prefix is changed from <code class="docutils literal notranslate"><span class="pre">func</span></code> to <code class="docutils literal notranslate"><span class="pre">proc</span></code>.
+All the invocations are also renamed.</p>
+<dl class="py function">
+<dt id="visitors.func_to_proc.visit">
+<code class="sig-prename descclassname">visitors.func_to_proc.</code><code class="sig-name descname">visit</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">node</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/visitors/func_to_proc.html#visit"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#visitors.func_to_proc.visit" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</div>
+<div class="section" id="module-visitors.function_subs">
+<span id="visitors-function-subs-module"></span><h2>visitors.function_subs module<a class="headerlink" href="#module-visitors.function_subs" title="Permalink to this headline">¶</a></h2>
+<p>Visitor to replace the invocations to functions that have been removed with the controlled function
+generation functionality (i.e., <code class="docutils literal notranslate"><span class="pre">-f</span></code> or <code class="docutils literal notranslate"><span class="pre">--functions</span></code> options).</p>
+<dl class="py function">
+<dt id="visitors.function_subs.visit">
+<code class="sig-prename descclassname">visitors.function_subs.</code><code class="sig-name descname">visit</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">node</span></em>, <em class="sig-param"><span class="n">targets</span><span class="p">:</span> <span class="n">List<span class="p">[</span>str<span class="p">]</span></span></em>, <em class="sig-param"><span class="n">function</span><span class="p">:</span> <span class="n"><a class="reference internal" href="core.html#core.ast.Function" title="core.ast.Function">core.ast.Function</a></span></em>, <em class="sig-param"><span class="n">is_statement</span><span class="p">:</span> <span class="n">bool</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/visitors/function_subs.html#visit"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#visitors.function_subs.visit" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</div>
+<div class="section" id="module-visitors.return_instrumentation">
+<span id="visitors-return-instrumentation-module"></span><h2>visitors.return_instrumentation module<a class="headerlink" href="#module-visitors.return_instrumentation" title="Permalink to this headline">¶</a></h2>
+<p>Example visitor that adds a return label before every expression in a return statement.
+The purpose is to identify the binary code used to return from a function.
+If the function returns <code class="docutils literal notranslate"><span class="pre">void</span></code>, a label and an explicit return function is added at the end of the function.</p>
+<dl class="py function">
+<dt id="visitors.return_instrumentation.generate_label">
+<code class="sig-prename descclassname">visitors.return_instrumentation.</code><code class="sig-name descname">generate_label</code><span class="sig-paren">(</span><span class="sig-paren">)</span> &#x2192; str<a class="reference internal" href="_modules/visitors/return_instrumentation.html#generate_label"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#visitors.return_instrumentation.generate_label" title="Permalink to this definition">¶</a></dt>
+<dd><p>Generates a new unique label string</p>
+</dd></dl>
+
+<dl class="py function">
+<dt id="visitors.return_instrumentation.visit">
+<code class="sig-prename descclassname">visitors.return_instrumentation.</code><code class="sig-name descname">visit</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">node</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/visitors/return_instrumentation.html#visit"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#visitors.return_instrumentation.visit" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</div>
+</div>
+
+
+           </div>
+           
+          </div>
+          <footer>
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+        <a href="run.html" class="btn btn-neutral float-left" title="run package" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &#169; Copyright 2021, Francisco Ortin and Javier Escalada.
+
+    </p>
+  </div>
+    
+    
+    
+    Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    
+    provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>

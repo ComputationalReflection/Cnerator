@@ -1,5 +1,10 @@
+#!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
+"""
+A visitor implementation that stores a representation of the calling graph into a text stream.
+Its use is for debugging purposes, to check the structure of the generated program.
+"""
 
 from __future__ import print_function
 from __future__ import unicode_literals
@@ -8,7 +13,7 @@ import io
 
 from singledispatch import singledispatch
 
-from cnerator import ast
+from core import ast
 
 global_visit_main = True
 

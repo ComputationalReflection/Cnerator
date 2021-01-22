@@ -1,9 +1,17 @@
-import cnerator.probs as probs
+#!/usr/bin/env python
+# -*- coding: utf-8 -*-
+
+"""
+This module is aimed at building the epilog of the help message.
+Such message shows the different syntactic constructs provided by Cnerator.
+"""
+
+import core.probs as probs
 from typing import List, Tuple
 
 OPTION_PREFIX = " - "
 NEW_LINE_PREFIX = "   "
-MESSAGE_PRELUDE = "What follows is the available probabilites, which can be customized by the " \
+MESSAGE_PRELUDE = "What follows is the available probabilities, which can be customized by the " \
                   "user with the -p and -P options (see examples in json/probabilities directory):\n"
 MAX_LINE_WITH = 80
 

@@ -1,0 +1,441 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" />
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  
+  <title>debug.graph &mdash; Cnerator latest documentation</title>
+  
+
+  
+  <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+
+  
+  
+
+  
+  
+
+  
+
+  
+  <!--[if lt IE 9]>
+    <script src="../../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="../../" src="../../_static/documentation_options.js"></script>
+        <script src="../../_static/jquery.js"></script>
+        <script src="../../_static/underscore.js"></script>
+        <script src="../../_static/doctools.js"></script>
+    
+    <script type="text/javascript" src="../../_static/js/theme.js"></script>
+
+    
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="../../index.html" class="icon icon-home"> Cnerator
+          
+
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                latest
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <ul>
+<li class="toctree-l1"><a class="reference internal" href="../../getting_started.html">Getting started</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../user_manual.html">User manual</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../modules.html">Cnerator API</a></li>
+</ul>
+
+            
+          
+        </div>
+        
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../index.html">Cnerator</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../../index.html" class="icon icon-home"></a> &raquo;</li>
+        
+          <li><a href="../index.html">Module code</a> &raquo;</li>
+        
+      <li>debug.graph</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <h1>Source code for debug.graph</h1><div class="highlight"><pre>
+<span></span><span class="ch">#!/usr/bin/env python</span>
+<span class="c1"># -*- coding: utf-8 -*-</span>
+
+<span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">A graph representing the struct structures created in memory&quot;</span>
+<span class="sd">&quot;&quot;&quot;</span>
+
+
+<div class="viewcode-block" id="Graph"><a class="viewcode-back" href="../../debug.html#debug.graph.Graph">[docs]</a><span class="k">class</span> <span class="nc">Graph</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;A general-purpose graph class&quot;&quot;&quot;</span>
+
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">graph_dict</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot; initializes a graph object</span>
+<span class="sd">            If no dictionary or None is given, an empty dictionary will be used</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="n">graph_dict</span> <span class="o">==</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">graph_dict</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">__graph_dict</span> <span class="o">=</span> <span class="n">graph_dict</span>
+
+<div class="viewcode-block" id="Graph.vertices"><a class="viewcode-back" href="../../debug.html#debug.graph.Graph.vertices">[docs]</a>    <span class="k">def</span> <span class="nf">vertices</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot; returns the vertices of a graph &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="nb">list</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">__graph_dict</span><span class="o">.</span><span class="n">keys</span><span class="p">())</span></div>
+
+<div class="viewcode-block" id="Graph.edges"><a class="viewcode-back" href="../../debug.html#debug.graph.Graph.edges">[docs]</a>    <span class="k">def</span> <span class="nf">edges</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot; returns the edges of a graph &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">__generate_edges</span><span class="p">()</span></div>
+
+<div class="viewcode-block" id="Graph.add_vertex"><a class="viewcode-back" href="../../debug.html#debug.graph.Graph.add_vertex">[docs]</a>    <span class="k">def</span> <span class="nf">add_vertex</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">vertex</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot; If the vertex &quot;vertex&quot; is not in</span>
+<span class="sd">            self.__graph_dict, a key &quot;vertex&quot; with an empty</span>
+<span class="sd">            list as a value is added to the dictionary.</span>
+<span class="sd">            Otherwise nothing has to be done.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="n">vertex</span> <span class="ow">not</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">__graph_dict</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">__graph_dict</span><span class="p">[</span><span class="n">vertex</span><span class="p">]</span> <span class="o">=</span> <span class="p">[]</span></div>
+
+<div class="viewcode-block" id="Graph.add_edge"><a class="viewcode-back" href="../../debug.html#debug.graph.Graph.add_edge">[docs]</a>    <span class="k">def</span> <span class="nf">add_edge</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">edge</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot; assumes that edge is of type set, tuple or list;</span>
+<span class="sd">            between two vertices can be multiple edges!</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">edge</span> <span class="o">=</span> <span class="nb">set</span><span class="p">(</span><span class="n">edge</span><span class="p">)</span>
+        <span class="n">vertex1</span> <span class="o">=</span> <span class="n">edge</span><span class="o">.</span><span class="n">pop</span><span class="p">()</span>
+        <span class="k">if</span> <span class="n">edge</span><span class="p">:</span>
+            <span class="c1"># not a loop</span>
+            <span class="n">vertex2</span> <span class="o">=</span> <span class="n">edge</span><span class="o">.</span><span class="n">pop</span><span class="p">()</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="c1"># a loop</span>
+            <span class="n">vertex2</span> <span class="o">=</span> <span class="n">vertex1</span>
+        <span class="k">if</span> <span class="n">vertex1</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">__graph_dict</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">__graph_dict</span><span class="p">[</span><span class="n">vertex1</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">vertex2</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">__graph_dict</span><span class="p">[</span><span class="n">vertex1</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span><span class="n">vertex2</span><span class="p">]</span></div>
+
+    <span class="k">def</span> <span class="nf">__generate_edges</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot; A static method generating the edges of the</span>
+<span class="sd">            graph &quot;graph&quot;. Edges are represented as sets</span>
+<span class="sd">            with one (a loop back to the vertex) or two</span>
+<span class="sd">            vertices</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">edges</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">for</span> <span class="n">vertex</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">__graph_dict</span><span class="p">:</span>
+            <span class="k">for</span> <span class="n">neighbour</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">__graph_dict</span><span class="p">[</span><span class="n">vertex</span><span class="p">]:</span>
+                <span class="k">if</span> <span class="p">{</span><span class="n">neighbour</span><span class="p">,</span> <span class="n">vertex</span><span class="p">}</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">edges</span><span class="p">:</span>
+                    <span class="n">edges</span><span class="o">.</span><span class="n">append</span><span class="p">({</span><span class="n">vertex</span><span class="p">,</span> <span class="n">neighbour</span><span class="p">})</span>
+        <span class="k">return</span> <span class="n">edges</span>
+
+    <span class="k">def</span> <span class="fm">__str__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="n">res</span> <span class="o">=</span> <span class="s2">&quot;vertices: &quot;</span>
+        <span class="k">for</span> <span class="n">k</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">__graph_dict</span><span class="p">:</span>
+            <span class="n">res</span> <span class="o">+=</span> <span class="nb">str</span><span class="p">(</span><span class="n">k</span><span class="p">)</span> <span class="o">+</span> <span class="s2">&quot; &quot;</span>
+        <span class="n">res</span> <span class="o">+=</span> <span class="s2">&quot;</span><span class="se">\n</span><span class="s2">edges: &quot;</span>
+        <span class="k">for</span> <span class="n">edge</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">__generate_edges</span><span class="p">():</span>
+            <span class="n">res</span> <span class="o">+=</span> <span class="nb">str</span><span class="p">(</span><span class="n">edge</span><span class="p">)</span> <span class="o">+</span> <span class="s2">&quot; &quot;</span>
+        <span class="k">return</span> <span class="n">res</span>
+
+<div class="viewcode-block" id="Graph.find_isolated_vertices"><a class="viewcode-back" href="../../debug.html#debug.graph.Graph.find_isolated_vertices">[docs]</a>    <span class="k">def</span> <span class="nf">find_isolated_vertices</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot; returns a list of isolated vertices. &quot;&quot;&quot;</span>
+        <span class="n">graph</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">__graph_dict</span>
+        <span class="n">isolated</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">for</span> <span class="n">vertex</span> <span class="ow">in</span> <span class="n">graph</span><span class="p">:</span>
+            <span class="nb">print</span><span class="p">(</span><span class="n">isolated</span><span class="p">,</span> <span class="n">vertex</span><span class="p">)</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="n">graph</span><span class="p">[</span><span class="n">vertex</span><span class="p">]:</span>
+                <span class="n">isolated</span> <span class="o">+=</span> <span class="p">[</span><span class="n">vertex</span><span class="p">]</span>
+        <span class="k">return</span> <span class="n">isolated</span></div>
+
+<div class="viewcode-block" id="Graph.find_path"><a class="viewcode-back" href="../../debug.html#debug.graph.Graph.find_path">[docs]</a>    <span class="k">def</span> <span class="nf">find_path</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">start_vertex</span><span class="p">,</span> <span class="n">end_vertex</span><span class="p">,</span> <span class="n">path</span><span class="o">=</span><span class="p">[]):</span>
+        <span class="sd">&quot;&quot;&quot; find a path from start_vertex to end_vertex</span>
+<span class="sd">            in graph &quot;&quot;&quot;</span>
+        <span class="n">graph</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">__graph_dict</span>
+        <span class="n">path</span> <span class="o">=</span> <span class="n">path</span> <span class="o">+</span> <span class="p">[</span><span class="n">start_vertex</span><span class="p">]</span>
+        <span class="k">if</span> <span class="n">start_vertex</span> <span class="o">==</span> <span class="n">end_vertex</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">path</span>
+        <span class="k">if</span> <span class="n">start_vertex</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">graph</span><span class="p">:</span>
+            <span class="k">return</span> <span class="kc">None</span>
+        <span class="k">for</span> <span class="n">vertex</span> <span class="ow">in</span> <span class="n">graph</span><span class="p">[</span><span class="n">start_vertex</span><span class="p">]:</span>
+            <span class="k">if</span> <span class="n">vertex</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">path</span><span class="p">:</span>
+                <span class="n">extended_path</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">find_path</span><span class="p">(</span><span class="n">vertex</span><span class="p">,</span>
+                                               <span class="n">end_vertex</span><span class="p">,</span>
+                                               <span class="n">path</span><span class="p">)</span>
+                <span class="k">if</span> <span class="n">extended_path</span><span class="p">:</span>
+                    <span class="k">return</span> <span class="n">extended_path</span>
+        <span class="k">return</span> <span class="kc">None</span></div>
+
+<div class="viewcode-block" id="Graph.find_all_paths"><a class="viewcode-back" href="../../debug.html#debug.graph.Graph.find_all_paths">[docs]</a>    <span class="k">def</span> <span class="nf">find_all_paths</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">start_vertex</span><span class="p">,</span> <span class="n">end_vertex</span><span class="p">,</span> <span class="n">path</span><span class="o">=</span><span class="p">[]):</span>
+        <span class="sd">&quot;&quot;&quot; find all paths from start_vertex to</span>
+<span class="sd">            end_vertex in graph &quot;&quot;&quot;</span>
+        <span class="n">graph</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">__graph_dict</span>
+        <span class="n">path</span> <span class="o">=</span> <span class="n">path</span> <span class="o">+</span> <span class="p">[</span><span class="n">start_vertex</span><span class="p">]</span>
+        <span class="k">if</span> <span class="n">start_vertex</span> <span class="o">==</span> <span class="n">end_vertex</span><span class="p">:</span>
+            <span class="k">return</span> <span class="p">[</span><span class="n">path</span><span class="p">]</span>
+        <span class="k">if</span> <span class="n">start_vertex</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">graph</span><span class="p">:</span>
+            <span class="k">return</span> <span class="p">[]</span>
+        <span class="n">paths</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">for</span> <span class="n">vertex</span> <span class="ow">in</span> <span class="n">graph</span><span class="p">[</span><span class="n">start_vertex</span><span class="p">]:</span>
+            <span class="k">if</span> <span class="n">vertex</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">path</span><span class="p">:</span>
+                <span class="n">extended_paths</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">find_all_paths</span><span class="p">(</span><span class="n">vertex</span><span class="p">,</span>
+                                                     <span class="n">end_vertex</span><span class="p">,</span>
+                                                     <span class="n">path</span><span class="p">)</span>
+                <span class="k">for</span> <span class="n">p</span> <span class="ow">in</span> <span class="n">extended_paths</span><span class="p">:</span>
+                    <span class="n">paths</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">p</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">paths</span></div>
+
+<div class="viewcode-block" id="Graph.is_connected"><a class="viewcode-back" href="../../debug.html#debug.graph.Graph.is_connected">[docs]</a>    <span class="k">def</span> <span class="nf">is_connected</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span>
+                     <span class="n">vertices_encountered</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+                     <span class="n">start_vertex</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot; determines if the graph is connected &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="n">vertices_encountered</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">vertices_encountered</span> <span class="o">=</span> <span class="nb">set</span><span class="p">()</span>
+        <span class="n">gdict</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">__graph_dict</span>
+        <span class="n">vertices</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">gdict</span><span class="o">.</span><span class="n">keys</span><span class="p">())</span>  <span class="c1"># &quot;list&quot; necessary in Python 3</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">start_vertex</span><span class="p">:</span>
+            <span class="c1"># chosse a vertex from graph as a starting point</span>
+            <span class="n">start_vertex</span> <span class="o">=</span> <span class="n">vertices</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+        <span class="n">vertices_encountered</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">start_vertex</span><span class="p">)</span>
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">vertices_encountered</span><span class="p">)</span> <span class="o">!=</span> <span class="nb">len</span><span class="p">(</span><span class="n">vertices</span><span class="p">):</span>
+            <span class="k">for</span> <span class="n">vertex</span> <span class="ow">in</span> <span class="n">gdict</span><span class="p">[</span><span class="n">start_vertex</span><span class="p">]:</span>
+                <span class="k">if</span> <span class="n">vertex</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">vertices_encountered</span><span class="p">:</span>
+                    <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">is_connected</span><span class="p">(</span><span class="n">vertices_encountered</span><span class="p">,</span> <span class="n">vertex</span><span class="p">):</span>
+                        <span class="k">return</span> <span class="kc">True</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">return</span> <span class="kc">True</span>
+        <span class="k">return</span> <span class="kc">False</span></div>
+
+<div class="viewcode-block" id="Graph.vertex_degree"><a class="viewcode-back" href="../../debug.html#debug.graph.Graph.vertex_degree">[docs]</a>    <span class="k">def</span> <span class="nf">vertex_degree</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">vertex</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot; The degree of a vertex is the number of edges connecting</span>
+<span class="sd">            it, i.e. the number of adjacent vertices. Loops are counted</span>
+<span class="sd">            double, i.e. every occurence of vertex in the list</span>
+<span class="sd">            of adjacent vertices. &quot;&quot;&quot;</span>
+        <span class="n">adj_vertices</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">__graph_dict</span><span class="p">[</span><span class="n">vertex</span><span class="p">]</span>
+        <span class="n">degree</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">adj_vertices</span><span class="p">)</span> <span class="o">+</span> <span class="n">adj_vertices</span><span class="o">.</span><span class="n">count</span><span class="p">(</span><span class="n">vertex</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">degree</span></div>
+
+
+<div class="viewcode-block" id="Graph.degree_sequence"><a class="viewcode-back" href="../../debug.html#debug.graph.Graph.degree_sequence">[docs]</a>    <span class="k">def</span> <span class="nf">degree_sequence</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot; calculates the degree sequence &quot;&quot;&quot;</span>
+        <span class="n">seq</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">for</span> <span class="n">vertex</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">__graph_dict</span><span class="p">:</span>
+            <span class="n">seq</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">vertex_degree</span><span class="p">(</span><span class="n">vertex</span><span class="p">))</span>
+        <span class="n">seq</span><span class="o">.</span><span class="n">sort</span><span class="p">(</span><span class="n">reverse</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+        <span class="k">return</span> <span class="nb">tuple</span><span class="p">(</span><span class="n">seq</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="Graph.is_degree_sequence"><a class="viewcode-back" href="../../debug.html#debug.graph.Graph.is_degree_sequence">[docs]</a>    <span class="nd">@staticmethod</span>
+    <span class="k">def</span> <span class="nf">is_degree_sequence</span><span class="p">(</span><span class="n">sequence</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot; Method returns True, if the sequence &quot;sequence&quot; is a</span>
+<span class="sd">            degree sequence, i.e. a non-increasing sequence.</span>
+<span class="sd">            Otherwise False is returned.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c1"># check if the sequence sequence is non-increasing:</span>
+        <span class="k">return</span> <span class="nb">all</span><span class="p">(</span><span class="n">x</span> <span class="o">&gt;=</span> <span class="n">y</span> <span class="k">for</span> <span class="n">x</span><span class="p">,</span> <span class="n">y</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">sequence</span><span class="p">,</span> <span class="n">sequence</span><span class="p">[</span><span class="mi">1</span><span class="p">:]))</span></div>
+
+
+<div class="viewcode-block" id="Graph.delta"><a class="viewcode-back" href="../../debug.html#debug.graph.Graph.delta">[docs]</a>    <span class="k">def</span> <span class="nf">delta</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot; the minimum degree of the vertices &quot;&quot;&quot;</span>
+        <span class="nb">min</span> <span class="o">=</span> <span class="mi">100000000</span>
+        <span class="k">for</span> <span class="n">vertex</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">__graph_dict</span><span class="p">:</span>
+            <span class="n">vertex_degree</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">vertex_degree</span><span class="p">(</span><span class="n">vertex</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">vertex_degree</span> <span class="o">&lt;</span> <span class="nb">min</span><span class="p">:</span>
+                <span class="nb">min</span> <span class="o">=</span> <span class="n">vertex_degree</span>
+        <span class="k">return</span> <span class="nb">min</span></div>
+
+
+<div class="viewcode-block" id="Graph.Delta"><a class="viewcode-back" href="../../debug.html#debug.graph.Graph.Delta">[docs]</a>    <span class="k">def</span> <span class="nf">Delta</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot; the maximum degree of the vertices &quot;&quot;&quot;</span>
+        <span class="nb">max</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="k">for</span> <span class="n">vertex</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">__graph_dict</span><span class="p">:</span>
+            <span class="n">vertex_degree</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">vertex_degree</span><span class="p">(</span><span class="n">vertex</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">vertex_degree</span> <span class="o">&gt;</span> <span class="nb">max</span><span class="p">:</span>
+                <span class="nb">max</span> <span class="o">=</span> <span class="n">vertex_degree</span>
+        <span class="k">return</span> <span class="nb">max</span></div>
+
+
+<div class="viewcode-block" id="Graph.density"><a class="viewcode-back" href="../../debug.html#debug.graph.Graph.density">[docs]</a>    <span class="k">def</span> <span class="nf">density</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot; method to calculate the density of a graph &quot;&quot;&quot;</span>
+        <span class="n">g</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">__graph_dict</span>
+        <span class="n">V</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">g</span><span class="o">.</span><span class="n">keys</span><span class="p">())</span>
+        <span class="n">E</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">edges</span><span class="p">())</span>
+        <span class="k">return</span> <span class="mf">2.0</span> <span class="o">*</span> <span class="n">E</span> <span class="o">/</span> <span class="p">(</span><span class="n">V</span> <span class="o">*</span> <span class="p">(</span><span class="n">V</span> <span class="o">-</span> <span class="mi">1</span><span class="p">))</span></div>
+
+
+<div class="viewcode-block" id="Graph.diameter"><a class="viewcode-back" href="../../debug.html#debug.graph.Graph.diameter">[docs]</a>    <span class="k">def</span> <span class="nf">diameter</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot; calculates the diameter of the graph &quot;&quot;&quot;</span>
+
+        <span class="n">v</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">vertices</span><span class="p">()</span>
+        <span class="n">pairs</span> <span class="o">=</span> <span class="p">[(</span><span class="n">v</span><span class="p">[</span><span class="n">i</span><span class="p">],</span> <span class="n">v</span><span class="p">[</span><span class="n">j</span><span class="p">])</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">v</span><span class="p">))</span> <span class="k">for</span> <span class="n">j</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">i</span> <span class="o">+</span> <span class="mi">1</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">v</span><span class="p">)</span> <span class="o">-</span> <span class="mi">1</span><span class="p">)]</span>
+        <span class="n">smallest_paths</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">for</span> <span class="p">(</span><span class="n">s</span><span class="p">,</span> <span class="n">e</span><span class="p">)</span> <span class="ow">in</span> <span class="n">pairs</span><span class="p">:</span>
+            <span class="n">paths</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">find_all_paths</span><span class="p">(</span><span class="n">s</span><span class="p">,</span> <span class="n">e</span><span class="p">)</span>
+            <span class="n">smallest</span> <span class="o">=</span> <span class="nb">sorted</span><span class="p">(</span><span class="n">paths</span><span class="p">,</span> <span class="n">key</span><span class="o">=</span><span class="nb">len</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
+            <span class="n">smallest_paths</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">smallest</span><span class="p">)</span>
+
+        <span class="n">smallest_paths</span><span class="o">.</span><span class="n">sort</span><span class="p">(</span><span class="n">key</span><span class="o">=</span><span class="nb">len</span><span class="p">)</span>
+
+        <span class="c1"># longest path is at the end of list,</span>
+        <span class="c1"># i.e. diameter corresponds to the length of this path</span>
+        <span class="n">diameter</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">smallest_paths</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">])</span>
+        <span class="k">return</span> <span class="n">diameter</span></div>
+
+
+<div class="viewcode-block" id="Graph.erdoes_gallai"><a class="viewcode-back" href="../../debug.html#debug.graph.Graph.erdoes_gallai">[docs]</a>    <span class="nd">@staticmethod</span>
+    <span class="k">def</span> <span class="nf">erdoes_gallai</span><span class="p">(</span><span class="n">dsequence</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot; Checks if the condition of the Erdoes-Gallai inequality</span>
+<span class="sd">            is fullfilled</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="nb">sum</span><span class="p">(</span><span class="n">dsequence</span><span class="p">)</span> <span class="o">%</span> <span class="mi">2</span><span class="p">:</span>
+            <span class="c1"># sum of sequence is odd</span>
+            <span class="k">return</span> <span class="kc">False</span>
+        <span class="k">if</span> <span class="n">Graph</span><span class="o">.</span><span class="n">is_degree_sequence</span><span class="p">(</span><span class="n">dsequence</span><span class="p">):</span>
+            <span class="k">for</span> <span class="n">k</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">dsequence</span><span class="p">)</span> <span class="o">+</span> <span class="mi">1</span><span class="p">):</span>
+                <span class="n">left</span> <span class="o">=</span> <span class="nb">sum</span><span class="p">(</span><span class="n">dsequence</span><span class="p">[:</span><span class="n">k</span><span class="p">])</span>
+                <span class="n">right</span> <span class="o">=</span> <span class="n">k</span> <span class="o">*</span> <span class="p">(</span><span class="n">k</span> <span class="o">-</span> <span class="mi">1</span><span class="p">)</span> <span class="o">+</span> <span class="nb">sum</span><span class="p">([</span><span class="nb">min</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">k</span><span class="p">)</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">dsequence</span><span class="p">[</span><span class="n">k</span><span class="p">:]])</span>
+                <span class="k">if</span> <span class="n">left</span> <span class="o">&gt;</span> <span class="n">right</span><span class="p">:</span>
+                    <span class="k">return</span> <span class="kc">False</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="c1"># sequence is increasing</span>
+            <span class="k">return</span> <span class="kc">False</span>
+        <span class="k">return</span> <span class="kc">True</span></div></div>
+</pre></div>
+
+           </div>
+           
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &#169; Copyright 2021, Francisco Ortin and Javier Escalada.
+
+    </p>
+  </div>
+    
+    
+    
+    Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    
+    provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>
