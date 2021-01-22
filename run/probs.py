@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 
 """
-Example execution of Cnerator passing the --p parameter.
+Example execution of Cnerator passing the ``-p`` parameter to specify the probabilities of two language constructs.
 """
 
 import sys

@@ -1,4 +1,6 @@
+#!/usr/bin/env python
 # -*- coding: utf-8 -*-
+
 """
 These functions are used to define the probability of the different syntax constructs of the C language.
 Probabilities are defined as Dict[object, float], where the key are the different values to be generated and the

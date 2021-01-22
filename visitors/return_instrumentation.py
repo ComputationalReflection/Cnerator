@@ -2,8 +2,8 @@
 # -*- coding: utf-8 -*-
 
 """Example visitor that adds a return label before every expression in a return statement.
-The purpose is to get the binary code used to return from a function.
-If the function returns void, a label and an explicit return function is added at the end of the function."""
+The purpose is to identify the binary code used to return from a function.
+If the function returns ``void``, a label and an explicit return function is added at the end of the function."""
 
 
 from singledispatch import singledispatch

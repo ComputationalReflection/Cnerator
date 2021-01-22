@@ -1,3 +1,13 @@
+#!/usr/bin/env python
+# -*- coding: utf-8 -*-
+
+"""
+Module aimed at generating the different elements of the output C program.
+Each syntax construct is encapsulated into a ``generate_`` <syntax construct> function.
+First ``generate_program`` is called, which in turn calls other generators until the whole program is generated.
+The probabilities of all the syntactic constructs are considered.
+Program representation is return by each generator, represented as AST nodes.
+"""
 
 from __future__ import print_function
 

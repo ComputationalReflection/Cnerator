@@ -1,3 +1,5 @@
+#!/usr/bin/env python
+# -*- coding: utf-8 -*-
 
 """
 This module holds the Abstract Syntax Tree (AST) program representation.
@@ -641,7 +643,7 @@ class LongDouble(NumericType):
 
 
 def structs_references_graph(structs):
-    from core import graph
+    from debug import graph
     references = collections.defaultdict(list)
     for s in structs:
         for f, t in s.fields:

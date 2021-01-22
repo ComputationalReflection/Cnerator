@@ -1,7 +1,11 @@
+#!/usr/bin/env python
 # -*- coding: utf-8 -*-
+
 
 """
 This module defines the types of C experessions, relative to the syntax of the C operators.
+It only contains data, no computation.
+Data are two dictionaries: ``by_operands`` (depending on the operator) and ``by_return`` (returned by an operator).
 """
 
 

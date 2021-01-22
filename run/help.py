@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 
 """
-Example execution of Cnerator passing the --help parameter.
+Example execution of Cnerator passing the ``--help`` parameter.
 """
 
 import sys

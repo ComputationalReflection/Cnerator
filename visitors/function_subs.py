@@ -1,6 +1,8 @@
+#!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
-"""Visitor to replace the invocations to functions that have been removed"""
+"""Visitor to replace the invocations to functions that have been removed with the controlled function
+generation functionality (i.e., ``-f`` or ``--functions`` options)."""
 
 from singledispatch import singledispatch
 from core import ast, generators, probs

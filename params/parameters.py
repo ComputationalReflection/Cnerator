@@ -1,3 +1,10 @@
+#!/usr/bin/env python
+# -*- coding: utf-8 -*-
+
+"""
+Module where the command line arguments are parsed.
+"""
+
 import argparse
 import json
 import sys

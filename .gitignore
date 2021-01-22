@@ -143,6 +143,8 @@ out/
 # Pycharm config dir
 .idea/
 
+# Sphinx documentation
+sphinx/_build/
 
 scratch.py
 out/

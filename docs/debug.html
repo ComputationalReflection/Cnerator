@@ -1,0 +1,382 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" />
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  
+  <title>debug package &mdash; Cnerator latest documentation</title>
+  
+
+  
+  <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+
+  
+  
+
+  
+  
+
+  
+
+  
+  <!--[if lt IE 9]>
+    <script src="_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
+        <script src="_static/jquery.js"></script>
+        <script src="_static/underscore.js"></script>
+        <script src="_static/doctools.js"></script>
+    
+    <script type="text/javascript" src="_static/js/theme.js"></script>
+
+    
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="params package" href="params.html" />
+    <link rel="prev" title="core package" href="core.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="index.html" class="icon icon-home"> Cnerator
+          
+
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                latest
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="getting_started.html">Getting started</a></li>
+<li class="toctree-l1"><a class="reference internal" href="user_manual.html">User manual</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="modules.html">Cnerator API</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="cnerator.html">Cnerator module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="core.html">core package</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="#">debug package</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#submodules">Submodules</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#module-debug.graph">debug.graph module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#module-debug.call_inspector">debug.call_inspector module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#module-debug.structure_inspector">debug.structure_inspector module</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="params.html">params package</a></li>
+<li class="toctree-l2"><a class="reference internal" href="run.html">run package</a></li>
+<li class="toctree-l2"><a class="reference internal" href="visitors.html">visitors package</a></li>
+</ul>
+</li>
+</ul>
+
+            
+          
+        </div>
+        
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">Cnerator</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="index.html" class="icon icon-home"></a> &raquo;</li>
+        
+          <li><a href="modules.html">Cnerator API</a> &raquo;</li>
+        
+      <li>debug package</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="module-debug">
+<span id="debug-package"></span><h1>debug package<a class="headerlink" href="#module-debug" title="Permalink to this headline">¶</a></h1>
+<p>This package stores different program information (call graphs and struct representations)
+as graphs and saves them as .dot files.
+Such functionality only occurs when the <code class="docutils literal notranslate"><span class="pre">-d</span></code> or <code class="docutils literal notranslate"><span class="pre">--debug</span></code> options are passed from the command line.</p>
+<div class="section" id="submodules">
+<h2>Submodules<a class="headerlink" href="#submodules" title="Permalink to this headline">¶</a></h2>
+</div>
+<div class="section" id="module-debug.graph">
+<span id="debug-graph-module"></span><h2>debug.graph module<a class="headerlink" href="#module-debug.graph" title="Permalink to this headline">¶</a></h2>
+<p>A graph representing the struct structures created in memory”</p>
+<dl class="py class">
+<dt id="debug.graph.Graph">
+<em class="property">class </em><code class="sig-prename descclassname">debug.graph.</code><code class="sig-name descname">Graph</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">graph_dict</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/debug/graph.html#Graph"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#debug.graph.Graph" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p>A general-purpose graph class</p>
+<dl class="py method">
+<dt id="debug.graph.Graph.Delta">
+<code class="sig-name descname">Delta</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/debug/graph.html#Graph.Delta"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#debug.graph.Graph.Delta" title="Permalink to this definition">¶</a></dt>
+<dd><p>the maximum degree of the vertices</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="debug.graph.Graph.add_edge">
+<code class="sig-name descname">add_edge</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">edge</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/debug/graph.html#Graph.add_edge"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#debug.graph.Graph.add_edge" title="Permalink to this definition">¶</a></dt>
+<dd><p>assumes that edge is of type set, tuple or list;
+between two vertices can be multiple edges!</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="debug.graph.Graph.add_vertex">
+<code class="sig-name descname">add_vertex</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">vertex</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/debug/graph.html#Graph.add_vertex"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#debug.graph.Graph.add_vertex" title="Permalink to this definition">¶</a></dt>
+<dd><p>If the vertex “vertex” is not in
+self.__graph_dict, a key “vertex” with an empty
+list as a value is added to the dictionary.
+Otherwise nothing has to be done.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="debug.graph.Graph.degree_sequence">
+<code class="sig-name descname">degree_sequence</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/debug/graph.html#Graph.degree_sequence"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#debug.graph.Graph.degree_sequence" title="Permalink to this definition">¶</a></dt>
+<dd><p>calculates the degree sequence</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="debug.graph.Graph.delta">
+<code class="sig-name descname">delta</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/debug/graph.html#Graph.delta"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#debug.graph.Graph.delta" title="Permalink to this definition">¶</a></dt>
+<dd><p>the minimum degree of the vertices</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="debug.graph.Graph.density">
+<code class="sig-name descname">density</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/debug/graph.html#Graph.density"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#debug.graph.Graph.density" title="Permalink to this definition">¶</a></dt>
+<dd><p>method to calculate the density of a graph</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="debug.graph.Graph.diameter">
+<code class="sig-name descname">diameter</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/debug/graph.html#Graph.diameter"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#debug.graph.Graph.diameter" title="Permalink to this definition">¶</a></dt>
+<dd><p>calculates the diameter of the graph</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="debug.graph.Graph.edges">
+<code class="sig-name descname">edges</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/debug/graph.html#Graph.edges"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#debug.graph.Graph.edges" title="Permalink to this definition">¶</a></dt>
+<dd><p>returns the edges of a graph</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="debug.graph.Graph.erdoes_gallai">
+<em class="property">static </em><code class="sig-name descname">erdoes_gallai</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">dsequence</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/debug/graph.html#Graph.erdoes_gallai"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#debug.graph.Graph.erdoes_gallai" title="Permalink to this definition">¶</a></dt>
+<dd><p>Checks if the condition of the Erdoes-Gallai inequality
+is fullfilled</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="debug.graph.Graph.find_all_paths">
+<code class="sig-name descname">find_all_paths</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">start_vertex</span></em>, <em class="sig-param"><span class="n">end_vertex</span></em>, <em class="sig-param"><span class="n">path</span><span class="o">=</span><span class="default_value">[]</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/debug/graph.html#Graph.find_all_paths"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#debug.graph.Graph.find_all_paths" title="Permalink to this definition">¶</a></dt>
+<dd><p>find all paths from start_vertex to
+end_vertex in graph</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="debug.graph.Graph.find_isolated_vertices">
+<code class="sig-name descname">find_isolated_vertices</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/debug/graph.html#Graph.find_isolated_vertices"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#debug.graph.Graph.find_isolated_vertices" title="Permalink to this definition">¶</a></dt>
+<dd><p>returns a list of isolated vertices.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="debug.graph.Graph.find_path">
+<code class="sig-name descname">find_path</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">start_vertex</span></em>, <em class="sig-param"><span class="n">end_vertex</span></em>, <em class="sig-param"><span class="n">path</span><span class="o">=</span><span class="default_value">[]</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/debug/graph.html#Graph.find_path"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#debug.graph.Graph.find_path" title="Permalink to this definition">¶</a></dt>
+<dd><p>find a path from start_vertex to end_vertex
+in graph</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="debug.graph.Graph.is_connected">
+<code class="sig-name descname">is_connected</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">vertices_encountered</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">start_vertex</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/debug/graph.html#Graph.is_connected"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#debug.graph.Graph.is_connected" title="Permalink to this definition">¶</a></dt>
+<dd><p>determines if the graph is connected</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="debug.graph.Graph.is_degree_sequence">
+<em class="property">static </em><code class="sig-name descname">is_degree_sequence</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">sequence</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/debug/graph.html#Graph.is_degree_sequence"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#debug.graph.Graph.is_degree_sequence" title="Permalink to this definition">¶</a></dt>
+<dd><p>Method returns True, if the sequence “sequence” is a
+degree sequence, i.e. a non-increasing sequence.
+Otherwise False is returned.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="debug.graph.Graph.vertex_degree">
+<code class="sig-name descname">vertex_degree</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">vertex</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/debug/graph.html#Graph.vertex_degree"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#debug.graph.Graph.vertex_degree" title="Permalink to this definition">¶</a></dt>
+<dd><p>The degree of a vertex is the number of edges connecting
+it, i.e. the number of adjacent vertices. Loops are counted
+double, i.e. every occurence of vertex in the list
+of adjacent vertices.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="debug.graph.Graph.vertices">
+<code class="sig-name descname">vertices</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/debug/graph.html#Graph.vertices"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#debug.graph.Graph.vertices" title="Permalink to this definition">¶</a></dt>
+<dd><p>returns the vertices of a graph</p>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="module-debug.call_inspector">
+<span id="debug-call-inspector-module"></span><h2>debug.call_inspector module<a class="headerlink" href="#module-debug.call_inspector" title="Permalink to this headline">¶</a></h2>
+<p>A visitor implementation that stores a representation of the calling graph into a text stream.
+Its use is for debugging purposes, to check the structure of the generated program.</p>
+<dl class="py function">
+<dt id="debug.call_inspector.callinsp_visit">
+<code class="sig-prename descclassname">debug.call_inspector.</code><code class="sig-name descname">callinsp_visit</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">node</span></em>, <em class="sig-param"><span class="n">nodes</span></em>, <em class="sig-param"><span class="n">edges</span></em>, <em class="sig-param"><span class="o">*</span><span class="n">args</span></em>, <em class="sig-param"><span class="o">**</span><span class="n">kwargs</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/debug/call_inspector.html#callinsp_visit"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#debug.call_inspector.callinsp_visit" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py function">
+<dt id="debug.call_inspector.write_graph">
+<code class="sig-prename descclassname">debug.call_inspector.</code><code class="sig-name descname">write_graph</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">program</span></em>, <em class="sig-param"><span class="n">visit_main</span></em>, <em class="sig-param"><span class="n">path</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/debug/call_inspector.html#write_graph"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#debug.call_inspector.write_graph" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</div>
+<div class="section" id="module-debug.structure_inspector">
+<span id="debug-structure-inspector-module"></span><h2>debug.structure_inspector module<a class="headerlink" href="#module-debug.structure_inspector" title="Permalink to this headline">¶</a></h2>
+<p>Stores in a text stream the representation of the struct data types in the generated program.
+Its use is for debugging purposes, to check the structure of the struct types in the generated program.</p>
+<dl class="py function">
+<dt id="debug.structure_inspector.get_struct_name">
+<code class="sig-prename descclassname">debug.structure_inspector.</code><code class="sig-name descname">get_struct_name</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">t</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/debug/structure_inspector.html#get_struct_name"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#debug.structure_inspector.get_struct_name" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py function">
+<dt id="debug.structure_inspector.write_graph">
+<code class="sig-prename descclassname">debug.structure_inspector.</code><code class="sig-name descname">write_graph</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">program</span></em>, <em class="sig-param"><span class="n">path</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/debug/structure_inspector.html#write_graph"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#debug.structure_inspector.write_graph" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</div>
+</div>
+
+
+           </div>
+           
+          </div>
+          <footer>
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+        <a href="getting_started.html" class="btn btn-neutral float-right" title="Getting started" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &#169; Copyright 2021, <a href="http://www.reflection.uniovi.es/ortin">Francisco Ortin</a> and <a href="http://www.javierescalada.es">Javier Escalada</a>.
+
+    </p>
+  </div>
+
+
+
+    Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+
+</footer>
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>

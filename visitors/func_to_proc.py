@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 
 """Example visitor that replaces the name of functions returning void.
-Its name is changed from funcX to procX.
+Its name prefix is changed from ``func`` to ``proc``.
 All the invocations are also renamed."""
 
 

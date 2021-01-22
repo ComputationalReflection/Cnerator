@@ -1,5 +1,10 @@
+#!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
+"""
+Stores in a text stream the representation of the struct data types in the generated program.
+Its use is for debugging purposes, to check the structure of the struct types in the generated program.
+"""
 
 from __future__ import print_function
 from __future__ import unicode_literals

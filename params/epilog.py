@@ -1,3 +1,6 @@
+#!/usr/bin/env python
+# -*- coding: utf-8 -*-
+
 """
 This module is aimed at building the epilog of the help message.
 Such message shows the different syntactic constructs provided by Cnerator.

@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 
 """
-Example execution of Cnerator passing no parameters but generation in one file ().
+Example execution of Cnerator passing no parameters but generation in one file (``-n 1``).
 """
 
 import sys

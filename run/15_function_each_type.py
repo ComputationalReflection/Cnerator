@@ -3,7 +3,7 @@
 
 """
 Example execution of Cnerator to create a particular number of functions.
-It creates a program using the 15-function-each-type.json file, running different visitors.
+It creates a program using the ``15-function-each-type.json`` file, running different visitors.
 """
 
 import sys

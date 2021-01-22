@@ -1,4 +1,6 @@
+#!/usr/bin/env python
 # -*- coding: utf-8 -*-
+
 """
 This module defines the way expressions are built, relative to the syntax of the C operators.
 You can modify then to change the way expressions are created.

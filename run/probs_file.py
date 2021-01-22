@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 
 """
-Example execution of Cnerator specifying probabilities in a json file.
+Example execution of Cnerator specifying probabilities in a json file (``example_probs.json``).
 """
 
 import sys

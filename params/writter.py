@@ -1,3 +1,11 @@
+#!/usr/bin/env python
+# -*- coding: utf-8 -*-
+
+"""
+This modulete takes the program representation (AST) and writes it into the different
+compilation units specified by the user through the ``-n`` or ``-nfiles`` options.
+"""
+
 import io
 import os
 

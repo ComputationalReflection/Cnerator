@@ -1,3 +1,6 @@
+#!/usr/bin/env python
+# -*- coding: utf-8 -*-
+
 """
 This is the most important package in Cnerator, which provides the core functionality.
 In this package, you can find the Abstract Syntax Tree (AST) program representation,

@@ -1,3 +1,10 @@
+#!/usr/bin/env python
+# -*- coding: utf-8 -*-
+
+"""
+Different functions to infer the type of a syntax construct.
+This module heavily depends on the data provided in the ``operators_types`` module.
+"""
 
 from functools import partial
 
