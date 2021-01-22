@@ -313,7 +313,7 @@ def generate_label() -> str:
 The previous code traverses the representation of the generated program (i.e., its Abstract Syntax Tree (AST)), 
 and adds a unique label before each `return` statement. 
 The `_instrument_statements function` takes a list of statements (represented as
-AST nodes) and adds a unique label —prefixed with `__RETURN__`– before each `return` statement. 
+AST nodes) and adds a unique label –prefixed with `__RETURN__`– before each `return` statement. 
 This is later used in the traversal of function definitions (`ast.Function`), 
 and `do`, `while`, `for` and block statements  
 –`if` and `switch` control flow statements follow the same template. 
