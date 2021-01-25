@@ -388,9 +388,11 @@ def generate_stmt_return(program, function, exp=None):
         if isinstance(c_type, ast.SignedInt) and probs_helper.random_value(probs.int_emulate_bool):
             value = probs_helper.random_value({0: 0.5, 1: 0.5})
             exp = ast.Literal("/* EMULATED BOOL LITERAL */ ({}) {}".format(c_type.name, value), c_type)
-        else: 
-            exp = generate_expression(program, function, c_type, probs.return_exp_depth_prob)
-    return ast.Return(exp, c_type)
+            return ast.Return(exp, c_type)
+    elif not isinstance(c_type, ast.Void):  # return <expression>;
+        exp = generate_expression(program, function, c_type, probs.return_exp_depth_prob)
+        return ast.Return(exp, c_type)
+    return ast.Return()  # return; (without expression)
 
 
 def generate_stmt_block(program: Program, function: Function, stmt_depth: int) -> Block:
@@ -603,7 +605,6 @@ def generate_program():
     program = ast.Program()
     program.main = main_function = ast.Function("main", ast.SignedInt(), [])
     for i in range(number_statements):
-        print_if_verbose("." if i % 1000 else "\n", end="")
         program.main.stmts.append(generate_stmt_func(program, main_function))
     main_function.stmts.append(generate_stmt_return(program, main_function, exp=0))
     return program
