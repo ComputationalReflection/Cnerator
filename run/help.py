@@ -3,6 +3,7 @@
 
 """
 Example execution of Cnerator passing the ``--help`` parameter.
+Run it from the parent folder with ``python -m run.help``.
 """
 
 import sys
