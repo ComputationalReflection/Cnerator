@@ -8,9 +8,10 @@ If you are looking for developer documentation, please check this
 ## Installation
 
 You need a Python 3.7+ standard implementation. 
-The only additional package to install is `singledispatch`:
+The only additional packages to install are `numpy` and `singledispatch`:
 
 ``` text
+pip install numpy
 pip install singledispatch
 ```
 
