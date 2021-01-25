@@ -45,10 +45,11 @@ the input programs used to train such models comprise abundant and varied code p
 
 ## Usage
 
-To run Cnerator, you need to install the `singledispatch` Python package first:
+To run Cnerator, you need to install `numpy` and `singledispatch` Python packages:
 
 
 ``` text
+pip install numpy
 pip install singledispatch
 ```
 

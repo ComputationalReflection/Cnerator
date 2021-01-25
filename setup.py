@@ -54,7 +54,7 @@ setup(
     license=__license,
     keywords="C language lang code generator",
     install_requires=read_lines("requirements.txt"),
-    #dependency_links=['singledispatch'],
+    dependency_links=['singledispatch', 'numpy'],
     packages=find_packages(),
     platforms='any',
     classifiers=[
