@@ -11,7 +11,7 @@ from __future__ import unicode_literals
 
 import io
 
-from singledispatch import singledispatch
+from functools import singledispatch
 
 from core import ast
 

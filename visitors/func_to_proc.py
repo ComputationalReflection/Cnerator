@@ -6,7 +6,7 @@ Its name prefix is changed from ``func`` to ``proc``.
 All the invocations are also renamed."""
 
 
-from singledispatch import singledispatch
+from functools import singledispatch
 import core
 from core.utils import print_if_verbose
 from core import ast

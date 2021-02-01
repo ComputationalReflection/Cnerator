@@ -262,7 +262,7 @@ source code generalization. The following code shows an example Python post-proc
 
 .. code-block:: python
 
-    from singledispatch import singledispatch
+    from functools import singledispatch
     from cnerator import ast
 
     def _instrument_statements(statements: List[ast.ASTNode]) -> List[ast.ASTNode]:

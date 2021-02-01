@@ -397,7 +397,7 @@ to generate a function containing an <code class="docutils literal notranslate">
 <p><a class="reference external" href="https://github.com/ComputationalReflection/Cnerator">Cnerator</a> provides a mechanism
 to process / modify program representation before the final
 source code generalization. The following code shows an example Python post-process specification file:</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">singledispatch</span> <span class="kn">import</span> <span class="n">singledispatch</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">functools</span> <span class="kn">import</span> <span class="n">singledispatch</span>
 <span class="kn">from</span> <span class="nn">cnerator</span> <span class="kn">import</span> <span class="n">ast</span>
 
 <span class="k">def</span> <span class="nf">_instrument_statements</span><span class="p">(</span><span class="n">statements</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">ast</span><span class="o">.</span><span class="n">ASTNode</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="n">ast</span><span class="o">.</span><span class="n">ASTNode</span><span class="p">]:</span>
