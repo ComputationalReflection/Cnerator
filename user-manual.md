@@ -7,12 +7,11 @@ If you are looking for developer documentation, please check this
 
 ## Installation
 
-You need a Python 3.7+ standard implementation. 
-The only additional packages to install are `numpy` and `singledispatch`:
+You need a Python 3.7+ standard implementation.
+The only additional package to install is ``numpy``:
 
 ``` text
 pip install numpy
-pip install singledispatch
 ```
 
 ## Running Cnerator
@@ -273,7 +272,7 @@ Cnerator provides a mechanism to process / modify program representation before 
 source code generalization. The following code shows an example Python post-process specification file:
  
 ```Python
-from singledispatch import singledispatch
+from functools import singledispatch
 from cnerator import ast
 
 def _instrument_statements(statements: List[ast.ASTNode]) -> List[ast.ASTNode]:

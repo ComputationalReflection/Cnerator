@@ -6,8 +6,7 @@ The purpose is to identify the binary code used to return from a function.
 If the function returns ``void``, a label and an explicit return function is added at the end of the function."""
 
 
-from singledispatch import singledispatch
-import core
+from functools import singledispatch
 from core.utils import print_if_verbose
 from typing import List
 from core import ast

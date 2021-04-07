@@ -166,8 +166,8 @@ doc['number_stmts_func_prob'] = "number of statements in functions " \
                                 "(default: 20% for [1,4] and 10% for [5, 6])"
 number_stmts_func_prob = {1: 0.2, 2: 0.2, 3: 0.2, 4: 0.2, 5: 0.1, 6: 0.1}
 
-doc['number_stmts_block'] = "number of statements in blocks (default: 1/3 for 1, 2 and 3)"
-number_stmts_func_block = probs_helper.compute_equal_prob({1, 2, 3})
+doc['number_stmts_block_prob'] = "number of statements in blocks (default: 1/3 for 1, 2 and 3)"
+number_stmts_block_prob = probs_helper.compute_equal_prob({1, 2, 3})
 
 doc['else_body_prob'] = "probability of generating an else body for an if statement " \
                                      "(default: 50%)"

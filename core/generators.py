@@ -384,20 +384,21 @@ def generate_stmt_invocation(program, function, invoked_func=None):
 
 def generate_stmt_return(program, function, exp=None):
     c_type = function.return_type
-    if exp is None:
-        if isinstance(c_type, ast.SignedInt) and probs_helper.random_value(probs.int_emulate_bool):
-            value = probs_helper.random_value({0: 0.5, 1: 0.5})
+    if isinstance(c_type, ast.Void):
+        return ast.Return()
+    if isinstance(c_type, ast.SignedInt) and probs_helper.random_value(probs.int_emulate_bool):
+        value = probs_helper.random_value({0: 0.5, 1: 0.5})
+        if not exp:
             exp = ast.Literal("/* EMULATED BOOL LITERAL */ ({}) {}".format(c_type.name, value), c_type)
-            return ast.Return(exp, c_type)
-    elif not isinstance(c_type, ast.Void):  # return <expression>;
-        exp = generate_expression(program, function, c_type, probs.return_exp_depth_prob)
         return ast.Return(exp, c_type)
-    return ast.Return()  # return; (without expression)
-
+    else:
+        if not exp:
+            exp = generate_expression(program, function, c_type, probs.return_exp_depth_prob)
+        return ast.Return(exp, c_type)
 
 def generate_stmt_block(program: Program, function: Function, stmt_depth: int) -> Block:
     """Generates a block statement"""
-    number_statements = probs_helper.random_value(probs.number_stmts_func_block)
+    number_statements = probs_helper.random_value(probs.number_stmts_block_prob)
     statements = [generate_stmt_func(program, function, stmt_depth - 1) for _ in range(number_statements)]
     return ast.Block(statements)
 
@@ -405,14 +406,14 @@ def generate_stmt_block(program: Program, function: Function, stmt_depth: int) -
 def generate_stmt_while(program: Program, function: Function, stmt_depth: int) -> While:
     """Generates a while statement"""
     condition = generate_expression(program, function, SignedInt(), None)
-    number_statements = probs_helper.random_value(probs.number_stmts_func_block)
+    number_statements = probs_helper.random_value(probs.number_stmts_block_prob)
     statements = [generate_stmt_func(program, function, stmt_depth - 1) for _ in range(number_statements)]
     return ast.While(condition, statements)
 
 
 def generate_stmt_do(program: Program, function: Function, stmt_depth: int) -> Do:
     """Generates a do statement"""
-    number_statements = probs_helper.random_value(probs.number_stmts_func_block)
+    number_statements = probs_helper.random_value(probs.number_stmts_block_prob)
     statements = [generate_stmt_func(program, function, stmt_depth - 1) for _ in range(number_statements)]
     condition = generate_expression(program, function, SignedInt(), None)
     return ast.Do(statements, condition)
@@ -423,7 +424,7 @@ def generate_stmt_if(program: Program, function: Function, stmt_depth: int) -> I
     # generate condition
     condition = generate_expression(program, function, SignedInt(), None)
     # generate if body
-    number_if_statements = probs_helper.random_value(probs.number_stmts_func_block)
+    number_if_statements = probs_helper.random_value(probs.number_stmts_block_prob)
     if_statements = [generate_stmt_func(program, function, stmt_depth - 1) for _ in range(number_if_statements)]
     is_there_return_stmt = not isinstance(function.return_type, Void) and \
                            probs_helper.random_value(probs.return_at_end_if_else_bodies_prob)
@@ -433,7 +434,7 @@ def generate_stmt_if(program: Program, function: Function, stmt_depth: int) -> I
     # generate else body
     is_there_else_body = probs_helper.random_value(probs.else_body_prob)
     if is_there_else_body:
-        number_else_statements = probs_helper.random_value(probs.number_stmts_func_block)
+        number_else_statements = probs_helper.random_value(probs.number_stmts_block_prob)
         else_statements = [generate_stmt_func(program, function, stmt_depth - 1) for _ in range(number_else_statements)]
         if is_there_return_stmt:  # generate a return statement at the end of the else block
             else_statements.append(generate_stmt_return(program, function,
@@ -448,7 +449,7 @@ def generate_stmt_for(program: Program, function: Function, stmt_depth: int) -> 
     initialization = generate_basic_stmt(program, function)
     condition = generate_expression(program, function, SignedInt(), None)
     increment = generate_basic_stmt(program, function)
-    number_statements = probs_helper.random_value(probs.number_stmts_func_block)
+    number_statements = probs_helper.random_value(probs.number_stmts_block_prob)
     statements = [generate_stmt_func(program, function, stmt_depth-1) for _ in range(number_statements)]
     return For(initialization, condition, increment, statements)
 
@@ -467,7 +468,7 @@ def generate_stmt_switch(program: Program, function: Function, stmt_depth: int) 
         literal = generate_literal(program, function, condition_type)
         if literal in cases.keys():
             continue  # avoid repeated literals in case conditions
-        number_statements = probs_helper.random_value(probs.number_stmts_func_block)
+        number_statements = probs_helper.random_value(probs.number_stmts_block_prob)
         case_statements = [generate_stmt_func(program, function, stmt_depth - 1) for _ in range(number_statements)]
         if is_there_return_stmt:  # append a return statement at the end of the case block
             case_statements.append(generate_stmt_return(program, function,
@@ -480,7 +481,7 @@ def generate_stmt_switch(program: Program, function: Function, stmt_depth: int) 
     # generate default, if necessary
     is_there_default = probs_helper.random_value(probs.default_switch_prob)
     if is_there_default:
-        number_statements = probs_helper.random_value(probs.number_stmts_func_block)
+        number_statements = probs_helper.random_value(probs.number_stmts_block_prob)
         default_statements = [generate_stmt_func(program, function, stmt_depth - 1) for _ in range(number_statements)]
         if is_there_return_stmt:
             default_statements.append(generate_stmt_return(program, function,
@@ -606,7 +607,7 @@ def generate_program():
     program.main = main_function = ast.Function("main", ast.SignedInt(), [])
     for i in range(number_statements):
         program.main.stmts.append(generate_stmt_func(program, main_function))
-    main_function.stmts.append(generate_stmt_return(program, main_function, exp=0))
+    main_function.stmts.append(generate_stmt_return(program, main_function, exp=None))
     return program
 
 
@@ -712,7 +713,7 @@ def generate_program_with_function_distribution(distribution, args, remove_unwan
     ###
     # Add return statement
     ###
-    main_function.stmts.append(generate_stmt_return(program, main_function, exp=0))
+    main_function.stmts.append(generate_stmt_return(program, main_function, exp=None))
 
     return program
 

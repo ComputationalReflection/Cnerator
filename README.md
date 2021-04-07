@@ -45,12 +45,11 @@ the input programs used to train such models comprise abundant and varied code p
 
 ## Usage
 
-To run Cnerator, you need to install `numpy` and `singledispatch` Python packages:
+To run Cnerator, you need to install the `numpy` Python package:
 
 
 ``` text
 pip install numpy
-pip install singledispatch
 ```
 
 Then, you may just run Cnerator with no arguments to generate a random C program:

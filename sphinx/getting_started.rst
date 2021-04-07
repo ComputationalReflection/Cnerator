@@ -14,13 +14,12 @@ Installation
 ------------
 
 You need a Python 3.7+ standard implementation.
-The only additional packages to install are ``numpy`` and ``singledispatch``:
+The only additional package to install is ``numpy``:
 
 
 .. code-block:: bash
 
     pip install numpy
-    pip install singledispatch
 
 
 Usage

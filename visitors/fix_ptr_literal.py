@@ -7,7 +7,7 @@ At code generation, pointers literals are just a 0 memory address. Here, they ar
 addresses of global variables.
 """
 
-from singledispatch import singledispatch
+from functools import singledispatch
 
 from core import ast, generators
 from core.utils import print_if_verbose
